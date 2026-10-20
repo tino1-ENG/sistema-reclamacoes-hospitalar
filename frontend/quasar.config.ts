@@ -59,22 +59,14 @@ export default defineConfig((/* ctx */) => {
       // minify: false,
       // distDir
 
-      extendViteConf(viteConf) { viteConf.server = viteConf.server || {}; viteConf.server.allowedHosts = true; },
+      extendViteConf(viteConf) { viteConf.server = viteConf.server || {}; viteConf.server.allowedHosts = true; viteConf.server.cors = true; viteConf.server.hmr = false; },
       // viteVuePluginOptions: {},
 
       // to write components with JSX/TSX:
       // https://v2.quasar.dev/quasar-cli-vite/handling-vite#jsx-tsx
       // vueJsx: true,
 
-      vitePlugins: [
-        ['vite-plugin-checker', {
-          vueTsc: true,
-          eslint: {
-            lintCommand: 'eslint -c ./eslint.config.js "./src*/**/*.{ts,js,mjs,cjs,vue}"',
-            useFlatConfig: true
-          }
-        }, { server: false }]
-      ]
+      vitePlugins: []
     },
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#devserver
@@ -259,6 +251,10 @@ export default defineConfig((/* ctx */) => {
     }
   }
 });
+
+
+
+
 
 
 
