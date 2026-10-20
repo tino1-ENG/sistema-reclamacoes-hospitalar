@@ -1,0 +1,28 @@
+{
+  "name": "HospitalCare — Hospital Central de Maputo",
+  "short_name": "HospitalCare",
+  "description": "Sistema Oficial de Atendimento e Gestão de Manifestações do Hospital Central de Maputo",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0c2340",
+  "theme_color": "#17324D",
+  "lang": "pt-MZ",
+  "icons": [
+    {
+      "src": "icons/favicon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/favicon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/apple-icon-180x180.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

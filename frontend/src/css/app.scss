@@ -1,0 +1,128 @@
+// HospitalCare — Global Styles & Design System (Impeccable Institutional Design)
+// ==============================================================================
+
+body {
+  font-family: 'Public Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #202b36;
+  background-color: #f5f7fa;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, .text-h3, .text-h4, .hero-title {
+  text-wrap: balance;
+}
+
+// Superfícies e cartões hospitalares (Superfícies limpas, bordas precisas)
+.hc-card {
+  border-radius: 10px;
+  border: 1px solid #d9e1e8;
+  box-shadow: 0 1px 3px 0 rgba(16, 24, 40, 0.04);
+  background: #ffffff;
+  transition: all 0.2s ease-in-out;
+
+  &--interactive:hover {
+    box-shadow: 0 4px 8px -2px rgba(16, 24, 40, 0.08);
+    border-color: #b8c7d4;
+  }
+}
+
+// Cabeçalhos de secção com escala tipográfica equilibrada
+.hc-section-header {
+  margin-bottom: 1.5rem;
+
+  .hc-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #17324d;
+    line-height: 1.25;
+    margin: 0;
+  }
+
+  .hc-subtitle {
+    font-size: 0.9375rem;
+    color: #536273;
+    margin-top: 0.35rem;
+  }
+}
+
+// Badges de estado de processo (Texto contrastante e sem depender exclusivamente da cor)
+.hc-badge {
+  font-size: 0.775rem;
+  font-weight: 600;
+  padding: 0.25rem 0.625rem;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  line-height: 1.2;
+}
+
+// Utilitários de paleta intencional institucional
+.text-hospital-navy { color: #17324d; }
+.text-hospital-secondary { color: #285b7a; }
+.text-hospital-green { color: #147d64; }
+.text-hospital-main { color: #202b36; }
+.text-hospital-muted { color: #536273; }
+
+.bg-hospital-navy { background-color: #17324d; }
+.bg-hospital-secondary { background-color: #285b7a; }
+.bg-hospital-surface { background-color: #ffffff; }
+.bg-hospital-subtle { background-color: #f5f7fa; }
+.border-hospital { border-color: #d9e1e8; }
+
+// Suporte para utilitários legados com cores de alto contraste
+.text-slate-700 { color: #202b36; }
+.text-slate-600 { color: #3b4958; }
+.text-slate-500 { color: #536273; }
+.bg-slate-50 { background-color: #f5f7fa; }
+.bg-slate-100 { background-color: #edf2f7; }
+.border-slate-200 { border-color: #d9e1e8; }
+
+// Foco acessível WCAG AA
+:focus-visible {
+  outline: 2px solid #17324d;
+  outline-offset: 2px;
+}
+
+// Otimizações Mobile-First & Touch Ergonómico
+html, body {
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button, a, .q-btn, .cursor-pointer {
+  touch-action: manipulation;
+}
+
+// Ajuste para áreas seguras de telemóveis (iPhone notch e barras de navegação Android)
+.pb-safe {
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
+}
+
+.mobile-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2000;
+  background-color: #ffffff;
+  border-top: 1px solid #e2e8f0;
+  box-shadow: 0 -4px 12px rgba(15, 23, 42, 0.08);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@media (max-width: 599px) {
+  .q-page {
+    padding-bottom: 72px !important;
+  }
+}
+
+// Respeito por redução de movimento (Acessibilidade)
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

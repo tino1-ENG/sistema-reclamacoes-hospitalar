@@ -1,0 +1,303 @@
+﻿# PROMPT PROFISSIONAL — REDESIGN COMPLETO DO HOSPITALCARE COM IMPECCABLE
+
+## 1. PAPEL E MISSÃO
+
+Atua como um Senior Product Designer, UI/UX Designer e Frontend Engineer especializado em sistemas hospitalares, plataformas institucionais e produtos digitais de nível empresarial.
+
+Utiliza a skill **Impeccable** e as suas competências de design para transformar a interface atual do **HospitalCare** num produto digital profissional, humanizado, confiável, elegante e preparado para utilização num hospital real.
+
+O HospitalCare é um Sistema de Gestão de Reclamações e Esclarecimentos Hospitalares. Permite que pacientes submetam reclamações, solicitem esclarecimentos, acompanhem o estado dos pedidos e recebam respostas da instituição. Os funcionários autorizados gerem, analisam, encaminham e respondem aos pedidos.
+
+**O objetivo não é fazer uma interface que pareça moderna apenas porque utiliza efeitos visuais. O objetivo é criar um produto que pareça ter sido concebido por uma equipa experiente de design e engenharia para uma instituição hospitalar real.**
+
+## 2. PRIMEIRA FASE — AUDITORIA OBRIGATÓRIA
+
+Antes de modificar qualquer código:
+
+1. Analisa toda a interface atual do HospitalCare em execução em `http://localhost:9000`.
+2. Inspeciona a estrutura do frontend, os componentes, os layouts, as páginas, os estilos globais e os componentes reutilizáveis.
+3. Utiliza as skills `audit` e `critique` do Impeccable para identificar problemas de hierarquia visual, consistência, legibilidade, espaçamento, cores, tipografia e experiência do utilizador.
+4. Analisa os quatro problemas já identificados:
+   - `ai-color-palette`: gradientes ciano e violetas demasiado comuns em interfaces geradas por IA.
+   - `low-contrast`: texto `#0d9488` sobre fundo branco com contraste insuficiente.
+   - `low-contrast` no banner principal, especialmente nas legendas brancas.
+   - `overused-font`: utilização de Roboto sem identidade visual distintiva.
+5. Identifica outros problemas reais da interface, sem inventar defeitos.
+6. Mantém as funcionalidades existentes e identifica os componentes que podem ser melhorados sem alterar a lógica de negócio.
+
+Não te limites a apresentar um relatório. Depois da auditoria, executa efetivamente as melhorias.
+
+## 3. DIREÇÃO CRIATIVA — IDENTIDADE HOSPITALAR CORPORATIVA
+
+Cria uma identidade visual própria para o HospitalCare, inspirada em plataformas digitais de instituições de saúde modernas, sistemas de atendimento público e software empresarial de elevada qualidade.
+
+A interface deve transmitir:
+
+- Confiança institucional.
+- Segurança e privacidade.
+- Humanização e empatia.
+- Organização e transparência.
+- Clareza na comunicação.
+- Profissionalismo e responsabilidade.
+
+Evita uma aparência excessivamente tecnológica, futurista ou artificial.
+
+### Paleta de cores
+
+Substitui a paleta genérica atual por um sistema cromático intencional e consistente.
+
+Utiliza como ponto de partida:
+
+- Azul institucional profundo: `#17324D`.
+- Azul secundário: `#285B7A`.
+- Verde hospitalar acessível: `#147D64`.
+- Fundo principal: `#F5F7FA`.
+- Superfícies e cartões: `#FFFFFF`.
+- Texto principal: `#202B36`.
+- Texto secundário: `#536273`.
+- Bordas e divisórias: `#D9E1E8`.
+- Sucesso: `#216E4E`.
+- Aviso: `#8A5700`.
+- Erro e reclamações críticas: `#B42318`.
+- Informação: `#245EA8`.
+
+Estes valores são uma base de trabalho, não uma obrigação rígida. Ajusta-os quando necessário para criar uma identidade visual coerente e cumprir os requisitos de contraste.
+
+Regras obrigatórias:
+
+- Elimina gradientes decorativos ciano-violeta.
+- Não uses gradientes como solução automática para tornar a interface moderna.
+- Privilegia cores sólidas, superfícies limpas e contraste bem definido.
+- Não uses a mesma cor para todos os estados, botões e elementos.
+- Garante que os estados de sucesso, pendência, processamento e erro sejam facilmente distinguíveis.
+- Nunca comuniques o estado de uma reclamação apenas através da cor; utiliza também texto ou ícones.
+
+## 4. TIPOGRAFIA E HIERARQUIA VISUAL
+
+Utiliza a skill `typeset` do Impeccable.
+
+Substitui Roboto por **Public Sans** ou **DM Sans**, escolhendo uma única família principal adequada ao produto.
+
+Define uma escala tipográfica consistente:
+
+- Títulos principais claros e fortes.
+- Títulos de secções com hierarquia imediatamente percetível.
+- Texto normal confortável para leitura prolongada.
+- Etiquetas e metadados legíveis.
+- Texto auxiliar suficientemente contrastante.
+
+Evita títulos gigantes, letras excessivamente espaçadas, excesso de texto em maiúsculas e pesos tipográficos aleatórios.
+
+O resultado deve parecer uma plataforma institucional, e não uma landing page promocional de uma startup de inteligência artificial.
+
+Se utilizares fontes externas, implementa uma alternativa local segura para situações sem ligação à Internet.
+
+## 5. REESTRUTURAÇÃO VISUAL DAS PÁGINAS
+
+Analisa as páginas existentes e melhora cada uma de acordo com a sua finalidade.
+
+### A. Página pública e apresentação
+
+- Cria uma apresentação institucional clara e humana.
+- Explica imediatamente a finalidade do HospitalCare.
+- Utiliza títulos objetivos e linguagem simples.
+- Apresenta ações principais como submeter uma reclamação, solicitar esclarecimentos e acompanhar pedidos.
+- Organiza o conteúdo com espaçamento equilibrado.
+- Evita os banners gigantes, gradientes chamativos, efeitos de brilho e secções repetitivas típicas de templates de IA.
+- Se forem necessárias imagens, privilegia fotografias autênticas e adequadas ao ambiente hospitalar, sem as utilizar apenas como decoração.
+
+### B. Autenticação e registo
+
+- Cria formulários limpos, organizados e fáceis de utilizar.
+- Define corretamente os estados de foco, preenchimento, validação e erro.
+- Utiliza etiquetas explícitas nos campos.
+- Apresenta mensagens de erro úteis e compreensíveis.
+- Mantém uma aparência profissional e discreta.
+- Não adiciones autenticação social ou funcionalidades que não existam no projeto.
+
+### C. Painel do paciente
+
+- Destaca a ação de submeter uma nova reclamação ou solicitar esclarecimentos.
+- Apresenta os pedidos através de uma estrutura clara e organizada.
+- Torna o estado de cada pedido imediatamente percetível.
+- Organiza número do pedido, assunto, data, última atualização e estado.
+- Melhora a leitura do histórico de interações e das respostas recebidas.
+- Apresenta estados vazios com instruções úteis e ações concretas.
+- Evita cartões decorativos sem utilidade funcional.
+
+### D. Painel administrativo
+
+- Utiliza uma estrutura de dashboard empresarial.
+- Organiza os indicadores essenciais sem exagerar na quantidade de cartões.
+- Melhora a tabela ou lista de reclamações, os filtros, a pesquisa e as ações.
+- Destaca prioridades e pedidos pendentes sem recorrer a cores excessivas.
+- Facilita a identificação de pedidos atrasados e dos que aguardam resposta.
+- Mantém densidade de informação adequada para utilizadores que trabalham diariamente com o sistema.
+- Não inventes estatísticas nem apresentes dados fictícios como se fossem reais.
+
+### E. Painéis de enfermeiros e supervisores
+
+- Prioriza os pedidos atribuídos, as tarefas pendentes e o histórico de atendimento.
+- Facilita a consulta dos detalhes e o registo de respostas.
+- Torna claras as responsabilidades e os estados dos pedidos.
+- Diferencia visualmente as ações de consultar, responder, encaminhar e supervisionar.
+- Respeita as permissões de cada função.
+- Não exponhas dados de pacientes a utilizadores sem autorização.
+
+### F. Detalhes de reclamações e esclarecimentos
+
+- Cria uma hierarquia clara entre os dados do pedido, a descrição, as interações, as respostas e o histórico.
+- Apresenta cronologicamente as alterações e mensagens.
+- Destaca o estado atual e a próxima ação necessária.
+- Evita interfaces semelhantes a chats de redes sociais quando isso prejudicar a seriedade do atendimento.
+- Mantém a comunicação humana, respeitosa e compreensível.
+
+## 6. COMPONENTES E DESIGN SYSTEM
+
+Utiliza a skill `distill` para eliminar ruído visual e `polish` para refinar os detalhes.
+
+Cria ou uniformiza os estilos de:
+
+- Botões primários, secundários e destrutivos.
+- Campos de formulário.
+- Caixas de pesquisa.
+- Tabelas e listas.
+- Cartões informativos.
+- Etiquetas de estado.
+- Alertas e notificações.
+- Modais e caixas de confirmação.
+- Menus laterais e navegação.
+- Paginação e filtros.
+- Indicadores de carregamento.
+- Estados vazios e mensagens de erro.
+
+Define regras consistentes para:
+
+- Espaçamento.
+- Bordas.
+- Raios dos cantos.
+- Sombras.
+- Alturas dos campos.
+- Estados de foco.
+- Ícones.
+- Alinhamentos.
+- Comportamento responsivo.
+
+Evita misturar muitos estilos de cartões, sombras, raios e ícones na mesma página.
+
+Prefere bordas subtis e superfícies bem definidas a sombras pesadas e efeitos de vidro.
+
+Os ícones devem ser consistentes e ter uma função clara. Não uses emojis como substitutos de ícones profissionais na interface principal.
+
+## 7. ACESSIBILIDADE E CONTRASTE
+
+Utiliza a skill `harden`.
+
+Verifica e corrige todos os problemas de acessibilidade visual e interação.
+
+Requisitos:
+
+- Contraste mínimo WCAG AA de 4,5:1 para texto normal.
+- Contraste mínimo de 3:1 para texto grande, quando aplicável.
+- Contraste de pelo menos 3:1 para elementos gráficos e componentes de interface relevantes.
+- Foco de teclado claramente visível.
+- Formulários acessíveis por teclado.
+- Etiquetas associadas aos campos.
+- Mensagens de erro associadas aos campos relevantes.
+- Estados que não dependam exclusivamente da cor.
+- Tamanhos de texto legíveis.
+- Áreas de interação adequadas em dispositivos móveis.
+- Respeito pela preferência `prefers-reduced-motion`.
+
+Corrige especificamente o problema do texto `#0d9488` sobre branco. Não mantenhas essa combinação se não cumprir o contraste exigido.
+
+Verifica também o contraste do texto branco no banner principal. Se necessário, utiliza uma cor de fundo sólida ou ajusta o fundo até garantir legibilidade.
+
+Não declares conformidade WCAG sem realizar verificações efetivas.
+
+## 8. RESPONSIVIDADE
+
+Testa e melhora a interface em:
+
+- Telemóveis pequenos.
+- Telemóveis comuns.
+- Tablets.
+- Portáteis.
+- Ecrãs desktop de grande dimensão.
+
+Garante que:
+
+- Não existe deslocamento horizontal indevido.
+- Os formulários se adaptam à largura disponível.
+- Os menus funcionam corretamente em ecrãs pequenos.
+- As tabelas possuem uma estratégia móvel adequada.
+- Os botões principais continuam acessíveis.
+- Os cartões não ficam excessivamente estreitos.
+- Os dashboards mantêm a hierarquia visual em diferentes resoluções.
+
+Não te limites a reduzir o tamanho dos elementos desktop. Redesenha a disposição quando necessário.
+
+## 9. MICROINTERAÇÕES E ACABAMENTO
+
+Utiliza animações discretas apenas quando melhorarem a compreensão ou o feedback.
+
+Implementa, quando adequado:
+
+- Estados de carregamento.
+- Feedback de submissão.
+- Confirmação de ações.
+- Transições subtis.
+- Estados de foco e hover.
+- Mensagens claras de sucesso e erro.
+
+Evita animações excessivas, elementos flutuantes decorativos, partículas, brilhos, efeitos neon e movimentos que distraiam os profissionais de saúde.
+
+## 10. REGRAS DE IMPLEMENTAÇÃO
+
+- Trabalha diretamente no frontend existente.
+- Utiliza as competências reais do Impeccable instaladas no projeto.
+- Executa `audit`, `critique`, `colorize`, `typeset`, `polish` e `harden` conforme a sua aplicabilidade e sintaxe documentada.
+- Não te limites a explicar o que deve ser feito: implementa as alterações.
+- Não recries o projeto do zero.
+- Não substituas páginas funcionais por maquetes estáticas.
+- Não alteres desnecessariamente a arquitetura.
+- Não removas funcionalidades existentes.
+- Não alteres contratos de API, autenticação, regras de negócio ou permissões para facilitar o redesign.
+- Não introduzas dependências desnecessárias.
+- Reutiliza os componentes existentes sempre que adequado.
+- Mantém o código organizado, reutilizável e consistente.
+- Não introduzas dados fictícios em indicadores apresentados como reais.
+- Não uses textos genéricos como "Lorem ipsum", "Welcome to your dashboard" ou mensagens artificiais de demonstração.
+
+Antes de executar qualquer comando do Impeccable, consulta a documentação e os ficheiros das skills instaladas para confirmar a sintaxe correta.
+
+## 11. VALIDAÇÃO FINAL
+
+Depois de implementar:
+
+1. Executa a aplicação e verifica as páginas modificadas.
+2. Confirma que as funcionalidades principais continuam operacionais.
+3. Executa as verificações de lint, TypeScript e build disponíveis no projeto.
+4. Corrige os erros introduzidos pelas alterações.
+5. Executa novamente o detetor de anti-padrões, incluindo `npx impeccable detect`, se essa sintaxe for compatível com a instalação atual.
+6. Confirma se os quatro problemas identificados foram resolvidos.
+7. Verifica os principais contrastes e os estados responsivos.
+8. Apresenta um resumo dos ficheiros modificados, das melhorias realizadas, dos testes executados e dos problemas que ainda precisem de atenção.
+
+## 12. CRITÉRIO DE ACEITAÇÃO
+
+Considera o trabalho concluído apenas quando o HospitalCare:
+
+- Deixar de apresentar uma paleta genérica de interface de IA.
+- Tiver uma identidade visual institucional coerente.
+- Apresentar tipografia profissional e hierarquia clara.
+- Cumprir os contrastes exigidos nos elementos verificados.
+- Funcionar corretamente em dispositivos móveis e desktop.
+- Preservar as funcionalidades e permissões existentes.
+- Apresentar formulários, tabelas e dashboards consistentes.
+- Transmitir confiança, privacidade, organização e humanização.
+- Tiver sido validado por verificações técnicas e visuais reais.
+
+**Resultado pretendido:** um HospitalCare com aparência de software hospitalar profissional, desenvolvido por uma equipa sénior de produto, com design intencional, acessibilidade, consistência e qualidade de produção — sem os padrões visuais genéricos associados a interfaces geradas por inteligência artificial.
+
+Começa pela auditoria da aplicação existente, identifica os problemas e implementa as melhorias diretamente no código. Não pares depois de apresentar o diagnóstico.

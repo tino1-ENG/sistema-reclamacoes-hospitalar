@@ -1,0 +1,20 @@
+// Quasar Sass (& SCSS) Variables
+// --------------------------------------------------
+// HospitalCare Theme Variables — Impeccable Institutional Palette (HCM)
+
+$primary   : #17324D; // Azul institucional profundo
+$secondary : #285B7A; // Azul secundário institucional
+$accent    : #147D64; // Verde hospitalar acessível (WCAG AA > 5.3:1)
+
+$dark      : #202B36; // Texto / Slate escuro
+$dark-page : #101820; // Slate dark background
+
+$positive  : #216E4E; // Sucesso com alto contraste (5.8:1)
+$negative  : #B42318; // Erro e reclamações críticas (6.1:1)
+$info      : #245EA8; // Azul informativo (6.2:1)
+$warning   : #8A5700; // Aviso / Âmbar acessível (5.2:1)
+
+// Espaçamentos e bordas
+$generic-border-radius : 8px;
+$button-border-radius  : 6px;
+$card-border-radius    : 10px;
