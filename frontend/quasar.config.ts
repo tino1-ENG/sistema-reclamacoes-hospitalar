@@ -81,7 +81,7 @@ export default defineConfig((/* ctx */) => {
     devServer: {
       // vueDevtools: true,
       // https: true,
-      open: false, allowedHosts: 'all'
+      open: false, allowedHosts: true
     },
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#framework
@@ -259,5 +259,6 @@ export default defineConfig((/* ctx */) => {
     }
   }
 });
+
 
 
