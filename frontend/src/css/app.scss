@@ -1,91 +1,146 @@
-// HospitalCare — Global Styles & Design System (Impeccable Institutional Design)
+// HospitalCare — Global Styles & Design System (Modern Healthtech & Vitality)
 // ==============================================================================
 
 body {
   font-family: 'Public Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  color: #202b36;
-  background-color: #f5f7fa;
+  color: #0F172A;
+  background-color: #F8FAFC;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 h1, h2, h3, h4, .text-h3, .text-h4, .hero-title {
   text-wrap: balance;
+  letter-spacing: -0.02em;
 }
 
-// Superfícies e cartões hospitalares (Superfícies limpas, bordas precisas)
+// ==============================================================================
+// 1. Superfícies, Cartões & Efeitos de Elevação
+// ==============================================================================
+
 .hc-card {
-  border-radius: 10px;
-  border: 1px solid #d9e1e8;
-  box-shadow: 0 1px 3px 0 rgba(16, 24, 40, 0.04);
+  border-radius: 16px;
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  box-shadow: 0 4px 20px -2px rgba(2, 132, 199, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
   background: #ffffff;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 
   &--interactive:hover {
-    box-shadow: 0 4px 8px -2px rgba(16, 24, 40, 0.08);
-    border-color: #b8c7d4;
+    transform: translateY(-3px);
+    box-shadow: 0 16px 32px -8px rgba(2, 132, 199, 0.12), 0 4px 8px -2px rgba(2, 132, 199, 0.06);
+    border-color: #BAE6FD;
   }
 }
 
-// Cabeçalhos de secção com escala tipográfica equilibrada
+// Superfície com Gradiente Suave de Destaque
+.hc-card-gradient {
+  background: linear-gradient(180deg, #FFFFFF 0%, #F0F9FF 100%);
+  border: 1px solid #E0F2FE;
+}
+
+// Efeito Vidro Translúcido (Glassmorphism Moderno)
+.hc-glass {
+  background: rgba(255, 255, 255, 0.88) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+// ==============================================================================
+// 2. Cabeçalhos de Secção & Tipografia
+// ==============================================================================
+
 .hc-section-header {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.75rem;
 
   .hc-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #17324d;
+    font-size: 1.625rem;
+    font-weight: 800;
+    color: #075985; // Sky 800
     line-height: 1.25;
     margin: 0;
+    letter-spacing: -0.025em;
   }
 
   .hc-subtitle {
-    font-size: 0.9375rem;
-    color: #536273;
+    font-size: 0.95rem;
+    color: #475569; // Slate 600
     margin-top: 0.35rem;
+    line-height: 1.5;
   }
 }
 
-// Badges de estado de processo (Texto contrastante e sem depender exclusivamente da cor)
+// ==============================================================================
+// 3. Badges & Pílulas de Estado (Pill Design)
+// ==============================================================================
+
 .hc-badge {
   font-size: 0.775rem;
-  font-weight: 600;
-  padding: 0.25rem 0.625rem;
-  border-radius: 6px;
+  font-weight: 700;
+  padding: 0.3rem 0.75rem;
+  border-radius: 9999px;
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.4rem;
   line-height: 1.2;
+  letter-spacing: 0.01em;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
 }
 
-// Utilitários de paleta intencional institucional
-.text-hospital-navy { color: #17324d; }
-.text-hospital-secondary { color: #285b7a; }
-.text-hospital-green { color: #147d64; }
-.text-hospital-main { color: #202b36; }
-.text-hospital-muted { color: #536273; }
+// ==============================================================================
+// 4. Gradientes Utilitários Healthtech
+// ==============================================================================
 
-.bg-hospital-navy { background-color: #17324d; }
-.bg-hospital-secondary { background-color: #285b7a; }
+.bg-gradient-primary {
+  background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%) !important;
+}
+
+.bg-gradient-accent {
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
+}
+
+.bg-gradient-warm {
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
+}
+
+.bg-gradient-hero {
+  background: linear-gradient(135deg, rgba(7, 89, 133, 0.92) 0%, rgba(2, 132, 199, 0.82) 50%, rgba(16, 185, 129, 0.75) 100%);
+}
+
+// ==============================================================================
+// 5. Utilitários de Compatibilidade e Mapeamento de Cores
+// ==============================================================================
+
+.text-hospital-navy { color: #075985; }
+.text-hospital-secondary { color: #0284C7; }
+.text-hospital-green { color: #10B981; }
+.text-hospital-main { color: #0F172A; }
+.text-hospital-muted { color: #64748B; }
+
+.bg-hospital-navy { background-color: #075985; }
+.bg-hospital-secondary { background-color: #0284C7; }
 .bg-hospital-surface { background-color: #ffffff; }
-.bg-hospital-subtle { background-color: #f5f7fa; }
-.border-hospital { border-color: #d9e1e8; }
+.bg-hospital-subtle { background-color: #F8FAFC; }
+.border-hospital { border-color: #E2E8F0; }
 
-// Suporte para utilitários legados com cores de alto contraste
-.text-slate-700 { color: #202b36; }
-.text-slate-600 { color: #3b4958; }
-.text-slate-500 { color: #536273; }
-.bg-slate-50 { background-color: #f5f7fa; }
-.bg-slate-100 { background-color: #edf2f7; }
-.border-slate-200 { border-color: #d9e1e8; }
+// Suporte para utilitários legados
+.text-slate-700 { color: #1E293B; }
+.text-slate-600 { color: #475569; }
+.text-slate-500 { color: #64748B; }
+.bg-slate-50 { background-color: #F8FAFC; }
+.bg-slate-100 { background-color: #F1F5F9; }
+.border-slate-200 { border-color: #E2E8F0; }
 
 // Foco acessível WCAG AA
 :focus-visible {
-  outline: 2px solid #17324d;
+  outline: 2px solid #0284C7;
   outline-offset: 2px;
 }
 
-// Otimizações Mobile-First & Touch Ergonómico
+// ==============================================================================
+// 6. Otimizações Mobile-First & Touch Ergonómico
+// ==============================================================================
+
 html, body {
   overflow-x: hidden;
   -webkit-tap-highlight-color: transparent;
@@ -95,7 +150,6 @@ button, a, .q-btn, .cursor-pointer {
   touch-action: manipulation;
 }
 
-// Ajuste para áreas seguras de telemóveis (iPhone notch e barras de navegação Android)
 .pb-safe {
   padding-bottom: max(16px, env(safe-area-inset-bottom));
 }
@@ -106,15 +160,17 @@ button, a, .q-btn, .cursor-pointer {
   left: 0;
   right: 0;
   z-index: 2000;
-  background-color: #ffffff;
-  border-top: 1px solid #e2e8f0;
-  box-shadow: 0 -4px 12px rgba(15, 23, 42, 0.08);
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(226, 232, 240, 0.85);
+  box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.06);
   padding-bottom: env(safe-area-inset-bottom);
 }
 
 @media (max-width: 599px) {
   .q-page {
-    padding-bottom: 72px !important;
+    padding-bottom: 76px !important;
   }
 }
 

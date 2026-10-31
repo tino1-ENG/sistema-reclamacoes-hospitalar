@@ -1,20 +1,21 @@
 // Quasar Sass (& SCSS) Variables
 // --------------------------------------------------
-// HospitalCare Theme Variables — Impeccable Institutional Palette (HCM)
+// HospitalCare Theme Variables — Healthtech Modern & Vitality Palette
+// Inspirado em referências líderes mundiais (One Medical, Alan, Apple Health)
 
-$primary   : #17324D; // Azul institucional profundo
-$secondary : #285B7A; // Azul secundário institucional
-$accent    : #147D64; // Verde hospitalar acessível (WCAG AA > 5.3:1)
+$primary   : #0284C7; // Azul Oceânico Luminoso (Sky 600) — Confiança e Clareza Digital
+$secondary : #0369A1; // Azul Profundo Estrutural (Sky 700)
+$accent    : #10B981; // Menta Esmeralda Vibrante (Emerald 500) — Saúde, Cura e Vitalidade
 
-$dark      : #202B36; // Texto / Slate escuro
-$dark-page : #101820; // Slate dark background
+$dark      : #0F172A; // Slate Profundo Premium (Slate 900)
+$dark-page : #0B0F17; // Fundo Dark Mode
 
-$positive  : #216E4E; // Sucesso com alto contraste (5.8:1)
-$negative  : #B42318; // Erro e reclamações críticas (6.1:1)
-$info      : #245EA8; // Azul informativo (6.2:1)
-$warning   : #8A5700; // Aviso / Âmbar acessível (5.2:1)
+$positive  : #10B981; // Sucesso / Resolução (Emerald 500)
+$negative  : #F43F5E; // Reclamações Críticas / Erro (Rose 500 - Moderno e sem agressividade)
+$info      : #6366F1; // Sugestões / Informativo (Indigo 500)
+$warning   : #F59E0B; // Atenção / Pendência (Amber 500 - Ouro Quente)
 
-// Espaçamentos e bordas
-$generic-border-radius : 8px;
-$button-border-radius  : 6px;
-$card-border-radius    : 10px;
+// Espaçamentos e bordas táteis de alta ergonomia
+$generic-border-radius : 10px;
+$button-border-radius  : 10px;
+$card-border-radius    : 16px;

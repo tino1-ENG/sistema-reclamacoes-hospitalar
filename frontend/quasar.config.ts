@@ -59,7 +59,7 @@ export default defineConfig((/* ctx */) => {
       // minify: false,
       // distDir
 
-      extendViteConf(viteConf) { viteConf.server = viteConf.server || {}; viteConf.server.allowedHosts = true; viteConf.server.cors = true; viteConf.server.hmr = false; },
+      extendViteConf(viteConf) { viteConf.server = viteConf.server || {}; viteConf.server.allowedHosts = true; viteConf.server.cors = true; },
       // viteVuePluginOptions: {},
 
       // to write components with JSX/TSX:
@@ -251,6 +251,9 @@ export default defineConfig((/* ctx */) => {
     }
   }
 });
+
+
+
 
 
 

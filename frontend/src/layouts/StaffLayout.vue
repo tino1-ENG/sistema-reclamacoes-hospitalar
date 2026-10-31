@@ -1,6 +1,7 @@
 <template>
   <q-layout view="lHh Lpr lff">
-    <q-header elevated class="bg-white text-slate-700">
+    <!-- Cabeçalho do Colaborador com Vidro Translúcido -->
+    <q-header elevated class="hc-glass text-slate-700">
       <q-toolbar class="q-px-md">
         <q-btn
           flat
@@ -12,12 +13,12 @@
         />
 
         <q-toolbar-title class="row items-center q-ml-sm cursor-pointer" @click="$router.push('/funcionario/dashboard')">
-          <q-avatar size="32px" color="accent" text-color="white" class="q-mr-sm">
+          <q-avatar size="34px" class="bg-gradient-accent text-white q-mr-sm shadow-1">
             <q-icon name="local_hospital" size="20px" />
           </q-avatar>
           <div>
-            <span class="text-weight-bolder text-primary">HospitalCare</span>
-            <span class="text-caption text-grey-6 q-ml-sm gt-xs">Painel Operacional</span>
+            <span class="text-weight-bolder text-hospital-navy">HospitalCare</span>
+            <span class="text-caption text-slate-500 q-ml-sm gt-xs">Painel Operacional</span>
           </div>
         </q-toolbar-title>
 
@@ -34,24 +35,25 @@
       class="bg-white"
       :width="260"
     >
-      <div class="q-pa-md bg-green-1 border-b">
-        <div class="text-caption text-uppercase text-weight-bold text-accent">
+      <div class="q-pa-md bg-slate-50 border-b">
+        <div class="text-caption text-uppercase text-weight-bolder text-accent">
           Colaborador em Serviço
         </div>
-        <div class="text-subtitle2 text-weight-bold text-slate-800 q-mt-xs">
+        <div class="text-subtitle2 text-weight-bold text-hospital-navy q-mt-xs">
           {{ authStore.user?.fullName }}
         </div>
-        <div class="text-caption text-slate-600 font-size-11">
+        <div class="text-caption text-slate-500 font-size-11">
           Urgências e Triagem
         </div>
       </div>
 
-      <q-list class="q-pt-sm">
+      <q-list class="q-pt-sm q-px-sm">
         <q-item
           clickable
           v-ripple
           to="/funcionario/dashboard"
-          active-class="text-accent bg-green-1 text-weight-bold"
+          active-class="text-accent bg-green-1 text-weight-bold rounded-borders"
+          class="rounded-borders q-mb-xs"
         >
           <q-item-section avatar>
             <q-icon name="dashboard" />
@@ -63,7 +65,8 @@
           clickable
           v-ripple
           to="/funcionario/processos"
-          active-class="text-accent bg-green-1 text-weight-bold"
+          active-class="text-accent bg-green-1 text-weight-bold rounded-borders"
+          class="rounded-borders q-mb-xs"
         >
           <q-item-section avatar>
             <q-icon name="assignment" />

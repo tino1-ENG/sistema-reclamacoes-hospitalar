@@ -1,14 +1,14 @@
 <template>
   <q-layout view="lHh Lpr lff">
-    <!-- Cabeçalho Público -->
-    <q-header elevated class="bg-white text-slate-700">
+    <!-- Cabeçalho Público com Efeito Vidro Translúcido -->
+    <q-header elevated class="hc-glass text-slate-700">
       <q-toolbar class="q-px-md q-py-sm">
         <div class="row items-center cursor-pointer" @click="$router.push('/')">
-          <q-avatar size="36px" color="primary" text-color="white" class="q-mr-sm">
+          <q-avatar size="38px" class="bg-gradient-primary text-white q-mr-sm shadow-1">
             <q-icon name="local_hospital" size="22px" />
           </q-avatar>
           <div>
-            <div class="text-weight-bolder text-primary text-subtitle1 leading-none">
+            <div class="text-weight-bolder text-hospital-navy text-subtitle1 leading-none">
               HospitalCare
             </div>
             <div class="text-caption text-slate-500 font-size-11">
@@ -53,8 +53,8 @@
 
         <div class="q-ml-md row items-center q-gutter-x-sm">
           <template v-if="!authStore.isAuthenticated">
-            <q-btn flat no-caps color="primary" label="Entrar" to="/entrar" class="text-weight-bold" />
-            <q-btn unelevated rounded no-caps color="primary" label="Registar Paciente" to="/registar" class="text-weight-bold q-px-md" />
+            <q-btn flat rounded no-caps color="primary" label="Entrar" to="/entrar" class="text-weight-bold" />
+            <q-btn unelevated rounded no-caps class="bg-gradient-primary text-white text-weight-bold q-px-md shadow-2" label="Registar Paciente" to="/registar" />
           </template>
           <template v-else>
             <UserMenu />
@@ -76,21 +76,21 @@
     <!-- Menu Lateral Mobile -->
     <q-drawer v-model="mobileDrawerOpen" side="left" bordered overlay class="bg-white lt-md">
       <q-list class="q-pt-md">
-        <q-item-label header class="text-weight-bold text-primary">Navegação</q-item-label>
+        <q-item-label header class="text-weight-bold text-hospital-navy">Navegação</q-item-label>
         <q-item clickable v-ripple to="/" @click="mobileDrawerOpen = false">
-          <q-item-section avatar><q-icon name="home" /></q-item-section>
+          <q-item-section avatar><q-icon name="home" color="primary" /></q-item-section>
           <q-item-section>Início</q-item-section>
         </q-item>
         <q-item clickable v-ripple to="/sobre" @click="mobileDrawerOpen = false">
-          <q-item-section avatar><q-icon name="info" /></q-item-section>
+          <q-item-section avatar><q-icon name="info" color="primary" /></q-item-section>
           <q-item-section>Sobre o HospitalCare</q-item-section>
         </q-item>
         <q-item clickable v-ripple to="/faq" @click="mobileDrawerOpen = false">
-          <q-item-section avatar><q-icon name="help" /></q-item-section>
+          <q-item-section avatar><q-icon name="help" color="primary" /></q-item-section>
           <q-item-section>Perguntas Frequentes</q-item-section>
         </q-item>
         <q-item clickable v-ripple to="/contactos" @click="mobileDrawerOpen = false">
-          <q-item-section avatar><q-icon name="phone" /></q-item-section>
+          <q-item-section avatar><q-icon name="phone" color="primary" /></q-item-section>
           <q-item-section>Contactos</q-item-section>
         </q-item>
         <q-separator class="q-my-sm" />
@@ -134,7 +134,7 @@
         <div class="row q-col-gutter-lg">
           <div class="col-12 col-md-5">
             <div class="row items-center q-mb-sm">
-              <q-avatar size="32px" color="primary" text-color="white" class="q-mr-sm">
+              <q-avatar size="34px" class="bg-gradient-primary text-white q-mr-sm">
                 <q-icon name="local_hospital" size="20px" />
               </q-avatar>
               <span class="text-h6 text-weight-bold">HospitalCare</span>
@@ -187,27 +187,27 @@ const mobileDrawerOpen = ref(false);
 .max-w-6xl { max-width: 1200px; }
 .text-decoration-none { text-decoration: none; }
 .hover-white:hover { color: #ffffff !important; }
-.bg-slate-900 { background-color: #0f172a; }
+.bg-slate-900 { background-color: #0b1120; }
 
 .nav-tab-link {
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
   font-size: 0.95rem;
   color: #475569;
-  padding: 8px 14px;
+  padding: 8px 16px;
   position: relative;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
   display: inline-block;
-  border-radius: 6px;
+  border-radius: 8px;
 }
 
 .nav-tab-link:hover {
-  color: #17324d;
-  background-color: rgba(23, 50, 77, 0.04);
+  color: #0284c7;
+  background-color: rgba(2, 132, 199, 0.08);
 }
 
 .nav-tab-link.is-active {
-  color: #17324d;
+  color: #0284c7;
   font-weight: 700;
 }
 
@@ -215,10 +215,10 @@ const mobileDrawerOpen = ref(false);
   content: '';
   position: absolute;
   bottom: 0px;
-  left: 14px;
-  right: 14px;
+  left: 16px;
+  right: 16px;
   height: 3px;
-  background-color: #2563eb;
+  background: linear-gradient(90deg, #0284c7 0%, #10b981 100%);
   border-radius: 9999px;
 }
 </style>

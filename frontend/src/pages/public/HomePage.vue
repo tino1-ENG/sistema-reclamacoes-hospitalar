@@ -717,11 +717,7 @@ onUnmounted(() => {
 }
 
 .hero-highlight-word {
-  color: #93c5fd;
-  text-decoration-line: underline;
-  text-decoration-thickness: 3px;
-  text-underline-offset: 6px;
-  text-decoration-color: #3b82f6;
+  color: #38bdf8; text-decoration-line: underline; text-decoration-thickness: 3px; text-underline-offset: 6px; text-decoration-color: #10b981;
 }
 
 /* Tipografia Hero */
@@ -739,7 +735,7 @@ onUnmounted(() => {
 
 /* Botões do Hero */
 .hero-btn-primary {
-  background-color: #2563eb !important;
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important; box-shadow: 0 10px 25px -4px rgba(2, 132, 199, 0.45) !important;
   color: #ffffff !important;
   padding: 10px 24px;
   border-radius: 9999px !important;
@@ -791,7 +787,7 @@ onUnmounted(() => {
 }
 
 .quick-lookup-btn {
-  background-color: #17324d !important;
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
   color: #ffffff !important;
   padding: 10px;
   font-size: 0.95rem;
@@ -946,3 +942,4 @@ onUnmounted(() => {
   }
 }
 </style>
+

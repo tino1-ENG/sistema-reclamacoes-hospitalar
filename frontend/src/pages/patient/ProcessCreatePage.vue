@@ -152,9 +152,7 @@
           <q-btn flat color="slate-600" no-caps label="Cancelar" to="/paciente/dashboard" class="col-xs-12 col-sm-auto" />
           <q-btn
             unelevated
-            color="primary"
-            no-caps
-            label="Submeter Processo Oficial"
+            rounded no-caps class="bg-gradient-primary text-white text-weight-bold q-px-xl col-xs-12 col-sm-auto shadow-2" label="Submeter Processo Oficial"
             type="submit"
             :loading="submitting"
             class="text-weight-bold q-px-lg col-xs-12 col-sm-auto"
@@ -265,5 +263,6 @@ async function handleSubmit() {
 <style scoped>
 .max-w-4xl { max-width: 900px; }
 .font-size-11 { font-size: 11px; }
-.border-primary { border-color: #0f5b9e !important; }
+.border-primary { border-color: #0284c7 !important; border-width: 2px !important; }
 </style>
+

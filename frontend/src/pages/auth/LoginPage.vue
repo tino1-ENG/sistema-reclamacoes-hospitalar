@@ -1,7 +1,7 @@
 <template>
   <q-card class="hc-card q-pa-none overflow-hidden" style="max-width: 480px; width: 100%">
     <!-- Cabeçalho Institucional -->
-    <div class="bg-primary text-white q-pa-lg text-center relative-position">
+    <div class="bg-gradient-primary text-white q-pa-lg text-center relative-position">
       <q-avatar size="56px" color="white" text-color="primary" class="q-mb-sm shadow-2">
         <q-icon name="local_hospital" size="32px" />
       </q-avatar>
@@ -150,13 +150,7 @@
             </div>
 
             <q-btn
-              unelevated
-              color="primary"
-              label="Entrar como Paciente"
-              no-caps
-              type="submit"
-              :loading="loading"
-              class="full-width text-weight-bold q-py-sm shadow-1"
+              unelevated rounded no-caps type="submit" :loading="loading" class="full-width bg-gradient-primary text-white text-weight-bold q-py-sm shadow-2" label="Entrar como Paciente"
             />
           </q-form>
 
@@ -225,13 +219,7 @@
             </div>
 
             <q-btn
-              unelevated
-              color="teal-8"
-              label="Autenticar na Intranet Hospitalar"
-              no-caps
-              type="submit"
-              :loading="loading"
-              class="full-width text-weight-bold q-py-sm shadow-1"
+              unelevated rounded no-caps type="submit" :loading="loading" class="full-width bg-gradient-accent text-white text-weight-bold q-py-sm shadow-2" label="Autenticar na Intranet Hospitalar"
             />
           </q-form>
 
@@ -375,3 +363,4 @@ async function handleLogin(target: 'PATIENT' | 'STAFF') {
   letter-spacing: 0.025em;
 }
 </style>
+

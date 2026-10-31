@@ -1,7 +1,7 @@
 <template>
   <q-card class="hc-card q-pa-lg">
     <div class="text-center q-mb-lg">
-      <q-avatar size="44px" color="primary" text-color="white" class="q-mb-xs">
+      <q-avatar size="44px" class="bg-gradient-primary text-white q-mb-xs shadow-1">
         <q-icon name="person_add" size="24px" />
       </q-avatar>
       <div class="text-h5 text-weight-bolder text-slate-800">Registo de Paciente</div>
@@ -102,13 +102,7 @@
 
       <q-btn
         unelevated
-        color="primary"
-        label="Criar Conta de Utente"
-        no-caps
-        type="submit"
-        :loading="loading"
-        :disable="!acceptTerms"
-        class="full-width text-weight-bold q-py-sm"
+        rounded no-caps type="submit" :loading="loading" :disable="!acceptTerms" class="full-width bg-gradient-primary text-white text-weight-bold q-py-sm shadow-2" label="Criar Conta de Utente"
       />
     </q-form>
 
@@ -181,3 +175,4 @@ async function handleRegister() {
   }
 }
 </script>
+

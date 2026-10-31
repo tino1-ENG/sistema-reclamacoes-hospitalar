@@ -1,6 +1,7 @@
 <template>
   <q-layout view="lHh Lpr lff">
-    <q-header elevated class="bg-white text-slate-700">
+    <!-- Cabeçalho Administrativo com Efeito Vidro Translúcido -->
+    <q-header elevated class="hc-glass text-slate-700">
       <q-toolbar class="q-px-md">
         <q-btn
           flat
@@ -12,12 +13,12 @@
         />
 
         <q-toolbar-title class="row items-center q-ml-sm cursor-pointer" @click="$router.push('/admin/dashboard')">
-          <q-avatar size="32px" color="red-8" text-color="white" class="q-mr-sm">
+          <q-avatar size="34px" class="bg-gradient-primary text-white q-mr-sm shadow-1">
             <q-icon name="admin_panel_settings" size="20px" />
           </q-avatar>
           <div>
-            <span class="text-weight-bolder text-primary">HospitalCare</span>
-            <span class="text-caption text-grey-6 q-ml-sm gt-xs">Painel Administrativo</span>
+            <span class="text-weight-bolder text-hospital-navy">HospitalCare</span>
+            <span class="text-caption text-slate-500 q-ml-sm gt-xs">Painel Administrativo</span>
           </div>
         </q-toolbar-title>
 
@@ -27,31 +28,33 @@
       </q-toolbar>
     </q-header>
 
+    <!-- Menu Lateral Administrativo -->
     <q-drawer
       v-model="leftDrawerOpen"
       show-if-above
       bordered
       class="bg-white"
-      :width="260"
+      :width="265"
     >
-      <div class="q-pa-md bg-red-1 border-b">
-        <div class="text-caption text-uppercase text-weight-bold text-red-9">
+      <div class="q-pa-md bg-slate-50 border-b">
+        <div class="text-caption text-uppercase text-weight-bolder text-hospital-navy">
           Administração Geral
         </div>
-        <div class="text-subtitle2 text-weight-bold text-slate-800 q-mt-xs">
+        <div class="text-subtitle2 text-weight-bold text-hospital-navy q-mt-xs">
           {{ authStore.user?.fullName }}
         </div>
-        <div class="text-caption text-red-8 font-size-11">
+        <div class="text-caption text-slate-500 font-size-11">
           Acesso Global de Sistema
         </div>
       </div>
 
-      <q-list class="q-pt-sm">
+      <q-list class="q-pt-sm q-px-sm">
         <q-item
           clickable
           v-ripple
           to="/admin/dashboard"
-          active-class="text-red-9 bg-red-1 text-weight-bold"
+          active-class="text-primary bg-blue-1 text-weight-bold rounded-borders"
+          class="rounded-borders q-mb-xs"
         >
           <q-item-section avatar>
             <q-icon name="dashboard" />
@@ -63,7 +66,8 @@
           clickable
           v-ripple
           to="/admin/utilizadores"
-          active-class="text-red-9 bg-red-1 text-weight-bold"
+          active-class="text-primary bg-blue-1 text-weight-bold rounded-borders"
+          class="rounded-borders q-mb-xs"
         >
           <q-item-section avatar>
             <q-icon name="people" />
@@ -75,7 +79,8 @@
           clickable
           v-ripple
           to="/admin/departamentos"
-          active-class="text-red-9 bg-red-1 text-weight-bold"
+          active-class="text-primary bg-blue-1 text-weight-bold rounded-borders"
+          class="rounded-borders q-mb-xs"
         >
           <q-item-section avatar>
             <q-icon name="corporate_fare" />
@@ -87,7 +92,8 @@
           clickable
           v-ripple
           to="/admin/categorias"
-          active-class="text-red-9 bg-red-1 text-weight-bold"
+          active-class="text-primary bg-blue-1 text-weight-bold rounded-borders"
+          class="rounded-borders q-mb-xs"
         >
           <q-item-section avatar>
             <q-icon name="category" />
@@ -99,7 +105,8 @@
           clickable
           v-ripple
           to="/admin/sla"
-          active-class="text-red-9 bg-red-1 text-weight-bold"
+          active-class="text-primary bg-blue-1 text-weight-bold rounded-borders"
+          class="rounded-borders q-mb-xs"
         >
           <q-item-section avatar>
             <q-icon name="timer" />
@@ -111,7 +118,8 @@
           clickable
           v-ripple
           to="/admin/faqs"
-          active-class="text-red-9 bg-red-1 text-weight-bold"
+          active-class="text-primary bg-blue-1 text-weight-bold rounded-borders"
+          class="rounded-borders q-mb-xs"
         >
           <q-item-section avatar>
             <q-icon name="quiz" />
@@ -125,7 +133,8 @@
           clickable
           v-ripple
           to="/admin/auditoria"
-          active-class="text-red-9 bg-red-1 text-weight-bold"
+          active-class="text-primary bg-blue-1 text-weight-bold rounded-borders"
+          class="rounded-borders q-mb-xs"
         >
           <q-item-section avatar>
             <q-icon name="receipt_long" />
@@ -137,7 +146,8 @@
           clickable
           v-ripple
           to="/admin/configuracoes"
-          active-class="text-red-9 bg-red-1 text-weight-bold"
+          active-class="text-primary bg-blue-1 text-weight-bold rounded-borders"
+          class="rounded-borders q-mb-xs"
         >
           <q-item-section avatar>
             <q-icon name="settings" />

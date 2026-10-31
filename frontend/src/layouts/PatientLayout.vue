@@ -1,7 +1,7 @@
 <template>
   <q-layout view="lHh Lpr lff">
-    <!-- Cabeçalho do Paciente -->
-    <q-header elevated class="bg-white text-slate-700">
+    <!-- Cabeçalho do Paciente com Vidro Translúcido -->
+    <q-header elevated class="hc-glass text-slate-700">
       <q-toolbar class="q-px-md">
         <q-btn
           flat
@@ -13,12 +13,12 @@
         />
 
         <q-toolbar-title class="row items-center q-ml-sm cursor-pointer" @click="$router.push('/paciente/dashboard')">
-          <q-avatar size="32px" color="primary" text-color="white" class="q-mr-sm">
+          <q-avatar size="34px" class="bg-gradient-primary text-white q-mr-sm shadow-1">
             <q-icon name="local_hospital" size="20px" />
           </q-avatar>
           <div>
-            <span class="text-weight-bolder text-primary">HospitalCare</span>
-            <span class="text-caption text-grey-6 q-ml-sm gt-xs">Portal do Utente</span>
+            <span class="text-weight-bolder text-hospital-navy">HospitalCare</span>
+            <span class="text-caption text-slate-500 q-ml-sm gt-xs">Portal do Utente</span>
           </div>
         </q-toolbar-title>
 
@@ -37,23 +37,24 @@
       :width="260"
     >
       <div class="q-pa-md bg-slate-50 border-b">
-        <div class="text-caption text-uppercase text-weight-bold text-slate-500">
+        <div class="text-caption text-uppercase text-weight-bolder text-slate-500">
           Utente Conectado
         </div>
-        <div class="text-subtitle2 text-weight-bold text-primary q-mt-xs">
+        <div class="text-subtitle2 text-weight-bold text-hospital-navy q-mt-xs">
           {{ authStore.user?.fullName }}
         </div>
-        <div class="text-caption text-grey-6 font-size-11">
+        <div class="text-caption text-slate-500 font-size-11">
           {{ authStore.user?.phone }}
         </div>
       </div>
 
-      <q-list class="q-pt-sm">
+      <q-list class="q-pt-sm q-px-sm">
         <q-item
           clickable
           v-ripple
           to="/paciente/dashboard"
-          active-class="text-primary bg-blue-1 text-weight-bold"
+          active-class="text-primary bg-blue-1 text-weight-bold rounded-borders"
+          class="rounded-borders q-mb-xs"
         >
           <q-item-section avatar>
             <q-icon name="dashboard" />
@@ -65,19 +66,21 @@
           clickable
           v-ripple
           to="/paciente/processos/novo"
-          active-class="text-primary bg-blue-1 text-weight-bold"
+          active-class="text-positive bg-green-1 text-weight-bold rounded-borders"
+          class="rounded-borders q-mb-xs"
         >
           <q-item-section avatar>
             <q-icon name="add_circle" color="positive" />
           </q-item-section>
-          <q-item-section>Submeter Processo</q-item-section>
+          <q-item-section class="text-weight-bold">Submeter Processo</q-item-section>
         </q-item>
 
         <q-item
           clickable
           v-ripple
           to="/paciente/processos"
-          active-class="text-primary bg-blue-1 text-weight-bold"
+          active-class="text-primary bg-blue-1 text-weight-bold rounded-borders"
+          class="rounded-borders q-mb-xs"
         >
           <q-item-section avatar>
             <q-icon name="folder_shared" />
@@ -91,7 +94,8 @@
           clickable
           v-ripple
           to="/paciente/perfil"
-          active-class="text-primary bg-blue-1 text-weight-bold"
+          active-class="text-primary bg-blue-1 text-weight-bold rounded-borders"
+          class="rounded-borders q-mb-xs"
         >
           <q-item-section avatar>
             <q-icon name="person_outline" />
@@ -104,6 +108,7 @@
           v-ripple
           to="/faq"
           target="_blank"
+          class="rounded-borders"
         >
           <q-item-section avatar>
             <q-icon name="help_outline" />
