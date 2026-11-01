@@ -52,9 +52,12 @@ apiClient.interceptors.response.use(
       // Sessão expirada
       LocalStorage.remove('hospitalcare_token');
       LocalStorage.remove('hospitalcare_user');
-      if (typeof window !== 'undefined' && !window.location.hash.includes('/entrar')) {
-        // Redirecionamento suave
-        window.location.href = '/entrar';
+      if (typeof window !== 'undefined') {
+        const hash = window.location.hash || '';
+        if (!hash.includes('/entrar')) {
+          // Redirecionamento que respeita modo hash e nunca perde o prefixo do repositório no GitHub Pages
+          window.location.hash = '#/entrar';
+        }
       }
     }
 
