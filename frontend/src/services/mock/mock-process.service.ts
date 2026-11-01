@@ -1,4 +1,4 @@
-// HospitalCare — Serviço Mock de Gestão de Processos
+﻿// HospitalCare — Serviço Mock de Gestão de Processos
 // Suporta isolamento estrito de dados por perfil e regras de visibilidade
 
 import type {
@@ -84,8 +84,12 @@ class MockProcessService implements IProcessService {
       list = list.filter((p) => p.patientId === filters.patientId);
     }
 
-    if (filters.assignedTo) {
+    if (filters.assignedTo && filters.departmentId) {
+      list = list.filter((p) => p.assignedTo === filters.assignedTo || p.departmentId === filters.departmentId);
+    } else if (filters.assignedTo) {
       list = list.filter((p) => p.assignedTo === filters.assignedTo);
+    } else if (filters.departmentId) {
+      list = list.filter((p) => p.departmentId === filters.departmentId);
     }
 
     if (filters.statusId) {

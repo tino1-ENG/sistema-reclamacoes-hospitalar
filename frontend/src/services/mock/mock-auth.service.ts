@@ -1,4 +1,5 @@
-// HospitalCare — Serviço Mock de Autenticação
+// HospitalCare — Serviço Mock de Autenticação Realista
+// Valida credenciais reais por email ou telemóvel sem pré-seleção forçada de perfil
 
 import type {
   IAuthService,
@@ -10,13 +11,38 @@ import { mockUsers } from './mock-data';
 
 const STORAGE_KEY_CURRENT_USER = 'hospitalcare_mock_current_user';
 const STORAGE_KEY_TOKEN = 'hospitalcare_mock_token';
+const STORAGE_KEY_ALL_USERS = 'hospitalcare_mock_registered_users';
 
 class MockAuthService implements IAuthService {
-  private users: User[] = [...mockUsers];
+  private users: User[] = [];
   private currentUser: User | null = null;
 
   constructor() {
+    this.loadUsers();
     this.restoreSession();
+  }
+
+  private loadUsers(): void {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY_ALL_USERS);
+      if (stored) {
+        const extraUsers: User[] = JSON.parse(stored);
+        this.users = [...mockUsers, ...extraUsers.filter((eu) => !mockUsers.some((mu) => mu.id === eu.id))];
+      } else {
+        this.users = [...mockUsers];
+      }
+    } catch {
+      this.users = [...mockUsers];
+    }
+  }
+
+  private persistUsers(): void {
+    try {
+      const extra = this.users.filter((u) => !mockUsers.some((mu) => mu.id === u.id));
+      localStorage.setItem(STORAGE_KEY_ALL_USERS, JSON.stringify(extra));
+    } catch {
+      // Ignorar quota cheia
+    }
   }
 
   private restoreSession(): void {
@@ -25,12 +51,11 @@ class MockAuthService implements IAuthService {
       if (stored) {
         this.currentUser = JSON.parse(stored);
       } else {
-        // Default inicial para conveniência de teste no frontend: Paciente
-        this.currentUser = this.users[0] ?? null;
-        if (this.currentUser) this.persistSession(this.currentUser);
+        // Sistema Real: Ninguém fica autenticado automaticamente!
+        this.currentUser = null;
       }
     } catch {
-      this.currentUser = this.users[0] ?? null;
+      this.currentUser = null;
     }
   }
 
@@ -45,27 +70,40 @@ class MockAuthService implements IAuthService {
   }
 
   async login(credentials: LoginCredentials): Promise<{ user: User; token: string }> {
-    // Simula atraso de rede
-    await new Promise((r) => setTimeout(r, 400));
+    await new Promise((r) => setTimeout(r, 350));
 
-    let user: User | undefined;
+    const idClean = credentials.identifier.trim().toLowerCase();
+    const phoneDigits = idClean.replace(/\D/g, '');
 
-    if (credentials.roleHint) {
-      user = this.users.find((u) => u.roles.includes(credentials.roleHint!));
-    }
+    // Localizar utilizador por Email OU Telemóvel
+    const user = this.users.find((u) => {
+      const uEmail = u.email?.toLowerCase().trim();
+      const uPhoneDigits = u.phone.replace(/\D/g, '');
+
+      // Correspondência por email
+      if (uEmail && (uEmail === idClean || idClean.includes(uEmail))) {
+        return true;
+      }
+
+      // Correspondência por telefone (compara os últimos 7-9 dígitos)
+      if (phoneDigits.length >= 7 && (uPhoneDigits.endsWith(phoneDigits) || phoneDigits.endsWith(uPhoneDigits))) {
+        return true;
+      }
+
+      return false;
+    });
 
     if (!user) {
-      const idClean = credentials.identifier.trim().toLowerCase();
-      user = this.users.find(
-        (u) =>
-          u.phone.replace(/\D/g, '') === idClean.replace(/\D/g, '') ||
-          u.email?.toLowerCase() === idClean
-      );
+      throw new Error('Credenciais inválidas. Verifique o email/telemóvel ou registe uma nova conta de paciente.');
     }
 
-    if (!user) {
-      // Se não encontrado, utiliza o primeiro paciente como fallback
-      user = this.users[0]!;
+    if (!user.isActive) {
+      throw new Error('Esta conta encontra-se desativada pela administração.');
+    }
+
+    // Validação de palavra-passe
+    if (!credentials.password || credentials.password.trim().length < 4) {
+      throw new Error('A palavra-passe introduzida é inválida.');
     }
 
     user.lastLoginAt = new Date().toISOString();
@@ -79,7 +117,7 @@ class MockAuthService implements IAuthService {
   }
 
   async logout(): Promise<void> {
-    await new Promise((r) => setTimeout(r, 200));
+    await new Promise((r) => setTimeout(r, 150));
     this.currentUser = null;
     this.persistSession(null);
   }
@@ -90,16 +128,30 @@ class MockAuthService implements IAuthService {
   }
 
   async registerPatient(dto: RegisterPatientDto): Promise<{ user: User; token: string }> {
-    await new Promise((r) => setTimeout(r, 500));
+    await new Promise((r) => setTimeout(r, 400));
+
+    const phoneClean = dto.phone.trim();
+    const emailClean = dto.email?.trim().toLowerCase();
+
+    // Impedir duplicados
+    const existing = this.users.find(
+      (u) =>
+        u.phone.replace(/\D/g, '') === phoneClean.replace(/\D/g, '') ||
+        (emailClean && u.email?.toLowerCase().trim() === emailClean)
+    );
+
+    if (existing) {
+      throw new Error('Já existe uma conta registada com este telemóvel ou email.');
+    }
 
     const newUser: User = {
-      id: `user-pat-${Date.now().toString().slice(-4)}`,
+      id: `user-pat-${Date.now().toString().slice(-6)}`,
       hospitalId: 'hosp-001',
       fullName: dto.fullName.trim(),
-      phone: dto.phone.trim(),
-      email: dto.email?.trim(),
-      phoneVerifiedAt: null,
-      emailVerifiedAt: null,
+      phone: phoneClean.startsWith('+') ? phoneClean : `+258 ${phoneClean}`,
+      email: emailClean,
+      phoneVerifiedAt: new Date().toISOString(),
+      emailVerifiedAt: emailClean ? new Date().toISOString() : null,
       isActive: true,
       roles: ['PATIENT'],
       createdAt: new Date().toISOString(),
@@ -107,6 +159,8 @@ class MockAuthService implements IAuthService {
     };
 
     this.users.unshift(newUser);
+    this.persistUsers();
+
     this.currentUser = newUser;
     this.persistSession(newUser);
 
@@ -117,8 +171,7 @@ class MockAuthService implements IAuthService {
   }
 
   async verifyPhone(code: string): Promise<boolean> {
-    await new Promise((r) => setTimeout(r, 400));
-    // Código de demonstração padrão: 123456 ou qualquer código de 6 dígitos
+    await new Promise((r) => setTimeout(r, 300));
     if (code.length === 6 && this.currentUser) {
       this.currentUser.phoneVerifiedAt = new Date().toISOString();
       this.persistSession(this.currentUser);
@@ -128,12 +181,12 @@ class MockAuthService implements IAuthService {
   }
 
   async sendPasswordReset(identifier: string): Promise<boolean> {
-    await new Promise((r) => setTimeout(r, 400));
+    await new Promise((r) => setTimeout(r, 300));
     return Boolean(identifier);
   }
 
   async resetPassword(token: string, newPassword: string): Promise<boolean> {
-    await new Promise((r) => setTimeout(r, 400));
+    await new Promise((r) => setTimeout(r, 300));
     return Boolean(token && newPassword);
   }
 
@@ -141,7 +194,7 @@ class MockAuthService implements IAuthService {
     await Promise.resolve();
     const target = this.users.find((u) => u.roles.includes(role));
     if (!target) {
-      throw new Error(`Utilizador de demonstração com perfil ${role} não encontrado`);
+      throw new Error(`Utilizador com perfil ${role} não encontrado`);
     }
     this.currentUser = target;
     this.persistSession(target);

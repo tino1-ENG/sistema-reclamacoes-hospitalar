@@ -1,4 +1,4 @@
-// HospitalCare — Modelos e Contratos TypeScript
+﻿// HospitalCare — Modelos e Contratos TypeScript
 // Baseado estritamente em HospitalCare_Arquitetura_Tecnica_Base_Dados.md
 
 export type RoleCode = 'PATIENT' | 'STAFF' | 'SUPERVISOR' | 'ADMIN';
@@ -35,6 +35,7 @@ export interface User {
   emailVerifiedAt?: string | null | undefined;
   isActive: boolean;
   roles: RoleCode[];
+  departmentId?: string | undefined;
   departmentIds?: string[] | undefined;
   createdAt: string;
   lastLoginAt?: string | null | undefined;

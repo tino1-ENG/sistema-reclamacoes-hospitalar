@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <q-page class="q-pa-lg max-w-7xl q-mx-auto admin-dashboard-page">
     <!-- Cabeçalho Executivo e Barra de Filtros -->
     <div class="row items-center justify-between q-mb-lg flex-wrap q-gutter-y-md">
@@ -707,7 +707,7 @@ function initCharts() {
 async function refreshAnalytics() {
   loading.value = true;
   try {
-    const data = await dashboardService.getMetrics();
+    const data = await dashboardService.getMetrics('ADMIN');
     if (data) {
       metrics.value = data;
     }

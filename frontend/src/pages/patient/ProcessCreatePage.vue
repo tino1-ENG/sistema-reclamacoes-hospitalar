@@ -64,16 +64,17 @@
 
           <div class="col-12 col-sm-6">
             <label class="text-subtitle2 text-weight-bold text-slate-700 block q-mb-xs">
-              Departamento Relacionado
+              3. Departamento / Serviço Hospitalar *
             </label>
             <q-select
               v-model="selectedDepartmentId"
               :options="departmentOptions"
-              label="Selecione o serviço hospitalar (opcional)"
+              label="Selecione o serviço hospitalar *"
               outlined
               dense
               emit-value
               map-options
+              :rules="[(v) => !!v || 'Indique o departamento para podermos encaminhar a manifestação']"
             />
           </div>
         </div>
@@ -82,7 +83,7 @@
         <div class="row q-col-gutter-md q-mb-md">
           <div class="col-12 col-sm-8">
             <label class="text-subtitle2 text-weight-bold text-slate-700 block q-mb-xs">
-              3. Resumo / Título do Assunto *
+              4. Resumo / Título do Assunto *
             </label>
             <q-input
               v-model="subject"
@@ -109,7 +110,7 @@
         <!-- Descrição Detalhada -->
         <div class="q-mb-md">
           <label class="text-subtitle2 text-weight-bold text-slate-700 block q-mb-xs">
-            4. Descrição Detalhada dos Factos *
+            5. Descrição Detalhada dos Factos *
           </label>
           <div class="text-caption text-slate-500 q-mb-xs">
             Explique o que aconteceu, incluindo horas aproximadas e locais, sem divulgar dados clínicos confidenciais desnecessários.
@@ -128,7 +129,7 @@
         <!-- Anexos de Apoio -->
         <div class="q-mb-lg">
           <label class="text-subtitle2 text-weight-bold text-slate-700 block q-mb-xs">
-            5. Documentos ou Comprovativos (Opcional)
+            6. Documentos ou Comprovativos (Opcional)
           </label>
           <div class="text-caption text-slate-500 q-mb-sm">
             Pode anexar recibos de senha, requisições ou documentos relevantes (PDF, PNG, JPG até 5MB).
@@ -152,10 +153,12 @@
           <q-btn flat color="slate-600" no-caps label="Cancelar" to="/paciente/dashboard" class="col-xs-12 col-sm-auto" />
           <q-btn
             unelevated
-            rounded no-caps class="bg-gradient-primary text-white text-weight-bold q-px-xl col-xs-12 col-sm-auto shadow-2" label="Submeter Processo Oficial"
+            rounded
+            no-caps
+            class="bg-gradient-primary text-white text-weight-bold q-px-xl col-xs-12 col-sm-auto shadow-2"
+            label="Submeter Processo Oficial"
             type="submit"
             :loading="submitting"
-            
           />
         </div>
       </q-form>
@@ -214,6 +217,9 @@ onMounted(async () => {
   if (catsRes.length && catsRes[0]) {
     selectedCategoryId.value = catsRes[0].id;
   }
+  if (deptsRes.length && deptsRes[0]) {
+    selectedDepartmentId.value = deptsRes[0].id;
+  }
 });
 
 function getTypeIcon(code: ProcessTypeCode): string {
@@ -226,13 +232,18 @@ async function handleSubmit() {
     return;
   }
 
+  if (!selectedDepartmentId.value) {
+    $q.notify({ type: 'warning', message: 'Por favor, selecione o departamento hospitalar.' });
+    return;
+  }
+
   submitting.value = true;
   try {
     const newProc = await processService.createProcess(
       {
         processTypeId: selectedTypeId.value,
         categoryId: selectedCategoryId.value,
-        ...(selectedDepartmentId.value ? { departmentId: selectedDepartmentId.value } : {}),
+        departmentId: selectedDepartmentId.value,
         subject: subject.value,
         description: description.value,
         ...(incidentDate.value ? { incidentDate: incidentDate.value } : {}),
@@ -265,5 +276,3 @@ async function handleSubmit() {
 .font-size-11 { font-size: 11px; }
 .border-primary { border-color: #0284c7 !important; border-width: 2px !important; }
 </style>
-
-

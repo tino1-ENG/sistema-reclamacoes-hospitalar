@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <q-page class="q-pa-lg max-w-6xl q-mx-auto">
     <div class="row items-center justify-between q-mb-lg">
       <div>
@@ -147,7 +147,7 @@ onMounted(async () => {
   if (authStore.user) {
     try {
       const [pRes, sRes, prRes] = await Promise.all([
-        processService.getProcesses({ assignedTo: authStore.user.id }),
+        processService.getProcesses({ assignedTo: authStore.user.id, departmentId: authStore.user.departmentId }),
         categoryService.getStatuses(),
         categoryService.getPriorities()
       ]);
