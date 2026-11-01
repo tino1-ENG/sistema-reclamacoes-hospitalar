@@ -155,7 +155,7 @@
             rounded no-caps class="bg-gradient-primary text-white text-weight-bold q-px-xl col-xs-12 col-sm-auto shadow-2" label="Submeter Processo Oficial"
             type="submit"
             :loading="submitting"
-            class="text-weight-bold q-px-lg col-xs-12 col-sm-auto"
+            
           />
         </div>
       </q-form>
@@ -265,4 +265,5 @@ async function handleSubmit() {
 .font-size-11 { font-size: 11px; }
 .border-primary { border-color: #0284c7 !important; border-width: 2px !important; }
 </style>
+
 
