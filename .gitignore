@@ -1,3 +1,22 @@
+# Node & Web
+node_modules/
+*/node_modules/
+dist/
+*/dist/
+.env
+*.env
+backend/.env
+.system_generated/
+
+# Agent / AI local folders
+.agent/
+.agents/
+.claude/
+.codex/
+.gemini/
+.grok/
+.pi/
+
 # Gradle files
 .gradle/
 build/
@@ -17,9 +36,10 @@ captures/
 *.apk
 output-metadata.json
 
-# IntelliJ
+# IntelliJ / Editors
 *.iml
 .idea/
+.vscode/
 misc.xml
 deploymentTargetDropDown.xml
 render.experimental.xml

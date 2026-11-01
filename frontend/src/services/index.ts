@@ -1,6 +1,6 @@
 // HospitalCare — Ponto Central de Acesso a Serviços
-// Suporta modo Híbrido: Conexão REST com Backend MongoDB (em produção/desenvolvimento)
-// com Fallback Automático para Mock em Hospedagem Estática (GitHub Pages, Vercel ou Offline)
+// Suporta arquitetura híbrida resiliente: Conexão REST com Backend MongoDB (na Nuvem ou Local)
+// com Fallback Automático transparente para Mock se o backend estiver inacessível ou em caso de ?mock=true
 
 import { restAuthService } from './api/rest-auth.service';
 import { restProcessService } from './api/rest-process.service';
@@ -20,20 +20,18 @@ import { mockDashboardService } from './mock/mock-dashboard.service';
 import { mockFaqService } from './mock/mock-faq.service';
 import { mockAuditService } from './mock/mock-audit.service';
 
-// Deteta se o ambiente é puramente estático (sem backend próprio como GitHub Pages)
-const isStaticHost =
-  typeof window !== 'undefined' &&
-  (window.location.hostname.includes('github.io') ||
-    window.location.search.includes('mock=true'));
+// Força mock apenas se explicitamente solicitado via query parameter (ex: ?mock=true)
+const forceMock =
+  typeof window !== 'undefined' && window.location.search.includes('mock=true');
 
-export const authService = isStaticHost ? mockAuthService : restAuthService;
-export const processService = isStaticHost ? mockProcessService : restProcessService;
-export const departmentService = isStaticHost ? mockDepartmentService : restDepartmentService;
-export const categoryService = isStaticHost ? mockCategoryService : restCategoryService;
-export const notificationService = isStaticHost ? mockNotificationService : restNotificationService;
-export const dashboardService = isStaticHost ? mockDashboardService : restDashboardService;
-export const faqService = isStaticHost ? mockFaqService : restFaqService;
-export const auditService = isStaticHost ? mockAuditService : restAuditService;
+export const authService = forceMock ? mockAuthService : restAuthService;
+export const processService = forceMock ? mockProcessService : restProcessService;
+export const departmentService = forceMock ? mockDepartmentService : restDepartmentService;
+export const categoryService = forceMock ? mockCategoryService : restCategoryService;
+export const notificationService = forceMock ? mockNotificationService : restNotificationService;
+export const dashboardService = forceMock ? mockDashboardService : restDashboardService;
+export const faqService = forceMock ? mockFaqService : restFaqService;
+export const auditService = forceMock ? mockAuditService : restAuditService;
 
 export * from './contracts';
-export { apiClient } from './api/api-client';
+export { apiClient, API_BASE_URL } from './api/api-client';

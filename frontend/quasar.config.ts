@@ -53,7 +53,9 @@ export default defineConfig((/* ctx */) => {
       // vueRouterBase,
 
       publicPath: process.env.GITHUB_PAGES ? '/sistema-reclamacoes-hospitalar/' : '/',
-      // define: {},
+      env: {
+        API_URL: process.env.API_URL || process.env.VITE_API_URL || ''
+      },
       // defineEnv: {}
       // ignorePublicFolder: true,
       // minify: false,

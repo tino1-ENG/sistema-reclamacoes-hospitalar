@@ -1,10 +1,27 @@
 import axios, { type AxiosInstance, type InternalAxiosRequestConfig } from 'axios';
 import { LocalStorage } from 'quasar';
 
-const API_BASE_URL =
-  (typeof process !== 'undefined' && process.env?.API_URL) ||
-  import.meta.env?.VITE_API_URL ||
-  (typeof window !== 'undefined' && window.location.port !== '9000' ? '/api' : 'http://localhost:5000/api');
+const getBaseUrl = (): string => {
+  if (typeof process !== 'undefined' && process.env?.API_URL) {
+    return process.env.API_URL;
+  }
+  if (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+  if (typeof window !== 'undefined') {
+    const custom = window.localStorage.getItem('hospitalcare_api_url');
+    if (custom) return custom;
+
+    // Se estiver no GitHub Pages, direciona para o backend na nuvem Render
+    if (window.location.hostname.includes('github.io')) {
+      return 'https://hospitalcare-api.onrender.com/api';
+    }
+    return window.location.port !== '9000' ? '/api' : 'http://localhost:5000/api';
+  }
+  return 'http://localhost:5000/api';
+};
+
+export const API_BASE_URL = getBaseUrl();
 
 export const apiClient: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
@@ -50,4 +67,3 @@ apiClient.interceptors.response.use(
     return Promise.reject(new Error(message));
   }
 );
-

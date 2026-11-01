@@ -13,7 +13,7 @@ import {
   SlaPolicy
 } from '../models/index.js';
 
-async function seed() {
+export async function seed(closeConnection = true) {
   await connectDatabase();
   logger.info('🌱 A inicializar sementeira de dados do HospitalCare no MongoDB...');
 
@@ -91,6 +91,7 @@ async function seed() {
   // 4. Utilizadores Demo (Palavra-passe padrão: 123456)
   const passwordHash = await bcrypt.hash('123456', 10);
   const pedDept = deptMap.get('PED');
+  const farDept = deptMap.get('FAR');
 
   const usersDef: Array<{
     fullName: string;
@@ -111,6 +112,13 @@ async function seed() {
       email: 'carlos.mondlane@hcm.gov.mz',
       roles: ['STAFF'],
       departmentId: pedDept?._id as import('mongoose').Types.ObjectId | undefined
+    },
+    {
+      fullName: 'Dra. Fátima Noormahomed',
+      phone: '+258 84 555 7788',
+      email: 'fatima.noormahomed@hcm.gov.mz',
+      roles: ['STAFF'],
+      departmentId: farDept?._id as import('mongoose').Types.ObjectId | undefined
     },
     {
       fullName: 'Enf. Ana Bila',
@@ -274,10 +282,14 @@ async function seed() {
   }
 
   logger.info('🎉 Sementeira concluída com sucesso!');
-  await disconnectDatabase();
+  if (closeConnection) {
+    await disconnectDatabase();
+  }
 }
 
-seed().catch((err) => {
-  logger.error({ err }, 'Erro ao executar seed');
-  process.exit(1);
-});
+if (process.argv[1] && (process.argv[1].includes('seed') || process.argv[1].endsWith('seed.ts') || process.argv[1].endsWith('seed.js'))) {
+  seed(true).catch((err) => {
+    logger.error({ err }, 'Erro ao executar seed');
+    process.exit(1);
+  });
+}
