@@ -6,6 +6,7 @@ import type {
   RegisterPatientDto
 } from '../contracts';
 import type { User, RoleCode } from '../../types';
+import { mockAuthService } from '../mock/mock-auth.service';
 
 interface BackendUser {
   id: string;
@@ -34,20 +35,25 @@ function mapUser(u: BackendUser): User {
 
 export class RestAuthService implements IAuthService {
   async login(credentials: LoginCredentials): Promise<{ user: User; token: string }> {
-    const res = await apiClient.post('/auth/login', {
-      identifier: credentials.identifier,
-      password: credentials.password || '123456',
-      roleHint: credentials.roleHint
-    });
+    try {
+      const res = await apiClient.post('/auth/login', {
+        identifier: credentials.identifier,
+        password: credentials.password || '123456',
+        roleHint: credentials.roleHint
+      });
 
-    const data = res.data.data;
-    const user = mapUser(data.user);
-    const token = data.token;
+      const data = res.data.data;
+      const user = mapUser(data.user);
+      const token = data.token;
 
-    LocalStorage.set('hospitalcare_token', token);
-    LocalStorage.set('hospitalcare_user', user);
+      LocalStorage.set('hospitalcare_token', token);
+      LocalStorage.set('hospitalcare_user', user);
 
-    return { user, token };
+      return { user, token };
+    } catch (err: unknown) {
+      console.warn('Backend REST indisponível, ativando fallback local para login:', err);
+      return mockAuthService.login(credentials);
+    }
   }
 
   logout(): Promise<void> {
@@ -72,21 +78,26 @@ export class RestAuthService implements IAuthService {
   }
 
   async registerPatient(dto: RegisterPatientDto): Promise<{ user: User; token: string }> {
-    const res = await apiClient.post('/auth/register', {
-      fullName: dto.fullName,
-      phone: dto.phone,
-      email: dto.email,
-      password: dto.password || '123456'
-    });
+    try {
+      const res = await apiClient.post('/auth/register', {
+        fullName: dto.fullName,
+        phone: dto.phone,
+        email: dto.email,
+        password: dto.password || '123456'
+      });
 
-    const data = res.data.data;
-    const user = mapUser(data.user);
-    const token = data.token;
+      const data = res.data.data;
+      const user = mapUser(data.user);
+      const token = data.token;
 
-    LocalStorage.set('hospitalcare_token', token);
-    LocalStorage.set('hospitalcare_user', user);
+      LocalStorage.set('hospitalcare_token', token);
+      LocalStorage.set('hospitalcare_user', user);
 
-    return { user, token };
+      return { user, token };
+    } catch (err: unknown) {
+      console.warn('Backend REST indisponível, ativando fallback local para registo:', err);
+      return mockAuthService.registerPatient(dto);
+    }
   }
 
   verifyPhone(code?: string): Promise<boolean> {
@@ -106,18 +117,22 @@ export class RestAuthService implements IAuthService {
   }
 
   async switchDemoRole(role: RoleCode): Promise<User> {
-    let identifier = '+258 84 912 3456';
-    if (role === 'STAFF') identifier = 'carlos.mondlane@hcm.gov.mz';
-    else if (role === 'SUPERVISOR') identifier = 'ana.bila@hcm.gov.mz';
-    else if (role === 'ADMIN') identifier = 'rui.nhantumbo@hcm.gov.mz';
+    try {
+      let identifier = '+258 84 912 3456';
+      if (role === 'STAFF') identifier = 'carlos.mondlane@hcm.gov.mz';
+      else if (role === 'SUPERVISOR') identifier = 'ana.bila@hcm.gov.mz';
+      else if (role === 'ADMIN') identifier = 'rui.nhantumbo@hcm.gov.mz';
 
-    const { user } = await this.login({
-      identifier,
-      password: '123456',
-      roleHint: role
-    });
+      const { user } = await this.login({
+        identifier,
+        password: '123456',
+        roleHint: role
+      });
 
-    return user;
+      return user;
+    } catch {
+      return mockAuthService.switchDemoRole(role);
+    }
   }
 }
 
