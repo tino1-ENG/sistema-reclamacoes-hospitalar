@@ -48,15 +48,20 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      // Sessão expirada
-      LocalStorage.remove('hospitalcare_token');
-      LocalStorage.remove('hospitalcare_user');
-      if (typeof window !== 'undefined') {
-        const hash = window.location.hash || '';
-        if (!hash.includes('/entrar')) {
-          // Redirecionamento que respeita modo hash e nunca perde o prefixo do repositório no GitHub Pages
-          window.location.hash = '#/entrar';
+    const url = error.config?.url || '';
+    const isAuthRequest = url.includes('/auth/login') || url.includes('/auth/register');
+
+    if (error.response?.status === 401 && !isAuthRequest) {
+      const hadToken = LocalStorage.getItem<string>('hospitalcare_token');
+      // Só desloga se havia um token JWT real emitido que agora foi rejeitado
+      if (hadToken && !hadToken.startsWith('mock-')) {
+        LocalStorage.remove('hospitalcare_token');
+        LocalStorage.remove('hospitalcare_user');
+        if (typeof window !== 'undefined') {
+          const hash = window.location.hash || '';
+          if (!hash.includes('/entrar')) {
+            window.location.hash = '#/entrar';
+          }
         }
       }
     }

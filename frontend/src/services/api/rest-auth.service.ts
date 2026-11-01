@@ -51,8 +51,11 @@ export class RestAuthService implements IAuthService {
 
       return { user, token };
     } catch (err: unknown) {
-      console.warn('Backend REST indisponível, ativando fallback local para login:', err);
-      return mockAuthService.login(credentials);
+      console.warn('Tentativa com backend principal falhou, a verificar fallback:', err);
+      const mockResult = await mockAuthService.login(credentials);
+      LocalStorage.set('hospitalcare_token', mockResult.token);
+      LocalStorage.set('hospitalcare_user', mockResult.user);
+      return mockResult;
     }
   }
 
@@ -83,7 +86,7 @@ export class RestAuthService implements IAuthService {
         fullName: dto.fullName,
         phone: dto.phone,
         email: dto.email,
-        password: dto.password || '123456'
+        password: dto.password
       });
 
       const data = res.data.data;
@@ -95,44 +98,24 @@ export class RestAuthService implements IAuthService {
 
       return { user, token };
     } catch (err: unknown) {
-      console.warn('Backend REST indisponível, ativando fallback local para registo:', err);
-      return mockAuthService.registerPatient(dto);
+      console.warn('Backend REST indisponível para registo, a usar mock:', err);
+      const mockResult = await mockAuthService.registerPatient(dto);
+      LocalStorage.set('hospitalcare_token', mockResult.token);
+      LocalStorage.set('hospitalcare_user', mockResult.user);
+      return mockResult;
     }
   }
 
-  verifyPhone(code?: string): Promise<boolean> {
-    void code;
-    return Promise.resolve(true);
+  verifyPhone(code: string): Promise<boolean> {
+    return mockAuthService.verifyPhone(code);
   }
 
-  sendPasswordReset(identifier?: string): Promise<boolean> {
-    void identifier;
-    return Promise.resolve(true);
+  requestPasswordReset(identifier: string): Promise<void> {
+    return mockAuthService.requestPasswordReset(identifier);
   }
 
-  resetPassword(token?: string, newPassword?: string): Promise<boolean> {
-    void token;
-    void newPassword;
-    return Promise.resolve(true);
-  }
-
-  async switchDemoRole(role: RoleCode): Promise<User> {
-    try {
-      let identifier = '+258 84 912 3456';
-      if (role === 'STAFF') identifier = 'carlos.mondlane@hcm.gov.mz';
-      else if (role === 'SUPERVISOR') identifier = 'ana.bila@hcm.gov.mz';
-      else if (role === 'ADMIN') identifier = 'rui.nhantumbo@hcm.gov.mz';
-
-      const { user } = await this.login({
-        identifier,
-        password: '123456',
-        roleHint: role
-      });
-
-      return user;
-    } catch {
-      return mockAuthService.switchDemoRole(role);
-    }
+  resetPassword(): Promise<void> {
+    return Promise.resolve();
   }
 }
 
