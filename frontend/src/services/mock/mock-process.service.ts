@@ -141,7 +141,29 @@ class MockProcessService implements IProcessService {
   async createProcess(dto: CreateProcessDto, authorId: string): Promise<Process> {
     await new Promise((r) => setTimeout(r, 400));
 
-    const author = mockUsers.find((u) => u.id === authorId) ?? mockUsers[0]!;
+    let author = mockUsers.find((u) => u.id === authorId);
+    if (!author && typeof localStorage !== 'undefined') {
+      try {
+        const stored = localStorage.getItem('hospitalcare_mock_current_user');
+        if (stored) {
+          const curr = JSON.parse(stored);
+          if (curr && (curr.id === authorId || !authorId)) author = curr;
+        }
+      } catch {
+        // ignore
+      }
+    }
+    if (!author) {
+      author = {
+        id: authorId || 'user-pat-001',
+        fullName: 'Utente Hospitalar',
+        phone: '+258 84 912 3456',
+        hospitalId: 'hosp-001',
+        isActive: true,
+        roles: ['PATIENT'],
+        createdAt: new Date().toISOString()
+      };
+    }
     const type = mockProcessTypes.find((t) => t.id === dto.processTypeId) ?? mockProcessTypes[0]!;
     const category = mockCategories.find((c) => c.id === dto.categoryId);
     const department = dto.departmentId
@@ -323,7 +345,29 @@ class MockProcessService implements IProcessService {
     const proc = this.processes.find((p) => p.id === processId);
     if (!proc) throw new Error('Processo não encontrado');
 
-    const author = mockUsers.find((u) => u.id === authorId) ?? mockUsers[0]!;
+    let author = mockUsers.find((u) => u.id === authorId);
+    if (!author && typeof localStorage !== 'undefined') {
+      try {
+        const stored = localStorage.getItem('hospitalcare_mock_current_user');
+        if (stored) {
+          const curr = JSON.parse(stored);
+          if (curr && (curr.id === authorId || !authorId)) author = curr;
+        }
+      } catch {
+        // ignore
+      }
+    }
+    if (!author) {
+      author = {
+        id: authorId || 'user-pat-001',
+        fullName: 'Utente Hospitalar',
+        phone: '+258 84 912 3456',
+        hospitalId: 'hosp-001',
+        isActive: true,
+        roles: ['PATIENT'],
+        createdAt: new Date().toISOString()
+      };
+    }
     const isPatient = author.roles.includes('PATIENT');
 
     const newMsg: ProcessMessage = {

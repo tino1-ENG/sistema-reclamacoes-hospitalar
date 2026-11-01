@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <q-layout view="lHh Lpr lff">
     <!-- Cabeçalho Administrativo com Efeito Vidro Translúcido -->
     <q-header elevated class="hc-glass text-slate-700">
@@ -49,6 +49,19 @@
       </div>
 
       <q-list class="q-pt-sm q-px-sm">
+        <q-item
+          clickable
+          v-ripple
+          to="/admin/processos"
+          active-class="text-primary bg-blue-1 text-weight-bold rounded-borders"
+          class="rounded-borders q-mb-xs"
+        >
+          <q-item-section avatar>
+            <q-icon name="assignment" />
+          </q-item-section>
+          <q-item-section>Processos e Reclamações</q-item-section>
+        </q-item>
+
         <q-item
           clickable
           v-ripple

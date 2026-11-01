@@ -1,4 +1,4 @@
-// HospitalCare — Definição de Rotas e Áreas Funcionais
+﻿// HospitalCare — Definição de Rotas e Áreas Funcionais
 
 import type { RouteRecordRaw } from 'vue-router';
 
@@ -79,6 +79,7 @@ const routes: RouteRecordRaw[] = [
     children: [
       { path: '', redirect: '/admin/dashboard' },
       { path: 'dashboard', component: () => import('../pages/admin/AdminDashboardPage.vue') },
+      { path: 'processos', component: () => import('../pages/admin/AdminDashboardPage.vue') },
       { path: 'utilizadores', component: () => import('../pages/admin/AdminUsersPage.vue') },
       { path: 'departamentos', component: () => import('../pages/admin/AdminDepartmentsPage.vue') },
       { path: 'categorias', component: () => import('../pages/admin/AdminCategoriesPage.vue') },

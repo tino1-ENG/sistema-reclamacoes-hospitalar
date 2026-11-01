@@ -321,13 +321,174 @@
         </q-card>
       </div>
     </div>
+
+    <!-- Fila Geral de Processos e Reclamações Submetidas em Tempo Real -->
+    <q-card id="fila-processos" class="hc-card q-mt-xl">
+      <q-card-section class="row items-center justify-between q-pb-none">
+        <div>
+          <div class="row items-center q-gutter-x-sm">
+            <q-avatar size="38px" color="blue-1" text-color="primary">
+              <q-icon name="assignment" size="22px" />
+            </q-avatar>
+            <div class="text-h6 text-weight-bolder text-slate-800">
+              Fila Central de Reclamações e Manifestações Hospitalares
+            </div>
+          </div>
+          <div class="text-caption text-slate-500 q-mt-xs">
+            Acompanhamento ao vivo de todas as manifestações registadas por cidadãos e utentes em todos os departamentos.
+          </div>
+        </div>
+
+        <div class="row items-center q-gutter-sm">
+          <q-btn
+            outline
+            dense
+            no-caps
+            color="primary"
+            icon="refresh"
+            label="Atualizar Lista"
+            @click="loadAllProcesses"
+            :loading="loadingProcesses"
+          />
+        </div>
+      </q-card-section>
+
+      <!-- Barra de Filtros e Pesquisa -->
+      <q-card-section class="q-py-md">
+        <div class="row q-col-gutter-sm items-center">
+          <div class="col-12 col-md-5">
+            <q-input
+              v-model="processSearch"
+              dense
+              outlined
+              placeholder="Pesquisar por utente, código (#HC-...) ou assunto..."
+              clearable
+            >
+              <template #prepend>
+                <q-icon name="search" color="primary" />
+              </template>
+            </q-input>
+          </div>
+
+          <div class="col-12 col-sm-6 col-md-4">
+            <q-select
+              v-model="selectedDepartmentFilter"
+              :options="departmentFilterOptions"
+              dense
+              outlined
+              emit-value
+              map-options
+              label="Filtrar por Departamento"
+            />
+          </div>
+
+          <div class="col-12 col-sm-6 col-md-3">
+            <q-select
+              v-model="selectedStatusFilter"
+              :options="statusFilterOptions"
+              dense
+              outlined
+              emit-value
+              map-options
+              label="Filtrar por Estado"
+            />
+          </div>
+        </div>
+      </q-card-section>
+
+      <q-separator />
+
+      <!-- Tabela Operacional de Processos -->
+      <q-card-section class="q-pa-none">
+        <q-table
+          :rows="filteredProcesses"
+          :columns="processColumns"
+          row-key="id"
+          flat
+          :loading="loadingProcesses"
+          :pagination="{ rowsPerPage: 10 }"
+          no-data-label="Nenhuma reclamação ou processo registado no departamento selecionado."
+        >
+          <template #body-cell-referenceCode="props">
+            <q-td :props="props">
+              <span class="text-weight-bolder text-primary text-body2">
+                {{ props.row.referenceCode }}
+              </span>
+            </q-td>
+          </template>
+
+          <template #body-cell-patient="props">
+            <q-td :props="props">
+              <div class="text-weight-bold text-slate-800">{{ props.row.patientName || 'Utente' }}</div>
+              <div class="text-caption text-slate-500">{{ props.row.patientPhone }}</div>
+            </q-td>
+          </template>
+
+          <template #body-cell-department="props">
+            <q-td :props="props">
+              <q-badge
+                :color="props.row.department?.name?.includes('Farmácia') ? 'teal-8' : props.row.department?.name?.includes('Pediatria') ? 'blue-8' : 'slate-7'"
+                class="q-pa-xs text-weight-bold"
+              >
+                <q-icon :name="props.row.department?.name?.includes('Farmácia') ? 'medication' : 'corporate_fare'" size="13px" class="q-mr-xs" />
+                {{ props.row.department?.name || 'Geral' }}
+              </q-badge>
+            </q-td>
+          </template>
+
+          <template #body-cell-subject="props">
+            <q-td :props="props">
+              <div class="text-weight-bold text-slate-800 text-ellipsis" style="max-width: 280px">
+                {{ props.row.subject }}
+              </div>
+              <div class="text-caption text-slate-500 text-ellipsis" style="max-width: 280px">
+                {{ props.row.description }}
+              </div>
+            </q-td>
+          </template>
+
+          <template #body-cell-status="props">
+            <q-td :props="props">
+              <ProcessStatusBadge :status="props.row.status?.code || 'SUBMITTED'" />
+            </q-td>
+          </template>
+
+          <template #body-cell-createdAt="props">
+            <q-td :props="props">
+              <div class="text-caption text-slate-600">
+                {{ formatDateTime(props.row.createdAt) }}
+              </div>
+            </q-td>
+          </template>
+
+          <template #body-cell-actions="props">
+            <q-td :props="props" align="right">
+              <q-btn
+                unelevated
+                dense
+                size="sm"
+                color="primary"
+                icon="open_in_new"
+                label="Ver Detalhes"
+                no-caps
+                class="text-weight-bold"
+                :to="`/funcionario/processos/${props.row.id}`"
+              />
+            </q-td>
+          </template>
+        </q-table>
+      </q-card-section>
+    </q-card>
   </q-page>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import { useQuasar } from 'quasar';
-import { dashboardService } from '../../services';
+import { dashboardService, processService, departmentService } from '../../services';
+import type { Process, Department } from '../../types';
+import { formatDateTime } from '../../utils/formatters';
+import ProcessStatusBadge from '../../components/common/ProcessStatusBadge.vue';
 import type { DashboardMetrics } from '../../types';
 import {
   Chart,
@@ -728,8 +889,80 @@ function exportSummary() {
   });
 }
 
+// Gestão da Fila Central de Processos
+const allProcesses = ref<Process[]>([]);
+const allDepartments = ref<Department[]>([]);
+const loadingProcesses = ref(false);
+const processSearch = ref('');
+const selectedDepartmentFilter = ref<string>('ALL');
+const selectedStatusFilter = ref<string | number>('ALL');
+
+const processColumns = [
+  { name: 'referenceCode', label: 'Código', field: 'referenceCode', align: 'left' as const, sortable: true },
+  { name: 'patient', label: 'Utente / Contacto', field: 'patientName', align: 'left' as const },
+  { name: 'department', label: 'Departamento Afeto', field: (row: Process) => row.department?.name, align: 'left' as const, sortable: true },
+  { name: 'subject', label: 'Assunto / Reclamação', field: 'subject', align: 'left' as const },
+  { name: 'status', label: 'Estado', field: (row: Process) => row.status?.name, align: 'center' as const, sortable: true },
+  { name: 'createdAt', label: 'Data de Submissão', field: 'createdAt', align: 'left' as const, sortable: true },
+  { name: 'actions', label: 'Ações', field: 'id', align: 'right' as const }
+];
+
+const departmentFilterOptions = computed(() => [
+  { label: 'Todos os Departamentos', value: 'ALL' },
+  ...allDepartments.value.map((d) => ({ label: d.name, value: d.id }))
+]);
+
+const statusFilterOptions = [
+  { label: 'Todos os Estados', value: 'ALL' },
+  { label: 'Submetido (Novo)', value: 1 },
+  { label: 'Em Análise / Triagem', value: 4 },
+  { label: 'Respondido', value: 7 },
+  { label: 'Concluído', value: 8 }
+];
+
+const filteredProcesses = computed(() => {
+  return allProcesses.value.filter((p) => {
+    // Filtro por departamento
+    if (selectedDepartmentFilter.value !== 'ALL' && p.departmentId !== selectedDepartmentFilter.value) {
+      return false;
+    }
+    // Filtro por estado
+    if (selectedStatusFilter.value !== 'ALL' && p.statusId !== Number(selectedStatusFilter.value)) {
+      return false;
+    }
+    // Filtro por texto
+    if (processSearch.value.trim()) {
+      const q = processSearch.value.toLowerCase().trim();
+      const code = (p.referenceCode || '').toLowerCase();
+      const name = (p.patientName || '').toLowerCase();
+      const subj = (p.subject || '').toLowerCase();
+      const desc = (p.description || '').toLowerCase();
+      if (!code.includes(q) && !name.includes(q) && !subj.includes(q) && !desc.includes(q)) {
+        return false;
+      }
+    }
+    return true;
+  });
+});
+
+async function loadAllProcesses() {
+  loadingProcesses.value = true;
+  try {
+    const [procs, depts] = await Promise.all([
+      processService.getProcesses(),
+      departmentService.getDepartments()
+    ]);
+    allProcesses.value = procs;
+    allDepartments.value = depts;
+  } catch (err) {
+    console.error('Falha ao carregar fila geral de processos:', err);
+  } finally {
+    loadingProcesses.value = false;
+  }
+}
+
 onMounted(async () => {
-  await refreshAnalytics();
+  await Promise.all([refreshAnalytics(), loadAllProcesses()]);
 });
 
 onBeforeUnmount(() => {

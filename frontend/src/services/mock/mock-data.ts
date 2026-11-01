@@ -1,4 +1,4 @@
-// HospitalCare — Dados Simulados e de Demonstração
+﻿// HospitalCare — Dados Simulados e de Demonstração
 // Localização: Moçambique (Hospital Central Piloto de Maputo)
 
 import type {
@@ -57,7 +57,38 @@ export const mockUsers: User[] = [
     emailVerifiedAt: '2026-01-05T08:00:00Z',
     isActive: true,
     roles: ['STAFF'],
-    departmentIds: ['dep-001', 'dep-002'],
+    departmentId: 'dep-002',
+    departmentIds: ['dep-002'],
+    createdAt: '2026-01-05T08:00:00Z',
+    lastLoginAt: '2026-10-14T20:15:00Z'
+  },
+  {
+    id: 'user-stf-002',
+    hospitalId: 'hosp-001',
+    fullName: 'Dra. Fátima Noormahomed (Farmácia)',
+    phone: '+258 84 333 4455',
+    email: 'fatima.noormahomed@hcm.gov.mz',
+    phoneVerifiedAt: '2026-01-05T08:00:00Z',
+    emailVerifiedAt: '2026-01-05T08:00:00Z',
+    isActive: true,
+    roles: ['STAFF'],
+    departmentId: 'dep-002',
+    departmentIds: ['dep-002'],
+    createdAt: '2026-01-05T08:00:00Z',
+    lastLoginAt: '2026-10-14T20:15:00Z'
+  },
+  {
+    id: 'user-stf-003',
+    hospitalId: 'hosp-001',
+    fullName: 'Dr. Carlos Mondlane',
+    phone: '+258 84 555 6677',
+    email: 'carlos.mondlane@hcm.gov.mz',
+    phoneVerifiedAt: '2026-01-05T08:00:00Z',
+    emailVerifiedAt: '2026-01-05T08:00:00Z',
+    isActive: true,
+    roles: ['STAFF'],
+    departmentId: 'dep-001',
+    departmentIds: ['dep-001'],
     createdAt: '2026-01-05T08:00:00Z',
     lastLoginAt: '2026-10-14T20:15:00Z'
   },
@@ -78,8 +109,21 @@ export const mockUsers: User[] = [
   {
     id: 'user-adm-001',
     hospitalId: 'hosp-001',
-    fullName: 'Eng. Rui Chissano',
+    fullName: 'Eng. Rui Nhantumbo (Administrador)',
     phone: '+258 86 111 2233',
+    email: 'rui.nhantumbo@hcm.gov.mz',
+    phoneVerifiedAt: '2026-01-01T08:00:00Z',
+    emailVerifiedAt: '2026-01-01T08:00:00Z',
+    isActive: true,
+    roles: ['ADMIN'],
+    createdAt: '2026-01-01T08:00:00Z',
+    lastLoginAt: '2026-10-14T21:30:00Z'
+  },
+  {
+    id: 'user-adm-002',
+    hospitalId: 'hosp-001',
+    fullName: 'Eng. Rui Chissano',
+    phone: '+258 86 999 8877',
     email: 'rui.chissano@hospitalcare.gov.mz',
     phoneVerifiedAt: '2026-01-01T08:00:00Z',
     emailVerifiedAt: '2026-01-01T08:00:00Z',

@@ -170,9 +170,10 @@ const resolvedCount = computed(
 onMounted(async () => {
   if (authStore.user) {
     try {
+      const userDeptId = authStore.user.departmentId || (authStore.user.departmentIds && authStore.user.departmentIds[0]);
       assignedProcesses.value = await processService.getProcesses({
         assignedTo: authStore.user.id,
-        departmentId: authStore.user.departmentId
+        departmentId: userDeptId
       });
     } finally {
       loading.value = false;

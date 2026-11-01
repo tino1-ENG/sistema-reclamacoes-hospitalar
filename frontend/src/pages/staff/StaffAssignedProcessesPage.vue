@@ -147,7 +147,7 @@ onMounted(async () => {
   if (authStore.user) {
     try {
       const [pRes, sRes, prRes] = await Promise.all([
-        processService.getProcesses({ assignedTo: authStore.user.id, departmentId: authStore.user.departmentId }),
+        processService.getProcesses({ assignedTo: authStore.user.id, departmentId: authStore.user.departmentId || (authStore.user.departmentIds && authStore.user.departmentIds[0]) }),
         categoryService.getStatuses(),
         categoryService.getPriorities()
       ]);
