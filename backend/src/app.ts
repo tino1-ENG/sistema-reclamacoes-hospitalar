@@ -56,6 +56,7 @@ app.use('/api', routes);
 
 // Servir o Frontend SPA compilado (Produção Ultra-Rápida para Celulares e Túneis)
 if (fs.existsSync(frontendDistPath)) {
+  app.use('/sistema-reclamacoes-hospitalar', express.static(frontendDistPath));
   app.use(express.static(frontendDistPath));
   app.get('*', (req, res, next) => {
     if (req.path.startsWith('/api') || req.path.startsWith('/health')) {
