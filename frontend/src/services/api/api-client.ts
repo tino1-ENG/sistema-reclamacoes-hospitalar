@@ -66,11 +66,27 @@ apiClient.interceptors.response.use(
       }
     }
 
-    const message =
-      error.response?.data?.message ||
-      error.response?.data?.error ||
-      error.message ||
-      'Erro de comunicação com o servidor hospitalar.';
+    const data = error.response?.data;
+    let message = data?.message || data?.error;
+
+    if (data?.errors && Array.isArray(data.errors) && data.errors.length > 0) {
+      const details = data.errors
+        .map((e: { field?: string; message?: string }) => e.message || `${e.field}: inválido`)
+        .filter(Boolean)
+        .join('; ');
+
+      if (details) {
+        if (!message || message === 'Erro de validação dos dados submetidos.') {
+          message = `Erro de validação: ${details}`;
+        } else {
+          message = `${message} (${details})`;
+        }
+      }
+    }
+
+    if (!message) {
+      message = error.message || 'Erro de comunicação com o servidor hospitalar.';
+    }
 
     return Promise.reject(new Error(message));
   }

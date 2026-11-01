@@ -90,7 +90,7 @@
               placeholder="Ex.: Demora no atendimento pediátrico no dia 12"
               outlined
               dense
-              :rules="[(v) => (v && v.length >= 5) || 'Indique um título com pelo menos 5 caracteres']"
+              :rules="[(v) => (v && v.trim().length >= 2) || 'Indique um título com pelo menos 2 caracteres']"
             />
           </div>
 
@@ -122,7 +122,7 @@
             placeholder="Descreva a sua experiência ou o esclarecimento necessário com clareza..."
             outlined
             dense
-            :rules="[(v) => (v && v.length >= 20) || 'Por favor, detalhe com pelo menos 20 caracteres']"
+            :rules="[(v) => (v && v.trim().length >= 5) || 'Por favor, detalhe com pelo menos 5 caracteres']"
           />
         </div>
 
@@ -229,6 +229,11 @@ function getTypeIcon(code: ProcessTypeCode): string {
 async function handleSubmit() {
   if (!authStore.user) {
     $q.notify({ type: 'warning', message: 'Inicie sessão para submeter o processo.' });
+    return;
+  }
+
+  if (!selectedCategoryId.value) {
+    $q.notify({ type: 'warning', message: 'Por favor, selecione a categoria do assunto.' });
     return;
   }
 

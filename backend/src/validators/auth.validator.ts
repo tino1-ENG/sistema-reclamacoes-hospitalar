@@ -10,9 +10,9 @@ export const loginSchema = z.object({
 
 export const registerPatientSchema = z.object({
   body: z.object({
-    fullName: z.string().min(3, 'O nome completo deve ter pelo menos 3 caracteres'),
-    phone: z.string().min(9, 'O número de telefone deve ser válido em Moçambique'),
-    email: z.string().email('Email inválido').optional().or(z.literal('')),
-    password: z.string().min(6, 'A palavra-passe/PIN deve ter pelo menos 6 caracteres')
+    fullName: z.string().min(2, 'O nome completo deve ter pelo menos 2 caracteres'),
+    phone: z.string().min(6, 'O número de telefone deve ser válido'),
+    email: z.string().email('Email inválido').optional().or(z.literal('')).nullish(),
+    password: z.string().min(4, 'A palavra-passe/PIN deve ter pelo menos 4 caracteres')
   })
 });

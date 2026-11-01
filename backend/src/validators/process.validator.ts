@@ -2,24 +2,24 @@ import { z } from 'zod';
 
 export const createProcessSchema = z.object({
   body: z.object({
-    title: z.string().min(5, 'O assunto deve ter pelo menos 5 caracteres'),
-    description: z.string().min(15, 'A descrição detalhada deve ter pelo menos 15 caracteres'),
+    title: z.string().min(2, 'O assunto deve ter pelo menos 2 caracteres'),
+    description: z.string().min(5, 'A descrição detalhada deve ter pelo menos 5 caracteres'),
     type: z.enum(['COMPLAINT', 'CLARIFICATION', 'SUGGESTION']),
     departmentId: z.string().min(1, 'Selecione o departamento'),
     categoryId: z.string().min(1, 'Selecione a categoria'),
-    incidentDate: z.string().optional(),
-    incidentLocation: z.string().optional(),
-    isAnonymous: z.boolean().default(false),
-    patientName: z.string().optional(),
-    patientPhone: z.string().optional(),
-    patientEmail: z.string().optional()
+    incidentDate: z.string().optional().or(z.literal('')).nullish(),
+    incidentLocation: z.string().optional().or(z.literal('')).nullish(),
+    isAnonymous: z.boolean().default(false).optional(),
+    patientName: z.string().optional().or(z.literal('')).nullish(),
+    patientPhone: z.string().optional().or(z.literal('')).nullish(),
+    patientEmail: z.string().optional().or(z.literal('')).nullish()
   })
 });
 
 export const lookupProcessSchema = z.object({
   body: z.object({
     referenceNumber: z.string().min(1, 'Introduza o código de referência do processo'),
-    pin: z.string().min(4, 'Introduza o PIN de 4 a 6 dígitos')
+    pin: z.string().min(1, 'Introduza o PIN de 4 a 6 dígitos')
   })
 });
 
@@ -36,27 +36,27 @@ export const updateStatusSchema = z.object({
       'CLOSED',
       'REOPENED'
     ]),
-    reason: z.string().min(3, 'Indique a fundamentação da mudança de estado')
+    reason: z.string().optional().default('Atualização de estado no sistema')
   })
 });
 
 export const reassignSchema = z.object({
   body: z.object({
     staffId: z.string().min(1, 'Selecione o funcionário a quem atribuir o processo'),
-    reason: z.string().min(3, 'Indique o motivo da reatribuição operacional')
+    reason: z.string().optional().default('Atribuição operacional')
   })
 });
 
 export const addMessageSchema = z.object({
   body: z.object({
     body: z.string().min(1, 'A mensagem não pode estar vazia'),
-    isInternal: z.boolean().default(false)
+    isInternal: z.boolean().default(false).optional()
   })
 });
 
 export const submitFeedbackSchema = z.object({
   body: z.object({
     rating: z.number().min(1).max(5),
-    comment: z.string().optional()
+    comment: z.string().optional().or(z.literal('')).nullish()
   })
 });

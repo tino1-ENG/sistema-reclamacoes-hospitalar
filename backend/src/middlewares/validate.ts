@@ -15,13 +15,16 @@ export function validate(schema: AnyZodObject) {
       next();
     } catch (error) {
       if (error instanceof ZodError) {
+        const errorDetails = error.errors.map((e) => ({
+          field: e.path.join('.').replace(/^(body|query|params)\./, ''),
+          message: e.message
+        }));
+        const summary = errorDetails.map((e) => e.message).join('; ');
+
         res.status(400).json({
           success: false,
-          message: 'Erro de validação dos dados submetidos.',
-          errors: error.errors.map((e) => ({
-            field: e.path.join('.').replace(/^(body|query|params)\./, ''),
-            message: e.message
-          }))
+          message: summary ? `Erro de validação: ${summary}` : 'Erro de validação dos dados submetidos.',
+          errors: errorDetails
         });
         return;
       }
