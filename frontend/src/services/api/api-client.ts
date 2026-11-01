@@ -4,7 +4,7 @@ import { LocalStorage } from 'quasar';
 const API_BASE_URL =
   (typeof process !== 'undefined' && process.env?.API_URL) ||
   import.meta.env?.VITE_API_URL ||
-  'http://localhost:5000/api';
+  (typeof window !== 'undefined' && window.location.port !== '9000' ? '/api' : 'http://localhost:5000/api');
 
 export const apiClient: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
@@ -50,3 +50,4 @@ apiClient.interceptors.response.use(
     return Promise.reject(new Error(message));
   }
 );
+

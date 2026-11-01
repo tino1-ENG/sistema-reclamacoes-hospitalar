@@ -49,10 +49,10 @@ export default defineConfig((/* ctx */) => {
       // https://v2.quasar.dev/quasar-cli-vite/page-routing-with-vue-router#filename-based-routing
       // filenameBasedRouting: true,
 
-      vueRouterMode: 'history', // available values: 'hash', 'history'
+      vueRouterMode: process.env.GITHUB_PAGES ? 'hash' : 'history',
       // vueRouterBase,
 
-      // publicPath: '/',
+      publicPath: process.env.GITHUB_PAGES ? '/sistema-reclamacoes-hospitalar/' : '/',
       // define: {},
       // defineEnv: {}
       // ignorePublicFolder: true,
@@ -251,6 +251,7 @@ export default defineConfig((/* ctx */) => {
     }
   }
 });
+
 
 
 
