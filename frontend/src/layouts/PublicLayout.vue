@@ -51,10 +51,37 @@
           </router-link>
         </div>
 
-        <div class="q-ml-md row items-center q-gutter-x-sm">
+        <div class="row items-center q-gutter-x-xs no-wrap">
           <template v-if="!authStore.isAuthenticated">
-            <q-btn flat rounded no-caps color="primary" label="Entrar" to="/entrar" class="text-weight-bold" />
-            <q-btn unelevated rounded no-caps class="bg-gradient-primary text-white text-weight-bold q-px-md shadow-2" label="Registar Paciente" to="/registar" />
+            <q-btn
+              flat
+              dense
+              no-caps
+              color="primary"
+              label="Entrar"
+              to="/entrar"
+              class="text-weight-bold text-caption q-px-sm"
+            />
+            <!-- No telemóvel: Botão elegante e compacto "Registar", sem esticar nem quebrar linhas -->
+            <q-btn
+              unelevated
+              rounded
+              dense
+              no-caps
+              class="bg-gradient-primary text-white text-weight-bold text-caption q-px-sm lt-sm shadow-1"
+              style="white-space: nowrap; height: 32px;"
+              label="Registar"
+              to="/registar"
+            />
+            <!-- No ecrã maior (tablet/desktop): Texto completo -->
+            <q-btn
+              unelevated
+              rounded
+              no-caps
+              class="bg-gradient-primary text-white text-weight-bold q-px-md gt-xs shadow-2"
+              label="Registar Paciente"
+              to="/registar"
+            />
           </template>
           <template v-else>
             <UserMenu />
@@ -67,7 +94,8 @@
           dense
           round
           icon="menu"
-          class="lt-md q-ml-sm"
+          color="slate-700"
+          class="lt-md q-ml-xs"
           @click="mobileDrawerOpen = !mobileDrawerOpen"
         />
       </q-toolbar>
@@ -113,7 +141,7 @@
         no-caps
         active-color="primary"
         indicator-color="primary"
-        class="text-grey-7"
+        class="text-grey-7 bg-white shadow-2"
         align="justify"
       >
         <q-route-tab to="/" icon="home" label="Início" />

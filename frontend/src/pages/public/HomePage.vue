@@ -916,22 +916,74 @@ onUnmounted(() => {
 
 @media (max-width: 599px) {
   .hero-section {
-    min-height: 520px;
+    min-height: auto !important;
+    padding-bottom: 2rem !important;
+  }
+
+  .hero-content-wrapper {
+    padding-top: 1.25rem !important;
+    padding-bottom: 1.5rem !important;
+  }
+
+  .hero-official-badge {
+    font-size: 10.5px !important;
+    padding: 3px 8px !important;
+    margin-bottom: 0.75rem !important;
   }
 
   .hero-title {
-    font-size: 1.85rem !important;
+    font-size: 1.55rem !important;
+    line-height: 1.22 !important;
+    margin-bottom: 0.65rem !important;
+  }
+
+  .hero-subtitle {
+    font-size: 0.88rem !important;
+    line-height: 1.45 !important;
+    margin-bottom: 1.25rem !important;
+    color: #cbd5e1 !important;
   }
 
   .hero-actions {
     flex-direction: column;
     align-items: stretch !important;
-    gap: 12px;
-    margin-bottom: 2rem !important;
+    gap: 10px !important;
+    margin-bottom: 1.5rem !important;
 
     .q-btn {
-      width: 100%;
+      width: 100% !important;
+      min-height: 44px !important;
+      font-size: 0.95rem !important;
     }
+  }
+
+  /* Ajuste no telemóvel: imagem de fundo com escala e presença normais, sem ofuscar o ecrã */
+  .hero-bg-slide {
+    background-size: cover !important;
+    background-position: center 25% !important;
+    opacity: 0 !important;
+    transform: none !important;
+  }
+
+  .hero-bg-slide.is-active {
+    opacity: 0.22 !important;
+  }
+
+  .hero-overlay-mask {
+    background: linear-gradient(
+      180deg,
+      rgba(12, 35, 64, 0.92) 0%,
+      rgba(15, 42, 74, 0.88) 50%,
+      rgba(12, 35, 64, 0.97) 100%
+    ) !important;
+  }
+
+  .hero-features {
+    margin-top: 0.5rem !important;
+  }
+
+  .hero-slide-controls {
+    margin-top: 1rem !important;
   }
 }
 
