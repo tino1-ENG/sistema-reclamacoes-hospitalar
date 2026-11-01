@@ -29,7 +29,7 @@ jobs:
         working-directory: ./frontend
         env:
           GITHUB_PAGES: 'true'
-          API_URL: ${{ vars.API_URL || secrets.API_URL || 'https://hospitalcare-api.onrender.com/api' }}
+          API_URL: https://sistema-reclamacoes-hospitalar-2.onrender.com/api
         run: npx quasar build
 
       - name: Copy 404.html and .nojekyll

@@ -1,12 +1,15 @@
+import dns from 'dns';
+try {
+  dns.setServers(['8.8.8.8', '1.1.1.1']);
+} catch {
+  // Ignore
+}
 import mongoose from 'mongoose';
 
 /**
  * Script de Migração Local -> MongoDB Atlas
  * Copia todas as coleções do MongoDB local (127.0.0.1:27017/hospitalcare)
  * para o cluster na nuvem MongoDB Atlas.
- * 
- * Uso:
- * npx tsx src/database/migrate-to-atlas.ts "mongodb+srv://<user>:<password>@<cluster>.mongodb.net/hospitalcare?retryWrites=true&w=majority"
  */
 
 async function migrate() {
@@ -42,7 +45,6 @@ async function migrate() {
     console.log(`   - [${collName}]: ${docs.length} documentos encontrados.`);
 
     if (docs.length > 0) {
-      // Limpar coleção no destino antes de inserir para evitar conflitos de IDs
       await targetColl.deleteMany({});
       await targetColl.insertMany(docs);
       console.log(`     ✅ ${docs.length} documentos copiados para o Atlas.`);

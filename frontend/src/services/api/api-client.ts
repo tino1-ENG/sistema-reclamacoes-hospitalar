@@ -12,13 +12,13 @@ const getBaseUrl = (): string => {
     const custom = window.localStorage.getItem('hospitalcare_api_url');
     if (custom) return custom;
 
-    // Se estiver no GitHub Pages, direciona para o backend na nuvem Render
+    // Se estiver no GitHub Pages ou hospedagem estática, direciona para o backend de produção na nuvem Render
     if (window.location.hostname.includes('github.io')) {
-      return 'https://hospitalcare-api.onrender.com/api';
+      return 'https://sistema-reclamacoes-hospitalar-2.onrender.com/api';
     }
     return window.location.port !== '9000' ? '/api' : 'http://localhost:5000/api';
   }
-  return 'http://localhost:5000/api';
+  return 'https://sistema-reclamacoes-hospitalar-2.onrender.com/api';
 };
 
 export const API_BASE_URL = getBaseUrl();
