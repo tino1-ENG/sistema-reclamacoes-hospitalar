@@ -146,10 +146,13 @@
         <q-route-tab to="/paciente/perfil" icon="person" label="Perfil" />
       </q-tabs>
     </q-footer>
+      <!-- Assistente Virtual com Inteligência Artificial -->
+    <AiAssistantWidget />
   </q-layout>
 </template>
 
 <script setup lang="ts">
+import AiAssistantWidget from '../components/ai/AiAssistantWidget.vue';
 import { ref } from 'vue';
 import { useAuthStore } from '../stores/auth.store';
 import UserMenu from '../components/layout/UserMenu.vue';

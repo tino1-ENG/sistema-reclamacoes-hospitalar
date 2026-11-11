@@ -13,6 +13,15 @@ interface BackendCategory {
   createdAt: string;
 }
 
+interface BackendSlaPolicy {
+  _id: string;
+  hospitalId: string;
+  priority: 'LOW' | 'NORMAL' | 'HIGH' | 'URGENT';
+  responseTimeHours: number;
+  resolutionTimeHours: number;
+  isActive: boolean;
+}
+
 function mapCategory(c: BackendCategory): Category {
   return {
     id: c._id,
@@ -25,6 +34,13 @@ function mapCategory(c: BackendCategory): Category {
     createdAt: c.createdAt
   };
 }
+
+const PRIORITY_MAP: Record<string, number> = {
+  LOW: 1,
+  NORMAL: 2,
+  HIGH: 3,
+  URGENT: 4
+};
 
 export class RestCategoryService implements ICategoryService {
   async getCategories(): Promise<Category[]> {
@@ -42,7 +58,8 @@ export class RestCategoryService implements ICategoryService {
     return Promise.resolve([
       { id: 1, code: 'COMPLAINT', name: 'Reclamação', description: 'Manifestação de desagrado sobre atendimento ou serviços', isActive: true },
       { id: 2, code: 'CLARIFICATION', name: 'Pedido de Esclarecimento', description: 'Dúvidas sobre procedimentos, horários ou direitos', isActive: true },
-      { id: 3, code: 'SUGGESTION', name: 'Sugestão', description: 'Ideias de melhoria para os serviços hospitalares', isActive: true }
+      { id: 3, code: 'SUGGESTION', name: 'Sugestão', description: 'Ideias de melhoria para os serviços hospitalares', isActive: true },
+      { id: 4, code: 'PRAISE', name: 'Elogio', description: 'Reconhecimento pela qualidade de atendimento ou dedicação da equipa clínica', isActive: true }
     ]);
   }
 
@@ -69,13 +86,31 @@ export class RestCategoryService implements ICategoryService {
     ]);
   }
 
-  getSlaPolicies(): Promise<SlaPolicy[]> {
-    return Promise.resolve([
+  async getSlaPolicies(): Promise<SlaPolicy[]> {
+    try {
+      const res = await apiClient.get('/sla-policies');
+      const docs = res.data.data as BackendSlaPolicy[];
+      if (docs && docs.length > 0) {
+        return docs.map((d) => ({
+          id: d._id,
+          hospitalId: d.hospitalId,
+          name: `SLA ${d.priority}`,
+          priorityId: PRIORITY_MAP[d.priority] || 2,
+          firstResponseHours: d.responseTimeHours,
+          resolutionHours: d.resolutionTimeHours,
+          isActive: d.isActive
+        }));
+      }
+    } catch {
+      // Fallback gracioso
+    }
+
+    return [
       { id: '1', hospitalId: 'HCM-01', name: 'SLA Urgente', priorityId: 4, firstResponseHours: 4, resolutionHours: 12, isActive: true },
       { id: '2', hospitalId: 'HCM-01', name: 'SLA Alta', priorityId: 3, firstResponseHours: 12, resolutionHours: 24, isActive: true },
       { id: '3', hospitalId: 'HCM-01', name: 'SLA Normal', priorityId: 2, firstResponseHours: 24, resolutionHours: 48, isActive: true },
       { id: '4', hospitalId: 'HCM-01', name: 'SLA Baixa', priorityId: 1, firstResponseHours: 48, resolutionHours: 72, isActive: true }
-    ]);
+    ];
   }
 }
 

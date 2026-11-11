@@ -10,3 +10,5 @@ export * from './AuditLog.js';
 export * from './Feedback.js';
 export * from './Faq.js';
 export * from './SlaPolicy.js';
+export * from './AIChatSession.js';
+export * from './ProcessAttachment.js';

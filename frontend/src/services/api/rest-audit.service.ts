@@ -1,24 +1,49 @@
+import { apiClient } from './api-client';
 import type { IAuditService } from '../contracts';
 import type { AuditLog } from '../../types';
 
-export class RestAuditService implements IAuditService {
-  private logs: AuditLog[] = [];
+interface BackendAuditLog {
+  id: string;
+  userId?: string;
+  userName?: string;
+  action: string;
+  entity: string;
+  entityId?: string;
+  details?: Record<string, unknown>;
+  ipAddress?: string;
+  userAgent?: string;
+  createdAt: string;
+}
 
-  getAuditLogs(limit?: number): Promise<AuditLog[]> {
-    void limit;
-    return Promise.resolve(this.logs);
+export class RestAuditService implements IAuditService {
+  async getAuditLogs(limit?: number): Promise<AuditLog[]> {
+    try {
+      const res = await apiClient.get('/admin/audit-logs', {
+        params: { limit: limit || 100 }
+      });
+      const docs = res.data.data as BackendAuditLog[];
+      return docs.map((d) => ({
+        id: d.id,
+        actorUserId: d.userId,
+        actorName: d.userName || 'Sistema',
+        action: d.action,
+        entityType: d.entity,
+        entityId: d.entityId,
+        metadata: d.details || {},
+        ipAddress: d.ipAddress,
+        createdAt: d.createdAt
+      }));
+    } catch {
+      return [];
+    }
   }
 
-  logAction(action: string, entityType: string, entityId?: string, metadata?: Record<string, unknown>): Promise<void> {
-    this.logs.unshift({
-      id: Math.random().toString(),
-      action,
-      entityType,
-      entityId,
-      metadata: metadata || {},
-      createdAt: new Date().toISOString()
-    });
-    return Promise.resolve();
+  async logAction(action: string, entityType: string, entityId?: string, metadata?: Record<string, unknown>): Promise<void> {
+    void action;
+    void entityType;
+    void entityId;
+    void metadata;
+    // O backend já efetua o registo de auditoria automaticamente através de Mongoose hooks e controllers
   }
 }
 

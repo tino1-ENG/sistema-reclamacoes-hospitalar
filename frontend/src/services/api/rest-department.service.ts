@@ -3,11 +3,14 @@ import type { IDepartmentService } from '../contracts';
 import type { Department } from '../../types';
 
 interface BackendDepartment {
-  _id: string;
+  _id?: string;
+  id?: string;
   hospitalId: string;
   name: string;
   code: string;
   description?: string;
+  phone?: string;
+  email?: string;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
@@ -15,7 +18,7 @@ interface BackendDepartment {
 
 function mapDepartment(d: BackendDepartment): Department {
   return {
-    id: d._id,
+    id: d._id || d.id || '',
     hospitalId: d.hospitalId,
     name: d.name,
     code: d.code,
@@ -38,29 +41,14 @@ export class RestDepartmentService implements IDepartmentService {
     return departments.find((d) => d.id === id) || null;
   }
 
-  createDepartment(department: Omit<Department, 'id' | 'createdAt' | 'updatedAt'>): Promise<Department> {
-    return Promise.resolve({
-      ...department,
-      id: Math.random().toString(),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    });
+  async createDepartment(department: Omit<Department, 'id' | 'createdAt' | 'updatedAt'>): Promise<Department> {
+    const res = await apiClient.post('/departments', department);
+    return mapDepartment(res.data.data);
   }
 
   async updateDepartment(id: string, department: Partial<Department>): Promise<Department> {
-    const existing = await this.getDepartmentById(id);
-    return {
-      ...(existing || {
-        id,
-        hospitalId: '',
-        name: '',
-        code: '',
-        isActive: true,
-        createdAt: '',
-        updatedAt: ''
-      }),
-      ...department
-    };
+    const res = await apiClient.put(`/departments/${id}`, department);
+    return mapDepartment(res.data.data);
   }
 }
 

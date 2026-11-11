@@ -298,6 +298,24 @@ export class RestProcessService implements IProcessService {
     });
 
     const doc = res.data.data.process;
+    const procId = doc._id || doc.id;
+
+    if (dto.attachments && dto.attachments.length > 0 && procId) {
+      for (const item of dto.attachments) {
+        if (item instanceof File) {
+          try {
+            const formData = new FormData();
+            formData.append('file', item);
+            await apiClient.post(`/processes/${procId}/attachments`, formData, {
+              headers: { 'Content-Type': 'multipart/form-data' }
+            });
+          } catch {
+            // Registo não bloqueante
+          }
+        }
+      }
+    }
+
     return mapProcess(doc);
   }
 

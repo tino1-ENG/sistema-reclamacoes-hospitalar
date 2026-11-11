@@ -3,7 +3,8 @@ import type { IFaqService } from '../contracts';
 import type { FAQ } from '../../types';
 
 interface BackendFaq {
-  _id: string;
+  _id?: string;
+  id?: string;
   hospitalId: string;
   category: string;
   question: string;
@@ -15,7 +16,7 @@ interface BackendFaq {
 
 function mapFaq(f: BackendFaq): FAQ {
   return {
-    id: f._id,
+    id: f._id || f.id || '',
     hospitalId: f.hospitalId,
     question: f.question,
     answer: f.answer,
@@ -37,22 +38,27 @@ export class RestFaqService implements IFaqService {
     return this.getPublishedFaqs();
   }
 
-  saveFaq(faq: Partial<FAQ>): Promise<FAQ> {
-    return Promise.resolve({
-      id: faq.id || Math.random().toString(),
-      hospitalId: 'HCM-01',
+  async saveFaq(faq: Partial<FAQ>): Promise<FAQ> {
+    const payload = {
+      category: faq.category || 'Geral',
       question: faq.question || '',
       answer: faq.answer || '',
-      sortOrder: faq.sortOrder || 1,
-      isPublished: faq.isPublished ?? true,
-      category: faq.category || 'Geral',
-      createdAt: new Date().toISOString()
-    });
+      orderIndex: faq.sortOrder ?? 0,
+      isActive: faq.isPublished ?? true
+    };
+
+    if (faq.id) {
+      const res = await apiClient.put(`/faqs/${faq.id}`, payload);
+      return mapFaq(res.data.data);
+    } else {
+      const res = await apiClient.post('/faqs', payload);
+      return mapFaq(res.data.data);
+    }
   }
 
-  deleteFaq(id?: string): Promise<void> {
-    void id;
-    return Promise.resolve();
+  async deleteFaq(id?: string): Promise<void> {
+    if (!id) return;
+    await apiClient.delete(`/faqs/${id}`);
   }
 }
 

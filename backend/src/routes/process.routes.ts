@@ -3,6 +3,7 @@ import { processController } from '../controllers/process.controller.js';
 import { authenticate, optionalAuthenticate } from '../middlewares/authenticate.js';
 import { authorize } from '../middlewares/authorize.js';
 import { validate } from '../middlewares/validate.js';
+import { uploadAttachment } from '../middlewares/upload.js';
 import {
   createProcessSchema,
   lookupProcessSchema,
@@ -29,6 +30,10 @@ router.get('/:id', authenticate, processController.getById);
 // Mensagens do processo (com aplicação de confidencialidade)
 router.get('/:id/messages', authenticate, processController.getMessages);
 router.post('/:id/messages', authenticate, validate(addMessageSchema), processController.addMessage);
+
+// Anexos de processos
+router.post('/:id/attachments', optionalAuthenticate, uploadAttachment.single('file'), processController.uploadAttachment);
+router.get('/:id/attachments', optionalAuthenticate, processController.getAttachments);
 
 // Alteração de estado (STAFF, SUPERVISOR, ADMIN)
 router.patch(

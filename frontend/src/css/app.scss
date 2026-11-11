@@ -166,9 +166,9 @@ button, a, .q-btn, .cursor-pointer {
   padding-bottom: env(safe-area-inset-bottom);
 }
 
-@media (max-width: 599px) {
+@media (max-width: 1023px) {
   .q-page {
-    padding-bottom: 84px !important;
+    padding-bottom: 96px !important;
   }
 }
 
@@ -178,5 +178,68 @@ button, a, .q-btn, .cursor-pointer {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+
+// ==============================================================================
+// KPI Cards Utilitários com Gradientes Sólidos e Contrastantes
+// ==============================================================================
+.kpi-card {
+  border-radius: 16px !important;
+  color: #ffffff !important;
+  overflow: hidden;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08) !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  padding: 16px 20px !important;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 30px -8px rgba(0, 0, 0, 0.2) !important;
+  }
+
+  &--indigo {
+    background: linear-gradient(135deg, #4338ca 0%, #312e81 100%) !important;
+  }
+  &--emerald {
+    background: linear-gradient(135deg, #059669 0%, #065f46 100%) !important;
+  }
+  &--sky {
+    background: linear-gradient(135deg, #0284c7 0%, #075985 100%) !important;
+  }
+  &--amber {
+    background: linear-gradient(135deg, #d97706 0%, #92400e 100%) !important;
+  }
+
+  .kpi-label {
+    color: #ffffff !important;
+    font-size: 0.75rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    opacity: 0.95 !important;
+  }
+  .kpi-value {
+    color: #ffffff !important;
+    font-size: 2.25rem !important;
+    font-weight: 800 !important;
+    line-height: 1.1 !important;
+    margin: 8px 0 6px 0 !important;
+  }
+  .kpi-trend {
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-size: 0.75rem !important;
+    display: flex;
+    align-items: center;
+  }
+  .kpi-icon-pill {
+    background: rgba(255, 255, 255, 0.25) !important;
+    border-radius: 10px !important;
+    width: 36px !important;
+    height: 36px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #ffffff !important;
   }
 }

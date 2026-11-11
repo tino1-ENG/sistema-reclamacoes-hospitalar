@@ -16,8 +16,13 @@ export const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const frontendDistPath = path.resolve(__dirname, '../../frontend/dist/spa');
+const uploadsPath = path.resolve(process.cwd(), 'uploads');
 
-// Segurança e Cabeçalhos HTTP (Sem bloquear recursos de fontes externas ou imagens)
+if (!fs.existsSync(uploadsPath)) {
+  fs.mkdirSync(uploadsPath, { recursive: true });
+}
+
+// Segurança e Cabeçalhos HTTP
 app.use(
   helmet({
     contentSecurityPolicy: false,
@@ -37,6 +42,9 @@ app.use(
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
+// Servir Ficheiros de Uploads Estáticos
+app.use('/uploads', express.static(uploadsPath));
+
 // Rota de Verificação de Saúde do Servidor
 app.get('/health', (_req, res) => {
   res.json({
@@ -54,12 +62,12 @@ app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // Rotas da API REST
 app.use('/api', routes);
 
-// Servir o Frontend SPA compilado (Produção Ultra-Rápida para Celulares e Túneis)
+// Servir o Frontend SPA compilado
 if (fs.existsSync(frontendDistPath)) {
   app.use('/sistema-reclamacoes-hospitalar', express.static(frontendDistPath));
   app.use(express.static(frontendDistPath));
   app.get('*', (req, res, next) => {
-    if (req.path.startsWith('/api') || req.path.startsWith('/health')) {
+    if (req.path.startsWith('/api') || req.path.startsWith('/health') || req.path.startsWith('/uploads')) {
       return next();
     }
     res.sendFile(path.join(frontendDistPath, 'index.html'));

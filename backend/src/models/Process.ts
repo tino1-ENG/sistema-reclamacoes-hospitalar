@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import type { PriorityCode } from './Category.js';
 
-export type ProcessTypeCode = 'COMPLAINT' | 'CLARIFICATION' | 'SUGGESTION';
+export type ProcessTypeCode = 'COMPLAINT' | 'CLARIFICATION' | 'SUGGESTION' | 'PRAISE';
 export type StatusCode =
   | 'SUBMITTED'
   | 'TRIAGE'
@@ -36,6 +36,8 @@ export interface IProcess extends Document {
   firstResponseAt?: Date;
   closedAt?: Date;
   reopenCount: number;
+  aiSummary?: string;
+  aiTriageScore?: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -52,7 +54,7 @@ const ProcessSchema = new Schema<IProcess>(
     categoryId: { type: Schema.Types.ObjectId, ref: 'Category', required: true },
     type: {
       type: String,
-      enum: ['COMPLAINT', 'CLARIFICATION', 'SUGGESTION'],
+      enum: ['COMPLAINT', 'CLARIFICATION', 'SUGGESTION', 'PRAISE'],
       required: true
     },
     status: {
@@ -87,7 +89,9 @@ const ProcessSchema = new Schema<IProcess>(
     slaDueAt: { type: Date, required: true },
     firstResponseAt: { type: Date },
     closedAt: { type: Date },
-    reopenCount: { type: Number, default: 0 }
+    reopenCount: { type: Number, default: 0 },
+    aiSummary: { type: String },
+    aiTriageScore: { type: Number }
   },
   { timestamps: true }
 );

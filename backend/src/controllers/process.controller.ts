@@ -1,5 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
 import { processService } from '../services/process.service.js';
+import { ProcessAttachment } from '../models/ProcessAttachment.js';
+import { Process } from '../models/Process.js';
 
 export class ProcessController {
   async create(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -50,10 +52,10 @@ export class ProcessController {
         res.status(401).json({ success: false, message: 'Autenticação necessária.' });
         return;
       }
-      const result = await processService.getProcessById(String(req.params.id), req.user);
+      const process = await processService.getProcessById(String(req.params.id), req.user);
       res.json({
         success: true,
-        data: result
+        data: process
       });
     } catch (err) {
       next(err);
@@ -139,6 +141,52 @@ export class ProcessController {
         message: 'Agradecemos a sua avaliação do atendimento.',
         data: feedback
       });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async uploadAttachment(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const id = String(req.params.id);
+      const file = req.file;
+      if (!file) {
+        res.status(400).json({ success: false, message: 'Nenhum ficheiro fornecido.' });
+        return;
+      }
+
+      const proc = await Process.findById(id);
+      if (!proc) {
+        res.status(404).json({ success: false, message: 'Processo não encontrado.' });
+        return;
+      }
+
+      const attachment = await ProcessAttachment.create({
+        processId: proc._id,
+        uploaderId: req.user?.id,
+        fileName: file.filename,
+        originalName: file.originalname,
+        mimeType: file.mimetype,
+        sizeBytes: file.size,
+        filePath: file.path,
+        fileUrl: `/uploads/${file.filename}`
+      });
+
+      res.status(201).json({
+        success: true,
+        message: 'Documento / evidência anexada com sucesso.',
+        data: attachment
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async getAttachments(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const id = String(req.params.id);
+      const attachments = await ProcessAttachment.find({ processId: id }).sort({ createdAt: -1 });
+      res.json({ success: true, data: attachments });
     } catch (err) {
       next(err);
     }

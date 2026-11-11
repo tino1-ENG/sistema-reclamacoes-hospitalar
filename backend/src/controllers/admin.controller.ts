@@ -132,3 +132,49 @@ export async function toggleUserStatus(req: Request, res: Response, next: NextFu
     next(err);
   }
 }
+
+export async function getAuditLogs(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const { entity, action, search, limit = '100' } = req.query;
+    const query: Record<string, unknown> = {};
+
+    if (entity && typeof entity === 'string' && entity !== 'ALL') {
+      query.entity = entity;
+    }
+    if (action && typeof action === 'string' && action !== 'ALL') {
+      query.action = action;
+    }
+    if (search && typeof search === 'string' && search.trim()) {
+      const q = search.trim();
+      query.$or = [
+        { userName: { $regex: q, $options: 'i' } },
+        { action: { $regex: q, $options: 'i' } },
+        { entityId: { $regex: q, $options: 'i' } }
+      ];
+    }
+
+    const docs = await AuditLog.find(query)
+      .sort({ createdAt: -1 })
+      .limit(Math.min(Number(limit) || 100, 500));
+
+    const data = docs.map((log) => ({
+      id: log._id.toString(),
+      userId: log.userId ? log.userId.toString() : undefined,
+      userName: log.userName || 'Sistema',
+      action: log.action,
+      entity: log.entity,
+      entityId: log.entityId,
+      details: log.details,
+      ipAddress: log.ipAddress,
+      userAgent: log.userAgent,
+      createdAt: log.createdAt
+    }));
+
+    res.json({
+      success: true,
+      data
+    });
+  } catch (err) {
+    next(err);
+  }
+}

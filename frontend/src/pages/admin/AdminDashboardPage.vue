@@ -56,98 +56,72 @@
     <div class="row q-col-gutter-md q-mb-xl">
       <!-- KPI 1: Total de Processos -->
       <div class="col-12 col-sm-6 col-lg-3">
-        <q-card class="kpi-card shadow-md" style="background: linear-gradient(135deg, #4338ca 0%, #312e81 100%) !important; color: #ffffff !important; border-radius: 16px;">
-          <q-card-section class="q-pa-md">
-            <div class="row items-center justify-between q-mb-sm" style="color: #ffffff !important;">
-              <span class="text-caption text-weight-bold text-uppercase tracking-wide" style="color: #ffffff !important; opacity: 0.95;">
-                Total de Processos
-              </span>
-              <div class="kpi-icon-pill" style="background: rgba(255, 255, 255, 0.25) !important;">
-                <q-icon name="folder" size="20px" style="color: #ffffff !important;" />
-              </div>
+        <div class="kpi-card kpi-card--indigo">
+          <div class="row items-center justify-between q-mb-sm">
+            <span class="kpi-label">Total de Processos</span>
+            <div class="kpi-icon-pill">
+              <q-icon name="folder" size="20px" color="white" />
             </div>
-            <div class="text-h3 text-weight-bolder leading-none q-mb-xs" style="color: #ffffff !important;">
-              {{ metrics.totalProcesses }}
-            </div>
-            <div class="row items-center text-caption" style="color: rgba(255, 255, 255, 0.9) !important;">
-              <q-icon name="trending_up" size="16px" class="q-mr-xs" style="color: #86efac !important;" />
-              <span>+14.2% em relação ao mês anterior</span>
-            </div>
-          </q-card-section>
-        </q-card>
+          </div>
+          <div class="kpi-value">{{ metrics.totalProcesses }}</div>
+          <div class="kpi-trend">
+            <q-icon name="trending_up" size="16px" class="q-mr-xs" style="color: #86efac;" />
+            <span>+14.2% em relação ao mês anterior</span>
+          </div>
+        </div>
       </div>
 
       <!-- KPI 2: Taxa de Resolução -->
       <div class="col-12 col-sm-6 col-lg-3">
-        <q-card class="kpi-card shadow-md" style="background: linear-gradient(135deg, #059669 0%, #065f46 100%) !important; color: #ffffff !important; border-radius: 16px;">
-          <q-card-section class="q-pa-md">
-            <div class="row items-center justify-between q-mb-sm" style="color: #ffffff !important;">
-              <span class="text-caption text-weight-bold text-uppercase tracking-wide" style="color: #ffffff !important; opacity: 0.95;">
-                Taxa de Resolução
-              </span>
-              <div class="kpi-icon-pill" style="background: rgba(255, 255, 255, 0.25) !important;">
-                <q-icon name="check_circle" size="20px" style="color: #ffffff !important;" />
-              </div>
+        <div class="kpi-card kpi-card--emerald">
+          <div class="row items-center justify-between q-mb-sm">
+            <span class="kpi-label">Taxa de Resolução</span>
+            <div class="kpi-icon-pill">
+              <q-icon name="check_circle" size="20px" color="white" />
             </div>
-            <div class="text-h3 text-weight-bolder leading-none q-mb-xs" style="color: #ffffff !important;">
-              {{ resolutionRate }}%
-            </div>
-            <div class="row items-center text-caption" style="color: rgba(255, 255, 255, 0.9) !important;">
-              <q-icon name="done_all" size="16px" class="q-mr-xs" style="color: #a7f3d0 !important;" />
-              <span>{{ metrics.resolvedProcesses }} processos concluídos</span>
-            </div>
-          </q-card-section>
-        </q-card>
+          </div>
+          <div class="kpi-value">{{ resolutionRate }}%</div>
+          <div class="kpi-trend">
+            <q-icon name="done_all" size="16px" class="q-mr-xs" style="color: #a7f3d0;" />
+            <span>{{ metrics.resolvedProcesses }} processos concluídos</span>
+          </div>
+        </div>
       </div>
 
       <!-- KPI 3: Conformidade de SLA -->
       <div class="col-12 col-sm-6 col-lg-3">
-        <q-card class="kpi-card shadow-md" style="background: linear-gradient(135deg, #0284c7 0%, #075985 100%) !important; color: #ffffff !important; border-radius: 16px;">
-          <q-card-section class="q-pa-md">
-            <div class="row items-center justify-between q-mb-sm" style="color: #ffffff !important;">
-              <span class="text-caption text-weight-bold text-uppercase tracking-wide" style="color: #ffffff !important; opacity: 0.95;">
-                Cumprimento de SLA
-              </span>
-              <div class="kpi-icon-pill" style="background: rgba(255, 255, 255, 0.25) !important;">
-                <q-icon name="timer" size="20px" style="color: #ffffff !important;" />
-              </div>
+        <div class="kpi-card kpi-card--sky">
+          <div class="row items-center justify-between q-mb-sm">
+            <span class="kpi-label">Cumprimento de SLA</span>
+            <div class="kpi-icon-pill">
+              <q-icon name="timer" size="20px" color="white" />
             </div>
-            <div class="text-h3 text-weight-bolder leading-none q-mb-xs" style="color: #ffffff !important;">
-              {{ slaComplianceRate }}%
-            </div>
-            <div class="row items-center text-caption" style="color: rgba(255, 255, 255, 0.9) !important;">
-              <q-icon name="schedule" size="16px" class="q-mr-xs" style="color: #bae6fd !important;" />
-              <span>Tempo médio de triagem: 18.5h</span>
-            </div>
-          </q-card-section>
-        </q-card>
+          </div>
+          <div class="kpi-value">{{ slaComplianceRate }}%</div>
+          <div class="kpi-trend">
+            <q-icon name="schedule" size="16px" class="q-mr-xs" style="color: #bae6fd;" />
+            <span>Tempo médio: {{ metrics.averageResponseTimeHours }}h</span>
+          </div>
+        </div>
       </div>
 
       <!-- KPI 4: Índice de Satisfação -->
       <div class="col-12 col-sm-6 col-lg-3">
-        <q-card class="kpi-card shadow-md" style="background: linear-gradient(135deg, #d97706 0%, #92400e 100%) !important; color: #ffffff !important; border-radius: 16px;">
-          <q-card-section class="q-pa-md">
-            <div class="row items-center justify-between q-mb-sm" style="color: #ffffff !important;">
-              <span class="text-caption text-weight-bold text-uppercase tracking-wide" style="color: #ffffff !important; opacity: 0.95;">
-                Satisfação do Utente
-              </span>
-              <div class="kpi-icon-pill" style="background: rgba(255, 255, 255, 0.25) !important;">
-                <q-icon name="star" size="20px" style="color: #ffffff !important;" />
-              </div>
+        <div class="kpi-card kpi-card--amber">
+          <div class="row items-center justify-between q-mb-sm">
+            <span class="kpi-label">Satisfação do Utente</span>
+            <div class="kpi-icon-pill">
+              <q-icon name="star" size="20px" color="white" />
             </div>
-            <div class="text-h3 text-weight-bolder leading-none q-mb-xs" style="color: #ffffff !important;">
-              {{ metrics.satisfactionRatePercent }}%
-            </div>
-            <div class="row items-center text-caption" style="color: rgba(255, 255, 255, 0.9) !important;">
-              <q-icon name="sentiment_very_satisfied" size="16px" class="q-mr-xs" style="color: #fde68a !important;" />
-              <span>Nota média 4.8 / 5.0 estrelas</span>
-            </div>
-          </q-card-section>
-        </q-card>
+          </div>
+          <div class="kpi-value">{{ metrics.satisfactionRatePercent }}%</div>
+          <div class="kpi-trend">
+            <q-icon name="sentiment_very_satisfied" size="16px" class="q-mr-xs" style="color: #fde68a;" />
+            <span>Nota média 4.8 / 5.0 estrelas</span>
+          </div>
+        </div>
       </div>
-    </div>
-
-    <!-- SEÇÃO DE ANÁLISES POR MEIO DE GRÁFICOS MUITO COLORIDOS -->
+    </div><!-- SEÇÃO DE ANÁLISES POR MEIO DE GRÁFICOS MUITO COLORIDOS -->
     <div class="text-h5 text-weight-bolder text-slate-800 q-mb-md row items-center">
       <q-icon name="bar_chart" size="28px" color="primary" class="q-mr-sm" />
       <span>Análise Visual e Gráficos Comparativos</span>

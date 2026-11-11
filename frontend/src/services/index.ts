@@ -10,6 +10,7 @@ import { restNotificationService } from './api/rest-notification.service';
 import { restDashboardService } from './api/rest-dashboard.service';
 import { restFaqService } from './api/rest-faq.service';
 import { restAuditService } from './api/rest-audit.service';
+import { aiService } from './api/rest-ai.service';
 
 import { mockAuthService } from './mock/mock-auth.service';
 import { mockProcessService } from './mock/mock-process.service';
@@ -32,6 +33,7 @@ export const notificationService = forceMock ? mockNotificationService : restNot
 export const dashboardService = forceMock ? mockDashboardService : restDashboardService;
 export const faqService = forceMock ? mockFaqService : restFaqService;
 export const auditService = forceMock ? mockAuditService : restAuditService;
+export { aiService };
 
 export * from './contracts';
 export { apiClient, API_BASE_URL } from './api/api-client';

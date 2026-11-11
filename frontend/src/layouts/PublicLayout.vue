@@ -68,7 +68,7 @@
               rounded
               dense
               no-caps
-              class="bg-gradient-primary text-white text-weight-bold text-caption q-px-sm lt-sm shadow-1"
+              class="bg-gradient-primary text-white text-weight-bold text-caption q-px-sm lt-md shadow-1"
               style="white-space: nowrap; height: 32px;"
               label="Registar"
               to="/registar"
@@ -78,7 +78,7 @@
               unelevated
               rounded
               no-caps
-              class="bg-gradient-primary text-white text-weight-bold q-px-md gt-xs shadow-2"
+              class="bg-gradient-primary text-white text-weight-bold q-px-md gt-sm shadow-2"
               label="Registar Paciente"
               to="/registar"
             />
@@ -197,6 +197,8 @@
         </div>
       </div>
     </q-footer>
+      <!-- Assistente Virtual com Inteligência Artificial -->
+    <AiAssistantWidget />
   </q-layout>
 </template>
 
@@ -204,6 +206,7 @@
 import { ref } from 'vue';
 import { useAuthStore } from '../stores/auth.store';
 import UserMenu from '../components/layout/UserMenu.vue';
+import AiAssistantWidget from '../components/ai/AiAssistantWidget.vue';
 
 const authStore = useAuthStore();
 const mobileDrawerOpen = ref(false);

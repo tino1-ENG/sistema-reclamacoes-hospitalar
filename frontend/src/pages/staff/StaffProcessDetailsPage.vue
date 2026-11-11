@@ -69,6 +69,63 @@
               {{ process.description }}
             </p>
 
+            <!-- Painel Copiloto IA (HospitalCare Copilot) -->
+            <div class="q-mt-md q-pa-md bg-blue-50 border-blue-200" style="border-radius: 12px; border: 1px solid #bfdbfe;">
+              <div class="row items-center justify-between q-mb-sm">
+                <div class="row items-center">
+                  <q-avatar size="28px" class="bg-primary text-white q-mr-sm">
+                    <q-icon name="auto_awesome" size="16px" />
+                  </q-avatar>
+                  <span class="text-subtitle2 text-weight-bold text-hospital-navy">Copiloto Inteligente HCM</span>
+                </div>
+                <div class="row q-gutter-x-xs">
+                  <q-btn
+                    dense
+                    outline
+                    no-caps
+                    size="sm"
+                    color="primary"
+                    icon="summarize"
+                    label="Resumir com IA"
+                    :loading="loadingSummary"
+                    @click="generateAiSummary"
+                    class="q-px-sm bg-white"
+                  />
+                  <q-btn
+                    dense
+                    unelevated
+                    no-caps
+                    size="sm"
+                    color="primary"
+                    icon="edit_note"
+                    label="Sugerir Parecer"
+                    :loading="loadingDraft"
+                    @click="generateAiDraftReply"
+                    class="q-px-sm"
+                  />
+                </div>
+              </div>
+
+              <!-- Exibição do Resumo Gerado por IA -->
+              <div v-if="aiSummary" class="q-mt-sm text-body2 bg-white q-pa-sm" style="border-radius: 8px; border: 1px solid #e2e8f0;">
+                <div class="text-weight-bold text-slate-800 q-mb-xs">
+                  <q-icon name="lightbulb" color="amber-9" class="q-mr-xs" />
+                  Resumo Executivo do Caso:
+                </div>
+                <p class="text-slate-700 q-mb-xs">{{ aiSummary.summary }}</p>
+                <div v-if="aiSummary.keyPoints && aiSummary.keyPoints.length" class="q-mt-xs">
+                  <div class="text-caption text-weight-bold text-slate-600">Pontos Relevantes:</div>
+                  <ul class="q-pl-md q-my-none text-caption text-slate-600">
+                    <li v-for="(p, i) in aiSummary.keyPoints" :key="i">{{ p }}</li>
+                  </ul>
+                </div>
+                <div v-if="aiSummary.urgencyReasoning" class="text-caption text-blue-9 q-mt-xs text-weight-medium">
+                  <strong>Gravidade:</strong> {{ aiSummary.urgencyReasoning }}
+                </div>
+              </div>
+            </div>
+
+
             <div v-if="attachments.length" class="q-mt-md q-pt-md border-t">
               <div class="text-caption text-weight-bold text-slate-600 q-mb-xs">
                 Anexos Submetidos pelo Paciente:
@@ -309,6 +366,54 @@ const showStatusModal = ref(false);
 const newStatusId = ref<number | null>(null);
 const statusReason = ref('');
 const updatingStatus = ref(false);
+const loadingSummary = ref(false);
+const loadingDraft = ref(false);
+const aiSummary = ref<AISummaryResponse | null>(null);
+
+async function generateAiSummary() {
+  if (!process.value) return;
+  loadingSummary.value = true;
+  try {
+    const res = await aiService.summarize(process.value.id);
+    aiSummary.value = res;
+    $q.notify({
+      type: 'positive',
+      message: 'Resumo executivo processado com sucesso pelo copiloto.',
+      position: 'top'
+    });
+  } catch (err) {
+    $q.notify({
+      type: 'negative',
+      message: 'Não foi possível gerar o resumo por IA neste momento.',
+      position: 'top'
+    });
+  } finally {
+    loadingSummary.value = false;
+  }
+}
+
+async function generateAiDraftReply() {
+  if (!process.value) return;
+  loadingDraft.value = true;
+  try {
+    const res = await aiService.suggestReply(process.value.id, newMessageText.value);
+    newMessageText.value = res.draft;
+    isInternalNote.value = false; // Define como resposta ao paciente
+    $q.notify({
+      type: 'positive',
+      message: 'Minuta de parecer gerada na caixa de resposta para validação humana.',
+      position: 'top'
+    });
+  } catch (err) {
+    $q.notify({
+      type: 'negative',
+      message: 'Falha ao sugerir minuta por IA.',
+      position: 'top'
+    });
+  } finally {
+    loadingDraft.value = false;
+  }
+}
 
 const processId = route.params.id as string;
 
