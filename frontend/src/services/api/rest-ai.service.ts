@@ -37,27 +37,31 @@ export interface AIStatusResponse {
 
 export class RestAIService {
   async chat(message: string, sessionId?: string): Promise<AIChatResponse> {
-    const res = await apiClient.post('/ai/chat', { message, sessionId });
+    const res = await apiClient.post(
+      '/ai/chat',
+      { message, sessionId },
+      { timeout: 60000 } // 60 segundos para permitir carregamento de modelos locais (Ollama)
+    );
     return res.data.data;
   }
 
   async getStatus(): Promise<AIStatusResponse> {
-    const res = await apiClient.get('/ai/status');
+    const res = await apiClient.get('/ai/status', { timeout: 10000 });
     return res.data.data;
   }
 
   async triage(title: string, description: string): Promise<AITriageResponse> {
-    const res = await apiClient.post('/ai/triage', { title, description });
+    const res = await apiClient.post('/ai/triage', { title, description }, { timeout: 45000 });
     return res.data.data;
   }
 
   async summarize(processId: string): Promise<AISummaryResponse> {
-    const res = await apiClient.post('/ai/summarize', { processId });
+    const res = await apiClient.post('/ai/summarize', { processId }, { timeout: 60000 });
     return res.data.data;
   }
 
   async suggestReply(processId: string, staffNotes?: string): Promise<AIReplyResponse> {
-    const res = await apiClient.post('/ai/suggest-reply', { processId, staffNotes });
+    const res = await apiClient.post('/ai/suggest-reply', { processId, staffNotes }, { timeout: 60000 });
     return res.data.data;
   }
 }

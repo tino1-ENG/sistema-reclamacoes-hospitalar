@@ -25,7 +25,7 @@ export class AIService {
   constructor() {
     this.configuredProvider = process.env.AI_PROVIDER || 'auto';
     this.localAiUrl = process.env.LOCAL_AI_URL || 'http://localhost:11434';
-    this.localModel = process.env.LOCAL_AI_MODEL || 'mistral';
+    this.localModel = process.env.LOCAL_AI_MODEL || 'qwen3.5:latest';
     this.geminiModelName = process.env.GEMINI_MODEL || 'gemini-1.5-flash';
 
     const geminiApiKey = process.env.GEMINI_API_KEY;
@@ -99,7 +99,10 @@ export class AIService {
 
     if (provider === 'local') {
       try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 55000);
         const response = await fetch(`${this.localAiUrl}/api/chat`, {
+          signal: controller.signal,
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -112,6 +115,7 @@ export class AIService {
           })
         });
 
+        clearTimeout(timeoutId);
         if (response.ok) {
           const data = (await response.json()) as { message?: { content?: string } };
           if (data.message?.content) {
