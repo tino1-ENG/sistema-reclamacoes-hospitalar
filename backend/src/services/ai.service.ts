@@ -105,7 +105,7 @@ export class AIService {
     if (provider === 'local') {
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 55000);
+        const timeoutId = setTimeout(() => controller.abort(), 12000);
         const response = await fetch(`${this.localAiUrl}/api/chat`, {
           signal: controller.signal,
           method: 'POST',
