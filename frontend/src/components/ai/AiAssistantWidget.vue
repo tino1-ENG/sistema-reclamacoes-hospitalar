@@ -197,23 +197,66 @@ async function sendMessage() {
 
   try {
     const result = await aiService.chat(text, sessionId.value);
-    sessionId.value = result.sessionId;
-
-    messages.value.push({
-      role: 'assistant',
-      content: result.response,
-      time: formatTime()
-    });
+    if (result && result.response && result.response.trim().length > 0) {
+      sessionId.value = result.sessionId || sessionId.value;
+      messages.value.push({
+        role: 'assistant',
+        content: result.response,
+        time: formatTime()
+      });
+      return;
+    }
+    throw new Error('Empty response from AI engine');
   } catch (err) {
+    // Contingência inteligente: ativa o motor de conhecimento residente do HCM
+    console.warn('[AiAssistantWidget] A utilizar guia inteligente de contingência do HCM:', err);
+    const fallbackResponse = generateHospitalCareKnowledgeResponse(text);
     messages.value.push({
       role: 'assistant',
-      content: 'Pedimos desculpa, ocorreu uma instabilidade momentânea na ligação ao assistente. Pode tentar novamente dentro de instantes ou dirigir-se ao Balcão de Atendimento do HCM.',
+      content: fallbackResponse,
       time: formatTime()
     });
   } finally {
     loading.value = false;
     scrollToBottom();
   }
+}
+
+function generateHospitalCareKnowledgeResponse(userText: string): string {
+  const lower = userText.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+  // 1. Consultar / Acompanhar processo / PIN / Código
+  if (lower.includes('consultar') || lower.includes('acompanhar') || lower.includes('processo') || lower.includes('pin') || lower.includes('codigo') || lower.includes('estado')) {
+    return 'Para consultar o estado do seu processo no **Hospital Central de Maputo**:\n\n1. Aceda ao separador **"Consultar Processo"** no menu superior.\n2. Introduza o seu **Código de Referência** (ex: `#HC-2026-XXXX`) e o seu **PIN de 4 dígitos** gerados no momento da submissão.\n3. Terá acesso imediato ao estado da tramitação, departamento responsável e resposta oficial da Direcção do HCM.\n\n*Nota: Se perdeu o seu PIN, dirija-se presencialmente ao Gabinete do Utente com um documento de identificação.*';
+  }
+
+  // 2. Farmácia / Medicamentos
+  if (lower.includes('farmacia') || lower.includes('medicamento') || lower.includes('receita') || lower.includes('remedio') || lower.includes('falta')) {
+    return 'Relativamente à **Farmácia Central e Depósito de Medicamentos do HCM**:\n\n- O levantamento de medicação prescrita nas consultas externas é feito mediante apresentação da receita médica e cartão de utente.\n- Caso tenha enfrentado **falta de medicamentos**, filas excessivas ou dificuldades no atendimento, pode submeter uma manifestação seleccionando a Unidade **"Farmácia Central"**.\n- O seu relato alerta directamente a Comissão Técnica de Medicamentos do HCM para reposição e auditoria de stock.';
+  }
+
+  // 3. Elogios / Agradecimento
+  if (lower.includes('elogio') || lower.includes('agradec') || lower.includes('parabens') || lower.includes('bom trabalho') || lower.includes('excelente')) {
+    return 'Ficamos muito gratos pelo seu reconhecimento!\n\n- O louvor aos nossos médicos, enfermeiros e auxiliares fortalece o compromisso ético e humanizado do Hospital Central de Maputo.\n- Para registar formalmente, clique em **"Registar Processo"** e escolha o tipo **"Elogio"**.\n- Pode indicar o serviço (ex: Pediatria, Maternidade, Urgência) e o nome dos profissionais. O seu louvor é entregue à Direcção Clínica e adicionado ao registo de mérito.';
+  }
+
+  // 4. Urgência Geral / Banco de Socorros / Emergência / Localização / Horários
+  if (lower.includes('urgencia') || lower.includes('emergencia') || lower.includes('banco de socorros') || lower.includes('onde fica') || lower.includes('localizacao') || lower.includes('horario') || lower.includes('contacto')) {
+    return 'A **Urgência Geral (Banco de Socorros)** do Hospital Central de Maputo funciona **24 horas por dia, 7 dias por semana**:\n\n- **Localização:** Acesso principal pela Avenida Eduardo Mondlane, Maputo.\n- **Protocolo de Triagem:** O atendimento segue o sistema de Triagem de Manchester (prioridade vermelha/laranja para risco de vida imediato).\n- **Linha de Apoio HCM:** Em situação de emergência, ligue 117 ou (+258) 21 350 400.\n- Para relatar ocorrências na Urgência, utilize o formulário do HospitalCare.';
+  }
+
+  // 5. Queixa / Reclamação / Denúncia Anónima / Submissão
+  if (lower.includes('reclam') || lower.includes('queixa') || lower.includes('denuncia') || lower.includes('anonim') || lower.includes('mau atendimento') || lower.includes('submeter')) {
+    return 'O **HospitalCare** garante total confidencialidade e segurança para a sua manifestação:\n\n1. Clique no botão **"Registar Queixa / Sugestão"**.\n2. Pode optar por submeter de forma **100% Anónima** (sem recolha de nome ou telefone) ou **Identificada** (para receber alertas por SMS/email).\n3. O sistema atribui um **Código Único e PIN**, encriptando o seu relato com segurança de nível institucional.\n4. O processo é encaminhado directamente à Inspecção Hospitalar e Direcção Clínica do HCM.';
+  }
+
+  // 6. Prazos de Resposta / Tempo
+  if (lower.includes('prazo') || lower.includes('tempo') || lower.includes('demora') || lower.includes('quando responde') || lower.includes('dias')) {
+    return 'Os prazos regulamentares de tramitação no Hospital Central de Maputo são:\n\n- **Casos Urgentes (risco clínico):** Avaliação e intervenção em até **24 a 48 horas**.\n- **Reclamações Gerais:** Triagem e resposta preliminar em até **5 dias úteis**.\n- **Elogios e Sugestões:** Notificação às equipas em até **48 horas**.\n\nPode verificar o progresso a qualquer momento introduzindo o seu código e PIN na página "Consultar Processo".';
+  }
+
+  // 7. Resposta Geral de Acolhimento
+  return 'Olá! Sou o **Acolhe HospitalCare**, o assistente digital de acolhimento do Hospital Central de Maputo.\n\nPosso ajudá-lo a:\n- **Submeter uma Reclamação ou Denúncia Anónima** com total segurança e sigilo;\n- **Consultar e acompanhar o seu processo** com o Código de Referência e PIN;\n- **Registar um Elogio** para as equipas médicas e de enfermagem;\n- **Obter informações sobre serviços:** Urgência Geral, Farmácia Central, Pediatria e Consultas Externas.\n\nComo posso orientá-lo neste momento?';
 }
 </script>
 

@@ -38,9 +38,14 @@ export class AIService {
    * Verifica a disponibilidade do motor de IA local (Ollama / LM Studio)
    */
   async isLocalAiReachable(): Promise<boolean> {
+    // Em produção na nuvem (ex: Render), não tenta localhost a menos que explicitamente configurado
+    if (process.env.NODE_ENV === 'production' && (!process.env.LOCAL_AI_URL || process.env.LOCAL_AI_URL.includes('localhost') || process.env.LOCAL_AI_URL.includes('127.0.0.1'))) {
+      return false;
+    }
+
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 1800);
+      const timeoutId = setTimeout(() => controller.abort(), 1500);
       const res = await fetch(`${this.localAiUrl}/api/tags`, {
         method: 'GET',
         signal: controller.signal
@@ -134,7 +139,11 @@ export class AIService {
           systemInstruction: systemPrompt
         });
 
-        const result = await model.generateContent(scrubSensitiveData(userPrompt));
+        const geminiPromise = model.generateContent(scrubSensitiveData(userPrompt));
+        const timeoutPromise = new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error('Gemini API timeout')), 10000)
+        );
+        const result = (await Promise.race([geminiPromise, timeoutPromise])) as Awaited<typeof geminiPromise>;
         const responseText = result.response.text();
         if (responseText) {
           return responseText.trim();
@@ -192,18 +201,20 @@ Seu papel:
     let reply = await this.generateCompletion(systemPrompt, prompt);
 
     if (!reply) {
-      // Resposta inteligente de contingência (baseada em palavras-chave)
-      const lower = cleanUserMsg.toLowerCase();
-      if (lower.includes('consultar') || lower.includes('acompanhar') || lower.includes('código') || lower.includes('pin')) {
-        reply = 'Para consultar o estado do seu processo, aceda à secção **Consultar Processo** no menu principal. Irá necessitar do seu Código de Referência (ex: #HC-2026-XXXX) e do seu PIN de segurança de 4 dígitos.';
-      } else if (lower.includes('reclam') || lower.includes('queixa') || lower.includes('mau atendimento')) {
-        reply = 'Lamentamos profundamente a sua experiência menos positiva. O Hospital Central de Maputo está comprometido em corrigir falhas. Pode submeter uma **Reclamação** formal através do botão "Submeter Processo", indicando o departamento (ex: Urgência, Pediatria, Farmácia). Iremos investigar e responder com total transparência.';
-      } else if (lower.includes('farmácia') || lower.includes('medicamento')) {
-        reply = 'Para questões relacionadas com dispensa de medicamentos ou funcionamento da Farmácia Central do HCM, pode submeter uma manifestação selecionando o departamento **Farmácia Central**. A equipa de supervisão farmacêutica irá analisar a sua questão.';
-      } else if (lower.includes('elogio') || lower.includes('agradec')) {
-        reply = 'Ficamos muito gratos pelo seu reconhecimento! Os elogios aos nossos médicos, enfermeiros e equipas de apoio motivam todo o corpo clínico do HCM. Pode registar o seu Elogio formal no formulário de processos.';
+      // Resposta inteligente de contingência (baseada em palavras-chave normalizadas)
+      const lower = cleanUserMsg.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      if (lower.includes('consultar') || lower.includes('acompanhar') || lower.includes('codigo') || lower.includes('pin') || lower.includes('processo') || lower.includes('estado')) {
+        reply = 'Para consultar o estado do seu processo no **Hospital Central de Maputo**:\n\n1. Aceda ao separador **"Consultar Processo"** no menu principal.\n2. Introduza o seu **Código de Referência** (ex: #HC-2026-XXXX) e o seu **PIN de 4 dígitos** gerados na submissão.\n3. Terá acesso imediato ao estado da tramitação, departamento responsável e resposta oficial da Direcção do HCM.';
+      } else if (lower.includes('reclam') || lower.includes('queixa') || lower.includes('denuncia') || lower.includes('mau atendimento')) {
+        reply = 'Lamentamos profundamente a situação. O Hospital Central de Maputo está totalmente empenhado na melhoria contínua dos serviços. Pode submeter uma **Reclamação ou Denúncia** formal através do botão "Submeter Processo", com opção de sigilo 100% anónimo. O caso será investigado pela Direcção Clínica e Gabinete do Utente.';
+      } else if (lower.includes('farmacia') || lower.includes('medicamento') || lower.includes('receita') || lower.includes('falta')) {
+        reply = 'Relativamente à **Farmácia Central e Depósito de Medicamentos do HCM**:\n\nO levantamento de medicamentos é realizado mediante receita médica válida. Caso tenha enfrentado **falta de medicamentos**, atrasos ou dificuldades no atendimento, submeta uma manifestação seleccionando a unidade **"Farmácia Central"** para intervenção da Comissão Técnica.';
+      } else if (lower.includes('urgencia') || lower.includes('emergencia') || lower.includes('banco de socorros') || lower.includes('onde fica') || lower.includes('horario')) {
+        reply = 'A **Urgência Geral (Banco de Socorros)** do Hospital Central de Maputo funciona **24 horas por dia, 7 dias por semana**, com entrada principal pela Avenida Eduardo Mondlane. O atendimento obedece à Triagem de Manchester por grau de gravidade.';
+      } else if (lower.includes('elogio') || lower.includes('agradec') || lower.includes('parabens')) {
+        reply = 'Ficamos muito gratos pelo seu reconhecimento! O louvor aos nossos médicos, enfermeiros e pessoal de apoio motiva toda a equipa do HCM. Pode registar o seu Elogio formal no formulário de processos.';
       } else {
-        reply = 'Olá! Sou o **Acolhe HospitalCare**, o assistente digital do Hospital Central de Maputo. Como posso ajudar? Posso orientá-lo a submeter uma reclamação, sugestão ou elogio, ou explicar como acompanhar o seu processo com o código e PIN.';
+        reply = 'Olá! Sou o **Acolhe HospitalCare**, o assistente digital de acolhimento do Hospital Central de Maputo. Posso ajudá-lo a submeter uma reclamação ou denúncia com confidencialidade, acompanhar o seu processo com código e PIN, ou orientá-lo sobre a Urgência e Farmácia Central.';
       }
     }
 
