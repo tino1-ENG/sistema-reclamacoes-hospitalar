@@ -16,7 +16,14 @@ const getBaseUrl = (): string => {
     if (window.location.hostname.includes('github.io')) {
       return 'https://sistema-reclamacoes-hospitalar-2.onrender.com/api';
     }
-    return window.location.port !== '9000' ? '/api' : 'http://localhost:5000/api';
+    // Se estiver a aceder diretamente à porta 5000, usa /api relativo; senão (ex: portas de dev 9000, 9090) liga a localhost:5000
+    if (window.location.port === '5000') {
+      return '/api';
+    }
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      return 'http://localhost:5000/api';
+    }
+    return '/api';
   }
   return 'https://sistema-reclamacoes-hospitalar-2.onrender.com/api';
 };

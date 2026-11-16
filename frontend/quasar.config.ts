@@ -73,8 +73,7 @@ export default defineConfig((/* ctx */) => {
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#devserver
     devServer: {
-      // vueDevtools: true,
-      // https: true,
+      port: 9090,
       open: false, allowedHosts: true
     },
 
