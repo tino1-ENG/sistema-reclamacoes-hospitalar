@@ -105,7 +105,7 @@ export class AIService {
     if (provider === 'local') {
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 12000);
+        const timeoutId = setTimeout(() => controller.abort(), 6000);
         const response = await fetch(`${this.localAiUrl}/api/chat`, {
           signal: controller.signal,
           method: 'POST',
@@ -116,7 +116,11 @@ export class AIService {
               { role: 'system', content: systemPrompt },
               { role: 'user', content: scrubSensitiveData(userPrompt) }
             ],
-            stream: false
+            stream: false,
+            options: {
+              num_predict: 80,
+              temperature: 0.3
+            }
           })
         });
 
@@ -198,22 +202,24 @@ Seu papel:
 
     const prompt = `Histórico recente da conversa:\n${lastHistory}\n\nNova mensagem do utente: ${cleanUserMsg}\n\nResponda ao utente de forma empática e prestativa:`;
 
-    let reply = await this.generateCompletion(systemPrompt, prompt);
+    // 1. Resposta Directa e Instantânea para Tópicos Institucionais Estruturados do HCM (0ms de latência)
+    const lower = cleanUserMsg.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    let reply = '';
 
-    if (!reply) {
-      // Resposta inteligente de contingência (baseada em palavras-chave normalizadas)
-      const lower = cleanUserMsg.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-      if (lower.includes('consultar') || lower.includes('acompanhar') || lower.includes('codigo') || lower.includes('pin') || lower.includes('processo') || lower.includes('estado')) {
-        reply = 'Para consultar o estado do seu processo no **Hospital Central de Maputo**:\n\n1. Aceda ao separador **"Consultar Processo"** no menu principal.\n2. Introduza o seu **Código de Referência** (ex: #HC-2026-XXXX) e o seu **PIN de 4 dígitos** gerados na submissão.\n3. Terá acesso imediato ao estado da tramitação, departamento responsável e resposta oficial da Direcção do HCM.';
-      } else if (lower.includes('reclam') || lower.includes('queixa') || lower.includes('denuncia') || lower.includes('mau atendimento')) {
-        reply = 'Lamentamos profundamente a situação. O Hospital Central de Maputo está totalmente empenhado na melhoria contínua dos serviços. Pode submeter uma **Reclamação ou Denúncia** formal através do botão "Submeter Processo", com opção de sigilo 100% anónimo. O caso será investigado pela Direcção Clínica e Gabinete do Utente.';
-      } else if (lower.includes('farmacia') || lower.includes('medicamento') || lower.includes('receita') || lower.includes('falta')) {
-        reply = 'Relativamente à **Farmácia Central e Depósito de Medicamentos do HCM**:\n\nO levantamento de medicamentos é realizado mediante receita médica válida. Caso tenha enfrentado **falta de medicamentos**, atrasos ou dificuldades no atendimento, submeta uma manifestação seleccionando a unidade **"Farmácia Central"** para intervenção da Comissão Técnica.';
-      } else if (lower.includes('urgencia') || lower.includes('emergencia') || lower.includes('banco de socorros') || lower.includes('onde fica') || lower.includes('horario')) {
-        reply = 'A **Urgência Geral (Banco de Socorros)** do Hospital Central de Maputo funciona **24 horas por dia, 7 dias por semana**, com entrada principal pela Avenida Eduardo Mondlane. O atendimento obedece à Triagem de Manchester por grau de gravidade.';
-      } else if (lower.includes('elogio') || lower.includes('agradec') || lower.includes('parabens')) {
-        reply = 'Ficamos muito gratos pelo seu reconhecimento! O louvor aos nossos médicos, enfermeiros e pessoal de apoio motiva toda a equipa do HCM. Pode registar o seu Elogio formal no formulário de processos.';
-      } else {
+    if (lower.includes('consultar') || lower.includes('acompanhar') || lower.includes('codigo') || lower.includes('pin') || lower.includes('processo') || lower.includes('estado')) {
+      reply = 'Para consultar o estado do seu processo no **Hospital Central de Maputo**:\n\n1. Aceda ao separador **"Consultar Processo"** no menu principal.\n2. Introduza o seu **Código de Referência** (ex: #HC-2026-XXXX) e o seu **PIN de 4 dígitos** gerados na submissão.\n3. Terá acesso imediato ao estado da tramitação, departamento responsável e resposta oficial da Direcção do HCM.';
+    } else if (lower.includes('reclam') || lower.includes('queixa') || lower.includes('denuncia') || lower.includes('mau atendimento')) {
+      reply = 'Lamentamos profundamente a situação. O Hospital Central de Maputo está totalmente empenhado na melhoria contínua dos serviços. Pode submeter uma **Reclamação ou Denúncia** formal através do botão "Registar Processo", com opção de sigilo 100% anónimo. O caso será investigado pela Direcção Clínica e Gabinete do Utente.';
+    } else if (lower.includes('farmacia') || lower.includes('medicamento') || lower.includes('receita') || lower.includes('falta')) {
+      reply = 'Relativamente à **Farmácia Central e Depósito de Medicamentos do HCM**:\n\nO levantamento de medicamentos é realizado mediante receita médica válida. Caso tenha enfrentado **falta de medicamentos**, atrasos ou dificuldades no atendimento, submeta uma manifestação seleccionando a unidade **"Farmácia Central"** para intervenção da Comissão Técnica.';
+    } else if (lower.includes('urgencia') || lower.includes('emergencia') || lower.includes('banco de socorros') || lower.includes('onde fica') || lower.includes('horario')) {
+      reply = 'A **Urgência Geral (Banco de Socorros)** do Hospital Central de Maputo funciona **24 horas por dia, 7 dias por semana**, com entrada principal pela Avenida Eduardo Mondlane. O atendimento obedece à Triagem de Manchester por grau de gravidade.';
+    } else if (lower.includes('elogio') || lower.includes('agradec') || lower.includes('parabens')) {
+      reply = 'Ficamos muito gratos pelo seu reconhecimento! O louvor aos nossos médicos, enfermeiros e pessoal de apoio motiva toda a equipa do HCM. Pode registar o seu Elogio formal no formulário de processos.';
+    } else {
+      // 2. Se for uma questão livre e aberta, consulta o motor de IA generativo (Ollama local / Gemini)
+      reply = await this.generateCompletion(systemPrompt, prompt);
+      if (!reply) {
         reply = 'Olá! Sou o **Acolhe HospitalCare**, o assistente digital de acolhimento do Hospital Central de Maputo. Posso ajudá-lo a submeter uma reclamação ou denúncia com confidencialidade, acompanhar o seu processo com código e PIN, ou orientá-lo sobre a Urgência e Farmácia Central.';
       }
     }
