@@ -103,9 +103,17 @@ export class AIService {
     const provider = await this.getEffectiveProvider();
 
     if (provider === 'local') {
+      let timeoutId: NodeJS.Timeout | undefined;
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 6000);
+        timeoutId = setTimeout(() => {
+          try {
+            controller.abort();
+          } catch {
+            // Ignora erro de aborto
+          }
+        }, 5000);
+
         const response = await fetch(`${this.localAiUrl}/api/chat`, {
           signal: controller.signal,
           method: 'POST',
@@ -118,13 +126,12 @@ export class AIService {
             ],
             stream: false,
             options: {
-              num_predict: 80,
+              num_predict: 60,
               temperature: 0.3
             }
           })
         });
 
-        clearTimeout(timeoutId);
         if (response.ok) {
           const data = (await response.json()) as { message?: { content?: string } };
           if (data.message?.content) {
@@ -132,28 +139,34 @@ export class AIService {
           }
         }
       } catch (err) {
-        console.warn('[AIService] Falha na IA Local, a tentar Gemini/Fallback:', err);
+        console.warn('[AIService] Falha na IA Local, a utilizar resposta inteligente de acolhimento:', (err as Error)?.message || err);
+      } finally {
+        if (timeoutId) clearTimeout(timeoutId);
       }
     }
 
-    if (provider === 'gemini' || this.geminiClient) {
+    if ((provider === 'gemini' || this.geminiClient) && this.geminiClient) {
+      let geminiTimer: NodeJS.Timeout | undefined;
       try {
-        const model = this.geminiClient!.getGenerativeModel({
+        const model = this.geminiClient.getGenerativeModel({
           model: this.geminiModelName,
           systemInstruction: systemPrompt
         });
 
         const geminiPromise = model.generateContent(scrubSensitiveData(userPrompt));
-        const timeoutPromise = new Promise<never>((_, reject) =>
-          setTimeout(() => reject(new Error('Gemini API timeout')), 10000)
-        );
+        const timeoutPromise = new Promise<never>((_, reject) => {
+          geminiTimer = setTimeout(() => reject(new Error('Gemini API timeout')), 6000);
+        });
+
         const result = (await Promise.race([geminiPromise, timeoutPromise])) as Awaited<typeof geminiPromise>;
         const responseText = result.response.text();
         if (responseText) {
           return responseText.trim();
         }
       } catch (err) {
-        console.warn('[AIService] Falha no Gemini API, a utilizar resposta inteligente de contingência:', err);
+        console.warn('[AIService] Falha no Gemini API, a utilizar resposta inteligente de contingência:', (err as Error)?.message || err);
+      } finally {
+        if (geminiTimer) clearTimeout(geminiTimer);
       }
     }
 

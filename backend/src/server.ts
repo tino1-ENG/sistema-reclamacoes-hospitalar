@@ -5,6 +5,15 @@ import { connectDatabase } from './config/database.js';
 import { Department } from './models/index.js';
 import { seed } from './database/seed.js';
 
+// Prevenção de quebras por exceções não capturadas
+process.on('uncaughtException', (err) => {
+  logger.error({ err }, '⚠️ Exceção não capturada (uncaughtException) no servidor HospitalCare:');
+});
+
+process.on('unhandledRejection', (reason) => {
+  logger.error({ reason }, '⚠️ Rejeição de Promise não tratada (unhandledRejection) no servidor HospitalCare:');
+});
+
 async function bootstrap() {
   try {
     // 1. Ligar ao MongoDB
