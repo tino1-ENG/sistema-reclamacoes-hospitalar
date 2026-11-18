@@ -84,7 +84,7 @@ def main():
         section.left_margin = Inches(1.18)    # ~3.0 cm
         section.right_margin = Inches(0.79)   # ~2.0 cm
 
-    # Estilo base do documento - Reduzido para Times New Roman 11pt conforme pedido
+    # Estilo base do documento - Times New Roman 11pt conforme padrão retificado
     style_normal = doc.styles['Normal']
     font = style_normal.font
     font.name = 'Times New Roman'
@@ -134,7 +134,7 @@ def main():
     p_tit.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p_tit.paragraph_format.space_before = Pt(16)
     p_tit.paragraph_format.space_after = Pt(22)
-    r_tit = p_tit.add_run("RELATÓRIO TÉCNICO DO SISTEMA DE GESTÃO DE RECLAMAÇÕES HOSPITALARES")
+    r_tit = p_tit.add_run("RELATÓRIO TÉCNICO FINAL DO SISTEMA DE GESTÃO DE RECLAMAÇÕES HOSPITALARES")
     r_tit.font.name = "Times New Roman"
     r_tit.font.size = Pt(12.0)
     r_tit.bold = True
@@ -148,7 +148,7 @@ def main():
     r_proj.font.name = "Times New Roman"
     r_proj.font.size = Pt(10.5)
     r_proj.bold = True
-    r_proj_desc = p_proj.add_run("HospitalCare — Sistema Integrado de Gestão de Reclamações, Elogios, Sugestões e Acolhimento Hospitalar com Inteligência Artificial e PWA Offline (Hospital Central de Maputo - HCM)")
+    r_proj_desc = p_proj.add_run("HospitalCare — Sistema Integrado de Gestão de Reclamações, Elogios, Sugestões e Acolhimento Hospitalar com Inteligência Artificial Departamental e PWA Offline (Hospital Central de Maputo - HCM)")
     r_proj_desc.font.name = "Times New Roman"
     r_proj_desc.font.size = Pt(10.5)
 
@@ -196,13 +196,13 @@ def main():
     doc.add_page_break()
 
     # ---------------------------------------------------------------------------
-    # 1. INTRODUÇÃO
+    # 1. INTRODUÇÃO E ENQUADRAMENTO ESTRATÉGICO
     # ---------------------------------------------------------------------------
-    add_paragraph_styled(doc, "1. INTRODUÇÃO", font_size=12.0, bold=True, space_before=6, space_after=6)
+    add_paragraph_styled(doc, "1. INTRODUÇÃO E ENQUADRAMENTO ESTRATÉGICO", font_size=12.0, bold=True, space_before=6, space_after=6)
     
     add_paragraph_styled(doc, 
         "A prestação de cuidados de saúde numa unidade de nível quaternário e de referência nacional envolve um complexo "
-        "conjunto de interações diárias entre cidadãos, corpo clínico, equipas de enfermagem e serviços administrativos. "
+        "conjunto de interações diárias entre cidadãos, corpo clínico, equipas de enfermagem e serviços de apoio administrativo. "
         "No contexto do Hospital Central de Maputo (HCM), a maior e mais diferenciada unidade sanitária de Moçambique, a gestão "
         "do acolhimento, o tratamento célere de reclamações, a receção de sugestões e o reconhecimento de elogios desempenham "
         "um papel estratégico na salvaguarda dos direitos dos pacientes, na humanização dos serviços e na melhoria contínua dos cuidados hospitalares.")
@@ -218,15 +218,15 @@ def main():
         "digital resiliente, segura e multiplataforma desenvolvida especificamente para o Hospital Central de Maputo. O sistema conjuga "
         "uma interface SPA/PWA de elevada ergonomia, um backend RESTful orientado a eventos, políticas de confidencialidade com anonimato "
         "estrito e autenticação por PIN de 4 dígitos, integração com Inteligência Artificial para apoio à triagem e esclarecimento de ocorrências, "
-        "e modo de operação offline em dispositivos móveis.")
+        "e modo de operação offline em dispositivos móveis, em perfeita sintonia com a Política Nacional de Saúde e as diretrizes do Ministério da Saúde de Moçambique (MISAU).")
 
     # ---------------------------------------------------------------------------
-    # 2. IDENTIFICAÇÃO E CONTEXTUALIZAÇÃO DO PILOTO (HCM)
+    # 2. IDENTIFICAÇÃO E CONTEXTUALIZAÇÃO DO PILOTO (HOSPITAL CENTRAL DE MAPUTO)
     # ---------------------------------------------------------------------------
     add_paragraph_styled(doc, "2. IDENTIFICAÇÃO E CONTEXTUALIZAÇÃO DO PILOTO (HOSPITAL CENTRAL DE MAPUTO)", font_size=12.0, bold=True, space_before=10, space_after=6)
     
     add_paragraph_styled(doc,
-        "O Hospital Central de Maputo (HCM), fundado em 1900 e localizado no coração da capital moçambicana, é a principal instituição "
+        "O Hospital Central de Maputo (HCM), fundado em 1900 e localizado na capital moçambicana, é a principal instituição "
         "hospitalar pública do país. Classificado como hospital quaternário de ensino universitário, possui capacidade superior a 1.500 camas "
         "distribuídas por pavilhões especializados, acolhendo diariamente milhares de utentes em consultas de especialidade, meios auxiliares "
         "de diagnóstico e nos bancos de socorros e urgência geral.")
@@ -235,14 +235,14 @@ def main():
         "Para a implementação do piloto operacional do HospitalCare, foram mapeados os oito departamentos de maior afluência e impacto cívico:")
     
     departments_info = [
-        ("Urgência Geral (Banco de Socorros - URG)", "Atendimento ininterrupto 24/7 com aplicação da Triagem de Manchester (classificação por cores de emergência)."),
-        ("Farmácia Central e Depósito de Medicamentos (FAR)", "Dispensação de medicamentos essenciais, antirretrovirais e controlo de stocks hospitalares."),
-        ("Pediatria e Banco de Socorros Infantil (PED)", "Urgência pediátrica e internamento infantil com direito a acompanhante materno a tempo integral."),
-        ("Maternidade e Bloco Obstétrico (MAT)", "Assistência ao parto humanizado, cesarianas e urgências obstétricas com diretriz de tolerância zero à cobrança ilícita."),
-        ("Consultas Externas e Especialidades (CE)", "Atendimento ambulatorial referenciado por centros de saúde periféricos da Província e Cidade de Maputo."),
-        ("Cirurgia Geral e Bloco Operatório (CIR)", "Cirurgias eletivas programadas e intervenções urgentes de suporte vital."),
-        ("Imagiologia e Diagnóstico (IMG)", "Exames radiológicos, ecografias, Tomografia Computadorizada (TAC) e emissão de laudos."),
-        ("Gabinete do Utente e Atendimento (ATN)", "Mediação institucional, apoio cívico e averiguação deontológica de conduta profissional.")
+        ("Urgência Geral (Banco de Socorros - URG)", "Atendimento ininterrupto 24/7 com aplicação da Triagem de Manchester (classificação por cores de emergência: Vermelho 0min, Laranja 10min, Amarelo 60min, Verde 120min, Azul 240min)."),
+        ("Farmácia Central e Depósito de Medicamentos (FAR)", "Dispensação de medicamentos essenciais, antirretrovirais (TARV), insulina e controlo de stocks com rastreio de roturas pelo Formulário Nacional de Medicamentos."),
+        ("Pediatria e Banco de Socorros Infantil (PED)", "Urgência pediátrica e internamento infantil com direito a acompanhante materno a tempo integral, prioritário para desidratação severa e malária grave."),
+        ("Maternidade e Bloco Obstétrico (MAT)", "Assistência ao parto humanizado, cesarianas e urgências obstétricas com diretriz de tolerância zero à cobrança ilícita e negligência obstétrica."),
+        ("Consultas Externas e Especialidades (CE)", "Atendimento ambulatorial referenciado por centros de saúde periféricos da Província e Cidade de Maputo (Mavalane, Chamanculo, José Macamo)."),
+        ("Cirurgia Geral e Bloco Operatório (CIR)", "Cirurgias eletivas programadas e intervenções urgentes de suporte vital com consentimento informado e visitas pós-operatórias regulamentadas."),
+        ("Imagiologia e Meios de Diagnóstico (IMG)", "Exames radiológicos (Raio-X), ecografias, Tomografia Computadorizada (TAC), ressonância magnética e prazos prioritários de laudo."),
+        ("Gabinete do Utente e Atendimento (ATN)", "Mediação institucional, apoio cívico, averiguação deontológica de conduta profissional e garantia de direitos dos pacientes.")
     ]
     for d_name, d_desc in departments_info:
         p_d = doc.add_paragraph()
@@ -265,11 +265,11 @@ def main():
         "O diagnóstico institucional realizado na fase de levantamento de requisitos identificou cinco fragilidades nucleares no modelo legado:")
     
     problems = [
-        ("Burocracia Manual e Falta de Transparência", "A submissão física em livros dispersos impedia o utente de saber se a sua queixa foi formalmente analisada ou arquivada."),
-        ("Receio de Represálias e Ausência de Sigilo", "A obrigatoriedade de identificação nos canais tradicionais inibia denúncias graves de cobrança ilícita, negligência ou conduta antiética."),
-        ("Inexistência de Prazos Vinculativos (SLA)", "Processos permaneciam semanas sem resposta preliminar por falta de mecanismos automatizados de contagem e escalonamento de prazos."),
-        ("Inacessibilidade para Cidadãos Fora do Hospital", "O utente era forçado a deslocar-se presencialmente ao hospital para verificar se havia resposta ou parecer ao seu processo."),
-        ("Sobrecarga dos Balcões de Acolhimento", "Perguntas frequentes e dúvidas repetitivas sobre horários de visita, triagem e farmácia congestonavam o atendimento presencial.")
+        ("Burocracia Manual e Falta de Transparência", "A submissão física em livros dispersos impedia o utente de saber se a sua queixa foi formalmente analisada, arquivada ou tratada pela Direção."),
+        ("Receio de Represálias e Ausência de Sigilo", "A obrigatoriedade de identificação nos canais tradicionais inibia denúncias graves de cobrança ilícita, negligência ou conduta antiética de profissionais de saúde."),
+        ("Inexistência de Prazos Vinculativos (SLA)", "Processos permaneciam semanas sem resposta preliminar por falta de mecanismos automatizados de contagem e escalonamento de prazos regulamentares."),
+        ("Inacessibilidade para Cidadãos Fora do Hospital", "O utente era forçado a deslocar-se presencialmente ao hospital para verificar se havia resposta ou parecer homologado ao seu processo."),
+        ("Sobrecarga dos Balcões de Acolhimento", "Perguntas frequentes e dúvidas repetitivas sobre horários de visita, triagem e farmácia congestionavam o atendimento presencial nos pavilhões.")
     ]
     for p_title, p_desc in problems:
         p_p = doc.add_paragraph()
@@ -292,30 +292,30 @@ def main():
         "A transformação digital do ciclo de manifestações hospitalares do Hospital Central de Maputo apoia-se em quatro pilares fundamentais:")
     
     add_paragraph_styled(doc,
-        "1. Governação Clínica e Qualidade Assistencial: Permitir que o Conselho de Administração e as Direções de Serviço disponham de indicadores em tempo real para tomada de decisões corretivas.")
+        "1. Governação Clínica e Qualidade Assistencial: Permitir que o Conselho de Administração e as Direções de Serviço disponham de indicadores em tempo real para tomada de decisões corretivas baseadas em evidências auditáveis.")
     add_paragraph_styled(doc,
-        "2. Proteção e Empoderamento do Cidadão: A possibilidade de submissão 100% anónima e consulta por código público e PIN devolve a confiança ao cidadão e fortalece a denúncia responsável.")
+        "2. Proteção e Empoderamento do Cidadão: A possibilidade de submissão 100% anónima e consulta por código público e PIN devolve a confiança ao cidadão e fortalece a denúncia responsável sem receio de represálias.")
     add_paragraph_styled(doc,
-        "3. Eficiência Operacional e Descongestionamento: O acolhimento inteligente assistido por IA e a consulta online reduzem as filas nos gabinetes administrativos em mais de 60%.")
+        "3. Eficiência Operacional e Descongestionamento: O acolhimento inteligente assistido por IA e a consulta online reduzem as filas nos gabinetes administrativos em mais de 60%, agilizando a resposta aos casos críticos.")
     add_paragraph_styled(doc,
-        "4. Cibersegurança e Conformidade: Adoção das melhores práticas de encriptação, controlo estrito de acessos RBAC, proteção de dados pessoais e trilha de auditoria à prova de adulteração.")
+        "4. Cibersegurança e Conformidade: Adoção das melhores práticas de encriptação, controlo estrito de acessos RBAC, proteção de dados pessoais de saúde e trilha de auditoria à prova de adulteração em conformidade com as normas ISO 27001.")
 
     # ---------------------------------------------------------------------------
     # 5. DEFINIÇÃO DA SOLUÇÃO E INOVAÇÕES TECNOLÓGICAS
     # ---------------------------------------------------------------------------
-    add_paragraph_styled(doc, "5. DEFINIÇÃO DA SOLUÇÃO E INOVAÇÕES TECNOLÓGICAS", font_size=12.0, bold=True, space_before=10, space_after=6)
+    add_paragraph_styled(doc, "5. DEFINIÇÃO DA SOLUÇÃO E INOVAÇÕES TECNOLÓGICAS IMPLEMENTADAS", font_size=12.0, bold=True, space_before=10, space_after=6)
     
     add_paragraph_styled(doc,
         "O HospitalCare constitui uma solução integrada com módulos específicos e inovações concebidas para a realidade hospitalar moçambicana:")
     
     features = [
-        ("Submissão Anónima com Chaveamento Instantâneo", "O cidadão pode escolher entre registo identificado (com notificações) ou 100% anónimo (sem gravação de dados pessoais no formulário)."),
-        ("Rastreio Criptográfico com Código e PIN de 4 Dígitos", "Cada manifestação recebe uma referência pública (#HC-2026-XXXXXX) e um PIN confidencial protegido por bcrypt com 8 rounds de salt."),
-        ("Modo de IA Departamental (Controlo da Chefia)", "O Chefe de Departamento pode ativar o 'Modo IA' no seu painel, permitindo que o Copiloto HCM assuma o acolhimento imediato e minutas preliminares aos casos do setor."),
-        ("Esclarecimento Inteligente de Ocorrências com IA", "O utente autenticado pode solicitar no seu painel esclarecimentos clínicos/processuais à IA, compreendendo o estado da tramitação e procedimentos do departamento."),
-        ("Assistente Virtual Acolhe HospitalCare", "Widget conversacional inteligente com motor híbrido (Fast-Pass local <30ms, Ollama local e fallback de contingência) que orienta sobre triagem, horários e processos."),
-        ("Capacidade PWA e Operação Híbrida Offline", "Progressive Web App com Service Worker que permite instalar o portal no telemóvel e consultar informações de acolhimento e triagem mesmo sem acesso à Internet."),
-        ("Confidencialidade de Pareceres", "Separação estrita entre mensagens públicas homologadas e notas internas da equipa clínica/administrativa (isInternal: false visível ao utente; isInternal: true restrito ao staff).")
+        ("Submissão Anónima com Chaveamento Instantâneo", "O cidadão pode escolher entre registo identificado (com notificações SMS/email) ou 100% anónimo (sem gravação de dados pessoais no formulário)."),
+        ("Rastreio Criptográfico com Código e PIN de 4 Dígitos", "Cada manifestação recebe uma referência pública (#HC-2026-XXXXXX) e um PIN confidencial protegido por bcrypt com 8 rounds de salt, com busca resiliente flexível a cardinal e maiúsculas."),
+        ("Modo de IA Departamental Ativado pela Chefia (Auto-Atendimento)", "O Chefe de Departamento dispõe de um alternador no seu painel para ativar o 'Modo IA'. Quando ativo, a IA assume o acolhimento imediato, gerando minutas de parecer e respostas preliminares automáticas com transição direta para o estado IN_REVIEW."),
+        ("Esclarecimento Inteligente de Ocorrências com IA no Painel do Utente", "Além de registar queixas manuais, o utente autenticado pode submeter dúvidas sobre o andamento do seu processo. A IA analisa o histórico, o departamento incumbido e os prazos de SLA, devolvendo explicações clínicas/administrativas e os próximos passos hospitalares."),
+        ("Assistente Virtual Acolhe HospitalCare", "Widget conversacional inteligente com motor híbrido (Fast-Pass local <30ms, Ollama local e fallback de contingência) que orienta sobre triagem, horários e processos com zero overhead."),
+        ("Capacidade PWA e Operação Híbrida Offline (Zero Dados Móveis)", "Progressive Web App com Service Worker e base residente local que permite ao utente no telemóvel consultar critérios de triagem, regras de farmácia e orientações hospitalares mesmo desconectado da Internet."),
+        ("Confidencialidade Rigorosa de Notas Internas", "Separação arquitetural estrita entre pareceres públicos homologados (visíveis ao utente) e notas internas de tramitação clínica (estritamente confidenciais e restritas à equipa médica/staff).")
     ]
     for f_title, f_desc in features:
         p_f = doc.add_paragraph()
@@ -410,6 +410,48 @@ def main():
             r.font.name = "Times New Roman"
             r.font.size = Pt(8.5)
 
+    # TABELA 2: Políticas de SLA e Prazos Regulamentares por Categoria
+    add_paragraph_styled(doc, "7.1. Políticas de Prazo Regulamentar (SLA) por Categoria", font_size=11.0, bold=True, space_before=8, space_after=4)
+    table_sla = doc.add_table(rows=1, cols=4)
+    table_sla.alignment = WD_TABLE_ALIGNMENT.CENTER
+    table_sla.autofit = False
+
+    col_widths_sla = [Inches(1.8), Inches(1.4), Inches(1.6), Inches(1.6)]
+    headers_sla = ["Categoria de Manifestação", "Prioridade Padrão", "Prazo 1ª Resposta", "Prazo Resolução Final"]
+    for i, title in enumerate(headers_sla):
+        cell = table_sla.cell(0, i)
+        cell.width = col_widths_sla[i]
+        set_cell_margins(cell, top=60, bottom=60, left=100, right=100)
+        set_cell_background(cell, "0f172a")
+        p = cell.paragraphs[0]
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        r = p.add_run(title)
+        r.font.name = "Times New Roman"
+        r.font.size = Pt(9.5)
+        r.bold = True
+        r.font.color.rgb = RGBColor(255, 255, 255)
+
+    sla_rows = [
+        ("Atendimento e Conduta Profissional", "NORMAL", "24 Horas", "72 Horas (3 Dias)"),
+        ("Tempo de Espera e Triagem", "ALTA", "12 Horas", "48 Horas (2 Dias)"),
+        ("Disponibilidade de Medicamentos", "URGENTE", "4 Horas", "24 Horas (1 Dia)"),
+        ("Instalações, Higiene e Equipamentos", "NORMAL", "48 Horas", "120 Horas (5 Dias)"),
+        ("Cobranças Ilícitas / Corrupção", "URGENTE (CRÍTICO)", "2 Horas (Imediato)", "24 Horas (Inspeção Geral)")
+    ]
+    for row_idx, data in enumerate(sla_rows):
+        row = table_sla.add_row()
+        bg_color = "f8fafc" if row_idx % 2 == 1 else "ffffff"
+        for col_idx, text in enumerate(data):
+            cell = row.cells[col_idx]
+            cell.width = col_widths_sla[col_idx]
+            set_cell_margins(cell, top=50, bottom=50, left=100, right=100)
+            set_cell_background(cell, bg_color)
+            p = cell.paragraphs[0]
+            p.alignment = WD_ALIGN_PARAGRAPH.LEFT if col_idx == 0 else WD_ALIGN_PARAGRAPH.CENTER
+            r = p.add_run(text)
+            r.font.name = "Times New Roman"
+            r.font.size = Pt(8.5)
+
     # ---------------------------------------------------------------------------
     # 8. CONTROLO DE ACESSO, SEGURANÇA E MATRIZ RBAC
     # ---------------------------------------------------------------------------
@@ -418,7 +460,7 @@ def main():
     add_paragraph_styled(doc,
         "A integridade e confidencialidade hospitalar assentam no princípio do menor privilégio (PoLP). O sistema define quatro perfis de utilizador:")
 
-    # TABELA 2: Matriz RBAC
+    # TABELA 3: Matriz RBAC
     table_rbac = doc.add_table(rows=1, cols=4)
     table_rbac.alignment = WD_TABLE_ALIGNMENT.CENTER
     table_rbac.autofit = False

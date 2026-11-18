@@ -114,11 +114,21 @@ Desenvolver e implementar uma plataforma digital robusta, segura e multiplatafor
 | **Inteligência Artificial** | Ollama (qwen3.5) + Fast-Pass HCM | Modelo 6.6GB / Local | Acolhimento, triagem heurística, respostas especializadas. |
 | **Auditoria & Logs** | Pino Logger + Audit Trail DB | Async JSON streaming | Rastreabilidade de alterações com carimbo de data/hora Maputo. |
 
+### Tabela 2: Políticas de Prazo Regulamentar (SLA) por Categoria
+
+| Categoria de Manifestação | Prioridade Padrão | Prazo 1ª Resposta | Prazo Resolução Final |
+| :--- | :--- | :--- | :--- |
+| **Atendimento e Conduta Profissional** | NORMAL | 24 Horas | 72 Horas (3 Dias) |
+| **Tempo de Espera e Triagem** | ALTA | 12 Horas | 48 Horas (2 Dias) |
+| **Disponibilidade de Medicamentos** | URGENTE | 4 Horas | 24 Horas (1 Dia) |
+| **Instalações, Higiene e Equipamentos** | NORMAL | 48 Horas | 120 Horas (5 Dias) |
+| **Cobranças Ilícitas / Corrupção** | URGENTE (CRÍTICO) | 2 Horas (Imediato) | 24 Horas (Inspeção Geral) |
+
 ---
 
 ## 8. CONTROLO DE ACESSO, SEGURANÇA E MATRIZ RBAC
 
-### Tabela 2: Matriz RBAC e Perfis de Acesso
+### Tabela 3: Matriz RBAC e Perfis de Acesso
 
 | Perfil (Role) | Utilizador Exemplo | Âmbito de Acesso | Privilégios e Restrições |
 | :--- | :--- | :--- | :--- |
