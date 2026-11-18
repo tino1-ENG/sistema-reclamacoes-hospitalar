@@ -104,7 +104,18 @@ export class ProcessService {
    * Consulta pública direta por Código de Referência e PIN (sem necessidade de login)
    */
   async lookupByReferenceAndPin(referenceNumber: string, pin: string) {
-    const processDoc = await Process.findOne({ referenceNumber })
+    const rawRef = referenceNumber.trim();
+    const cleanRef = rawRef.replace(/^#/, '');
+    const withHash = `#${cleanRef}`;
+
+    const processDoc = await Process.findOne({
+      $or: [
+        { referenceNumber: rawRef },
+        { referenceNumber: withHash },
+        { referenceNumber: cleanRef },
+        { referenceNumber: { $regex: new RegExp(`^#?${cleanRef}$`, 'i') } }
+      ]
+    })
       .populate('departmentId', 'name code')
       .populate('categoryId', 'name code');
 
