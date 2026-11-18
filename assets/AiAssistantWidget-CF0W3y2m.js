@@ -1,0 +1,65 @@
+import{B as e,N as t,O as n,Q as r,S as i,a,d as o,f as s,g as c,h as l,j as u,k as d,l as f,m as p,u as m,xt as h,yt as g}from"./inject-obj-prop-B2xzzzHS.js";import{g as _,h as v,t as y}from"./QBtn-BlfuK1Jw.js";import{t as b}from"./QIcon-Bl6eEJjJ.js";import{t as x}from"./QCard-Dl39jXF5.js";import{$ as S,U as C,a as w,o as T,ot as E,r as D,s as O}from"./index-CUJk2mtu.js";import{t as k}from"./QBadge-BeUrGEWA.js";import{t as ee}from"./QChip-6mUAmCOd.js";import{t as A}from"./QForm-FiApiTOg.js";var j={class:`ai-widget-wrapper`},M={class:`row items-center no-wrap`},N={class:`row items-center`},P={key:0,class:`bg-amber-1 text-amber-9 q-px-sm q-py-xs row items-center justify-between text-caption border-b`},F={class:`row items-center`},I={key:0,class:`q-my-sm row q-gutter-xs`},L={class:`ai-msg-bubble`},R=[`innerHTML`],z={class:`message-time`},B={key:1,class:`ai-msg ai-msg-bot`},V=E(c({__name:`AiAssistantWidget`,setup(c){let E=r(!1),V=r(!1),H=r(``),U=r(typeof navigator<`u`&&!navigator.onLine),W=r(`session-${Date.now()}-${Math.random().toString(36).substring(7)}`),G=r(null),K=r([]),q=[`Como consultar com Código e PIN?`,`Triagem de Manchester HCM`,`Falta de remédio na Farmácia`,`Maternidade e Parto Humanizado`,`Consultas Externas e Agendamento`];function J(){typeof navigator<`u`&&(U.value=!navigator.onLine)}n(()=>{typeof window<`u`&&(window.addEventListener(`online`,J),window.addEventListener(`offline`,J))}),d(()=>{typeof window<`u`&&(window.removeEventListener(`online`,J),window.removeEventListener(`offline`,J))});function Y(){E.value=!E.value,E.value&&X()}function X(){i(()=>{G.value&&(G.value.scrollTop=G.value.scrollHeight)})}function Z(){let e=new Date;return`${e.getHours().toString().padStart(2,`0`)}:${e.getMinutes().toString().padStart(2,`0`)}`}function Q(e){return e.replace(/\*\*(.*?)\*\*/g,`<strong>$1</strong>`).replace(/\*(.*?)\*/g,`<em>$1</em>`).replace(/\n/g,`<br/>`)}async function te(e){H.value=e,await $()}async function $(){let e=H.value.trim();if(e&&!V.value){K.value.push({role:`user`,content:e,time:Z()}),H.value=``,V.value=!0,X();try{let t=await S.chat(e,W.value);if(t&&t.response&&t.response.trim().length>0){W.value=t.sessionId||W.value,K.value.push({role:`assistant`,content:t.response,time:Z()});return}throw Error(`Empty response from AI engine`)}catch(t){console.warn(`[AiAssistantWidget] A utilizar guia inteligente de contingência do HCM:`,t);let n=ne(e);K.value.push({role:`assistant`,content:n,time:Z()})}finally{V.value=!1,X()}}}function ne(e){let t=e.toLowerCase().normalize(`NFD`).replace(/[\u0300-\u036f]/g,``);return t.includes(`consultar`)||t.includes(`acompanhar`)||t.includes(`processo`)||t.includes(`pin`)||t.includes(`codigo`)||t.includes(`estado`)?`Para consultar o estado do seu processo no **Hospital Central de Maputo**:
+
+1. Aceda ao separador **"Consultar Processo"** no menu superior.
+2. Introduza o seu **Código de Referência** (ex: \`#HC-2026-XXXX\`) e o seu **PIN de 4 dígitos** gerados no momento da submissão.
+3. Terá acesso imediato ao estado da tramitação, departamento responsável e resposta oficial da Direcção do HCM.
+
+*Nota: Se perdeu o seu PIN, dirija-se presencialmente ao Gabinete do Utente com um documento de identificação.*`:t.includes(`farmacia`)||t.includes(`medicamento`)||t.includes(`receita`)||t.includes(`remedio`)||t.includes(`falta`)?`Relativamente à **Farmácia Central e Depósito de Medicamentos do HCM**:
+
+- O levantamento de medicação prescrita nas consultas externas é feito mediante apresentação da receita médica e cartão de utente.
+- Caso tenha enfrentado **falta de medicamentos**, filas excessivas ou dificuldades no atendimento, pode submeter uma manifestação seleccionando a Unidade **"Farmácia Central"**.
+- O seu relato alerta directamente a Comissão Técnica de Medicamentos do HCM para reposição e auditoria de stock.`:t.includes(`elogio`)||t.includes(`agradec`)||t.includes(`parabens`)||t.includes(`bom trabalho`)||t.includes(`excelente`)?`Ficamos muito gratos pelo seu reconhecimento!
+
+- O louvor aos nossos médicos, enfermeiros e auxiliares fortalece o compromisso ético e humanizado do Hospital Central de Maputo.
+- Para registar formalmente, clique em **"Registar Processo"** e escolha o tipo **"Elogio"**.
+- Pode indicar o serviço (ex: Pediatria, Maternidade, Urgência) e o nome dos profissionais. O seu louvor é entregue à Direcção Clínica e adicionado ao registo de mérito.`:t.includes(`urgencia`)||t.includes(`emergencia`)||t.includes(`banco de socorros`)||t.includes(`onde fica`)||t.includes(`localizacao`)||t.includes(`horario`)||t.includes(`contacto`)?`A **Urgência Geral (Banco de Socorros)** do Hospital Central de Maputo funciona **24 horas por dia, 7 dias por semana**:
+
+- **Localização:** Acesso principal pela Avenida Eduardo Mondlane, Maputo.
+- **Protocolo de Triagem:** O atendimento segue a Triagem de Manchester (prioridade clínica imediata para risco de vida).
+- **Linha de Apoio HCM:** Em situação de emergência, ligue 117 ou (+258) 21 350 400.
+- Para relatar ocorrências na Urgência, utilize o formulário do HospitalCare.`:t.includes(`manchester`)||t.includes(`triagem`)||t.includes(`cores`)||t.includes(`amarelo`)||t.includes(`laranja`)||t.includes(`vermelho`)?`O **Sistema de Triagem de Manchester do HCM** classifica a gravidade clínica por cores:
+
+- 🔴 **Vermelho (Emergência):** Atendimento imediato (0 min - risco iminente de morte).
+- 🟠 **Laranja (Muito Urgente):** Atendimento até 10 minutos.
+- 🟡 **Amarelo (Urgente):** Atendimento até 60 minutos.
+- 🟢 **Verde (Pouco Urgente):** Atendimento até 120 minutos.
+- 🔵 **Azul (Não Urgente):** Encaminhamento para centro de saúde ou consulta externa (até 240 min).
+
+*A gravidade clínica tem sempre prioridade sobre a ordem de chegada.*`:t.includes(`pediatria`)||t.includes(`crianca`)||t.includes(`bebe`)||t.includes(`filho`)||t.includes(`lactente`)?`O **Serviço de Pediatria e Banco de Socorros Pediátrico do HCM** opera 24h:
+
+- Prioridade para desidratação severa, convulsões, malária grave e febre alta.
+- O internamento infantil assegura o direito legal a **acompanhante materno em permanência integral**.
+- Em caso de queixas sobre tratamento pediátrico, a manifestação tem acompanhamento prioritário da Comissão de Humanização.`:t.includes(`maternidade`)||t.includes(`parto`)||t.includes(`obstetr`)||t.includes(`gravida`)||t.includes(`cesariana`)?`A **Maternidade e Bloco Obstétrico do HCM** prestam cuidados 24 horas:
+
+- O **Parto Humanizado** é um direito consagrado, sendo permitida a presença de acompanhante.
+- **Tolerância Zero:** Cobranças ilícitas para realização de cesarianas ou negligência no parto são crimes e devem ser denunciadas no portal, inclusive de forma 100% anónima.
+- As denúncias de maternidade são remetidas de urgência à Inspecção Geral de Saúde.`:t.includes(`consulta`)||t.includes(`especialidade`)||t.includes(`marcar`)||t.includes(`guia`)||t.includes(`medico`)?`As **Consultas Externas de Especialidades do HCM** funcionam de Segunda a Sexta, das 07h30 às 15h30:
+
+- O primeiro agendamento exige **Guia de Referência** do centro de saúde ou hospital geral (Mavalane, Chamanculo, etc.).
+- Se o médico faltou ou a sua consulta foi cancelada sem aviso, submeta uma manifestação no HospitalCare para que o Gabinete de Gestão de Vagas proceda ao reagendamento prioritário.`:t.includes(`cirurgia`)||t.includes(`bloco`)||t.includes(`operacao`)||t.includes(`anestesia`)?`O **Serviço de Cirurgia e Bloco Operatório do HCM** opera cirurgias programadas e de urgência:
+
+- O termo de Consentimento Informado deve ser assinado e esclarecido antes de qualquer intervenção.
+- Informações sobre doentes operados podem ser obtidas no Balcão de Informação Cirúrgica das 10h às 12h e das 15h às 17h.`:t.includes(`raio-x`)||t.includes(`tac`)||t.includes(`ecografia`)||t.includes(`imagiologia`)||t.includes(`exame`)||t.includes(`ressonancia`)?`O **Serviço de Imagiologia do HCM** realiza exames de Raio-X, Ecografia e TAC:
+
+- Exames urgentes do Banco de Socorros têm laudo prioritário imediato.
+- Exames eletivos requerem requisição médica carimbada e marcação prévia.
+- Queixas sobre atrasos na entrega de laudos ou aparelhos avariados podem ser registadas no portal.`:t.includes(`reclam`)||t.includes(`queixa`)||t.includes(`denuncia`)||t.includes(`anonim`)||t.includes(`mau atendimento`)||t.includes(`submeter`)?`O **HospitalCare** garante total confidencialidade e segurança para a sua manifestação:
+
+1. Clique no botão **"Registar Queixa / Sugestão"**.
+2. Pode optar por submeter de forma **100% Anónima** (sem recolha de nome ou telefone) ou **Identificada** (para receber alertas por SMS/email).
+3. O sistema atribui um **Código Único e PIN**, encriptando o seu relato com segurança de nível institucional.
+4. O processo é encaminhado directamente à Inspecção Hospitalar e Direcção Clínica do HCM.`:t.includes(`prazo`)||t.includes(`tempo`)||t.includes(`demora`)||t.includes(`quando responde`)||t.includes(`dias`)?`Os prazos regulamentares de tramitação no Hospital Central de Maputo são:
+
+- **Casos Urgentes (risco clínico):** Avaliação e intervenção em até **24 a 48 horas**.
+- **Reclamações Gerais:** Triagem e resposta preliminar em até **5 dias úteis**.
+- **Elogios e Sugestões:** Notificação às equipas em até **48 horas**.
+
+Pode verificar o progresso a qualquer momento introduzindo o seu código e PIN na página "Consultar Processo".`:`Olá! Sou o **Acolhe HospitalCare**, o assistente digital de acolhimento do Hospital Central de Maputo.
+
+Posso ajudá-lo a:
+- **Submeter uma Reclamação ou Denúncia Anónima** com total segurança e sigilo;
+- **Consultar e acompanhar o seu processo** com o Código de Referência e PIN;
+- **Registar um Elogio** para as equipas médicas e de enfermagem;
+- **Obter informações sobre serviços:** Urgência Geral, Farmácia Central, Pediatria e Consultas Externas.
+
+Como posso orientá-lo neste momento?`}return(n,r)=>(u(),s(`div`,j,[E.value?o(``,!0):(u(),m(y,{key:0,round:``,unelevated:``,size:`lg`,class:`ai-trigger-btn shadow-4 animate-pop`,onClick:Y,"aria-label":`Abrir Assistente Inteligente Acolhe HospitalCare`},{default:e(()=>[l(b,{name:`smart_toy`,size:`28px`,color:`white`}),l(k,{floating:``,rounded:``,color:`emerald-5`,"text-color":`white`,class:`ai-badge-pulse`},{default:e(()=>[...r[1]||=[p(` IA `,-1)]]),_:1})]),_:1})),E.value?(u(),m(x,{key:1,class:`ai-chat-window shadow-10 animate-fade-in`},{default:e(()=>[l(O,{class:`ai-chat-header text-white q-py-sm q-px-md row items-center justify-between`},{default:e(()=>[f(`div`,M,[l(C,{size:`38px`,class:`bg-white text-primary q-mr-sm shadow-1`},{default:e(()=>[l(b,{name:`smart_toy`,size:`24px`,color:`primary`})]),_:1}),r[2]||=f(`div`,null,[f(`div`,{class:`text-subtitle2 text-weight-bolder leading-tight`},`Acolhe HospitalCare`),f(`div`,{class:`text-caption text-blue-1 row items-center font-size-11`},[f(`span`,{class:`status-dot q-mr-xs`}),f(`span`,null,`Assistente Digital HCM (IA)`)])],-1)]),f(`div`,N,[l(y,{flat:``,round:``,dense:``,icon:`remove`,color:`white`,size:`sm`,onClick:Y})])]),_:1}),U.value?(u(),s(`div`,P,[f(`div`,F,[l(b,{name:`wifi_off`,size:`14px`,class:`q-mr-xs`}),r[3]||=f(`span`,null,[f(`strong`,null,`Modo Offline PWA`),p(` • Base de Conhecimento Local HCM`)],-1)]),l(k,{color:`amber-8`,"text-color":`white`,label:`Offline`})])):o(``,!0),l(O,{class:`ai-chat-messages q-pa-sm`,ref_key:`messagesContainer`,ref:G},{default:e(()=>[r[5]||=f(`div`,{class:`ai-msg ai-msg-bot`},[f(`div`,{class:`ai-msg-bubble`},[f(`p`,{class:`q-mb-xs`},[p(` Olá! Sou o `),f(`strong`,null,`Acolhe HospitalCare`),p(`, o seu assistente inteligente no Hospital Central de Maputo. `)]),f(`p`,{class:`q-mb-none font-size-12 text-slate-600`},` Posso ajudá-lo a estruturar uma queixa ou elogio, ou explicar como acompanhar o seu processo confidencial com código e PIN. `)])],-1),K.value.length===0?(u(),s(`div`,I,[(u(),s(a,null,t(q,(t,n)=>l(ee,{key:n,clickable:``,dense:``,outline:``,color:`primary`,"text-color":`primary`,class:`text-caption text-weight-medium bg-blue-1`,onClick:e=>te(t)},{default:e(()=>[p(h(t),1)]),_:2},1032,[`onClick`])),64))])):o(``,!0),(u(!0),s(a,null,t(K.value,(e,t)=>(u(),s(`div`,{key:t,class:g([`ai-msg`,e.role===`user`?`ai-msg-user`:`ai-msg-bot`])},[f(`div`,L,[f(`div`,{class:`message-content`,innerHTML:Q(e.content)},null,8,R),f(`div`,z,h(e.time),1)])],2))),128)),V.value?(u(),s(`div`,B,[...r[4]||=[f(`div`,{class:`ai-msg-bubble typing-indicator`},[f(`span`),f(`span`),f(`span`)],-1)]])):o(``,!0)]),_:1},512),l(w),l(T,{class:`q-pa-sm bg-white`},{default:e(()=>[l(A,{onSubmit:_($,[`prevent`]),class:`full-width row items-center no-wrap`},{default:e(()=>[l(D,{modelValue:H.value,"onUpdate:modelValue":r[0]||=e=>H.value=e,dense:``,outlined:``,placeholder:`Escreva a sua dúvida ou relato...`,class:`col q-mr-xs`,"bg-color":`slate-50`,maxlength:`500`,disable:V.value,onKeydown:v(_($,[`prevent`]),[`enter`])},null,8,[`modelValue`,`disable`,`onKeydown`]),l(y,{round:``,unelevated:``,color:`primary`,icon:`send`,size:`md`,type:`submit`,disable:!H.value.trim()||V.value},null,8,[`disable`])]),_:1})]),_:1})]),_:1})):o(``,!0)]))}}),[[`__scopeId`,`data-v-3ca8d9e2`]]);export{V as t};
