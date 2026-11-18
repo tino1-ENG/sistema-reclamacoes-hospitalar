@@ -36,6 +36,13 @@
             Sobre
           </router-link>
           <router-link
+            to="/processos/novo"
+            class="nav-tab-link text-weight-bolder text-primary"
+            :class="{ 'is-active': $route.path === '/processos/novo' }"
+          >
+            Submeter Manifestação
+          </router-link>
+          <router-link
             to="/faq"
             class="nav-tab-link"
             :class="{ 'is-active': $route.path === '/faq' }"
@@ -109,6 +116,10 @@
           <q-item-section avatar><q-icon name="home" color="primary" /></q-item-section>
           <q-item-section>Início</q-item-section>
         </q-item>
+        <q-item clickable v-ripple to="/processos/novo" @click="mobileDrawerOpen = false">
+          <q-item-section avatar><q-icon name="add_circle" color="primary" /></q-item-section>
+          <q-item-section class="text-weight-bold text-primary">Submeter Manifestação</q-item-section>
+        </q-item>
         <q-item clickable v-ripple to="/sobre" @click="mobileDrawerOpen = false">
           <q-item-section avatar><q-icon name="info" color="primary" /></q-item-section>
           <q-item-section>Sobre o HospitalCare</q-item-section>
@@ -146,7 +157,7 @@
       >
         <q-route-tab to="/" icon="home" label="Início" />
         <q-route-tab to="/sobre" icon="info" label="Sobre" />
-        <q-route-tab to="/paciente/processos/novo" icon="add_circle" label="Submeter" class="text-positive text-weight-bold" />
+        <q-route-tab to="/processos/novo" icon="add_circle" label="Submeter" class="text-positive text-weight-bold" />
         <q-route-tab to="/faq" icon="help_outline" label="FAQ" />
         <q-route-tab
           :to="authStore.isAuthenticated ? '/paciente/dashboard' : '/entrar'"

@@ -44,6 +44,10 @@ export interface CreateProcessDto {
   description: string;
   incidentDate?: string | undefined;
   attachments?: File[] | undefined;
+  isAnonymous?: boolean | undefined;
+  patientName?: string | undefined;
+  patientPhone?: string | undefined;
+  patientEmail?: string | undefined;
 }
 
 export interface ProcessFilters {

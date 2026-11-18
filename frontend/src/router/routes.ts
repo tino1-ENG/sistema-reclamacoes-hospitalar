@@ -11,7 +11,8 @@ const routes: RouteRecordRaw[] = [
       { path: '', component: () => import('../pages/public/HomePage.vue') },
       { path: 'sobre', component: () => import('../pages/public/AboutPage.vue') },
       { path: 'contactos', component: () => import('../pages/public/ContactPage.vue') },
-      { path: 'faq', component: () => import('../pages/public/FaqPage.vue') }
+      { path: 'faq', component: () => import('../pages/public/FaqPage.vue') },
+      { path: 'processos/novo', component: () => import('../pages/patient/ProcessCreatePage.vue') }
     ]
   },
 

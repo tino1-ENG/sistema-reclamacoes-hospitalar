@@ -294,7 +294,11 @@ export class RestProcessService implements IProcessService {
       type: typeCode,
       departmentId: dto.departmentId,
       categoryId: dto.categoryId,
-      incidentDate: dto.incidentDate
+      incidentDate: dto.incidentDate,
+      isAnonymous: Boolean(dto.isAnonymous),
+      patientName: dto.patientName,
+      patientPhone: dto.patientPhone,
+      patientEmail: dto.patientEmail
     });
 
     const doc = res.data.data.process;
@@ -316,7 +320,12 @@ export class RestProcessService implements IProcessService {
       }
     }
 
-    return mapProcess(doc);
+    const mapped = mapProcess(doc);
+    const pin = res.data?.data?.pin || res.data?.data?.trackingPin;
+    if (pin) {
+      mapped.trackingPin = pin;
+    }
+    return mapped;
   }
 
   async updateStatus(

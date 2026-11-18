@@ -31,8 +31,12 @@ export function errorHandler(
     }
   }
 
+  const statusCode =
+    err && typeof err === 'object' && 'statusCode' in err && typeof (err as any).statusCode === 'number'
+      ? (err as any).statusCode
+      : 500;
   const message = err instanceof Error ? err.message : 'Erro interno do servidor';
-  res.status(500).json({
+  res.status(statusCode).json({
     success: false,
     message
   });

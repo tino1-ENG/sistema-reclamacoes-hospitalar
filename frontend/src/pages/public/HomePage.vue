@@ -49,7 +49,7 @@
                 size="lg"
                 color="primary"
                 no-caps
-                to="/paciente/processos/novo"
+                to="/processos/novo"
                 class="hero-btn-primary text-weight-bold shadow-sm"
               >
                 <q-icon name="add_circle" class="q-mr-xs" size="22px" />
@@ -172,16 +172,40 @@
             ref="lookupInputRef"
             outlined
             dense
-            placeholder="Ex.: HC-2026-000101"
-            class="q-mb-md quick-lookup-input"
+            label="Código de Referência *"
+            placeholder="Ex.: #HC-2026-100105"
+            class="q-mb-sm quick-lookup-input"
             :rules="[(val) => !!val || 'Indique o código de referência']"
             autofocus
           >
             <template #prepend>
-              <q-icon name="search" color="grey-7" />
+              <q-icon name="description" color="primary" />
             </template>
             <template #append>
               <q-icon name="qr_code_scanner" color="primary" class="cursor-pointer" />
+            </template>
+          </q-input>
+
+          <q-input
+            v-model="pinInput"
+            outlined
+            dense
+            :type="showPin ? 'text' : 'password'"
+            label="PIN de Acompanhamento (4 dígitos) *"
+            placeholder="Ex.: 1234"
+            maxlength="6"
+            class="q-mb-md quick-lookup-input"
+            :rules="[(val) => !!val || 'Indique o PIN de 4 dígitos gerado na submissão']"
+          >
+            <template #prepend>
+              <q-icon name="lock" color="emerald-7" />
+            </template>
+            <template #append>
+              <q-icon
+                :name="showPin ? 'visibility_off' : 'visibility'"
+                class="cursor-pointer text-slate-500"
+                @click="showPin = !showPin"
+              />
             </template>
           </q-input>
 
@@ -194,40 +218,60 @@
             type="submit"
             :loading="lookingUp"
           >
-            <q-icon name="arrow_forward" class="q-mr-xs" size="18px" />
-            <span>Verificar Estado</span>
+            <q-icon name="search" class="q-mr-xs" size="18px" />
+            <span>Consultar Estado e Resposta Oficial</span>
           </q-btn>
         </q-form>
 
         <!-- Nota de Rodapé do Cartão -->
         <div class="row items-center q-mt-md text-caption text-slate-600">
-          <q-icon name="info" size="16px" color="primary" class="q-mr-xs" />
-          <span>O seu processo pode demorar alguns dias para ser atualizado.</span>
+          <q-icon name="security" size="16px" color="emerald-7" class="q-mr-xs" />
+          <span>Acesso 100% confidencial garantido por encriptação institucional.</span>
         </div>
 
         <!-- Resultado da Consulta -->
         <div v-if="foundProcess" class="q-mt-md q-pa-md bg-blue-1 rounded-borders border-blue-2 animate-fade">
           <div class="row justify-between items-center q-mb-xs">
-            <span class="text-subtitle2 text-weight-bold text-primary">{{ foundProcess.referenceCode }}</span>
+            <span class="text-subtitle1 text-weight-bolder text-primary font-mono">{{ foundProcess.referenceCode }}</span>
             <ProcessStatusBadge :status="foundProcess.status.code" />
           </div>
-          <div class="text-body2 text-weight-medium text-slate-800 q-mb-xs">
+
+          <div class="text-body2 text-weight-bold text-slate-800 q-mb-xs">
             {{ foundProcess.subject }}
           </div>
-          <div class="text-caption text-slate-600">
-            Atualizado em: {{ formatDateTime(foundProcess.updatedAt) }}
+
+          <div class="row q-gutter-x-md text-caption text-slate-600 q-mb-sm">
+            <div v-if="foundProcess.department">
+              <q-icon name="apartment" size="14px" class="q-mr-xs text-primary" />
+              <span>{{ foundProcess.department.name }}</span>
+            </div>
+            <div>
+              <q-icon name="event" size="14px" class="q-mr-xs text-slate-500" />
+              <span>Submetido: {{ formatDateTime(foundProcess.createdAt) }}</span>
+            </div>
           </div>
-          <q-btn
-            flat
-            dense
-            no-caps
-            size="sm"
-            color="primary"
-            label="Ver detalhes completos"
-            icon-right="open_in_new"
-            class="q-mt-sm text-weight-bold"
-            :to="`/paciente/processos/${foundProcess.id}`"
-          />
+
+          <!-- Histórico / Timeline de Tramitação -->
+          <div v-if="processHistory && processHistory.length > 0" class="q-mt-sm q-pa-sm bg-white rounded-borders border-slate-2">
+            <div class="text-caption text-weight-bold text-slate-700 q-mb-xs">Linha do Tempo do Processo:</div>
+            <div v-for="(h, idx) in processHistory" :key="idx" class="row items-center font-size-11 text-slate-600 q-mb-xs">
+              <q-badge rounded color="primary" class="q-mr-xs" />
+              <span class="text-weight-medium text-slate-800 q-mr-xs">{{ h.toStatusName || 'Atualização' }}:</span>
+              <span>{{ h.reason || 'Alteração de estado' }} ({{ formatDateTime(h.createdAt) }})</span>
+            </div>
+          </div>
+
+          <!-- Resposta Oficial da Direcção do HCM -->
+          <div v-if="processMessages && processMessages.length > 0" class="q-mt-sm q-pa-sm bg-emerald-1 rounded-borders border-emerald-2 text-emerald-9 font-size-12">
+            <div class="text-weight-bold text-emerald-8 row items-center q-mb-xs">
+              <q-icon name="verified" size="16px" class="q-mr-xs" />
+              <span>Resposta Oficial do Hospital Central de Maputo:</span>
+            </div>
+            <div v-for="msg in processMessages" :key="msg.id" class="q-mb-xs">
+              <p class="q-mb-none font-weight-medium">{{ msg.body }}</p>
+              <span class="font-size-10 text-emerald-7">— {{ msg.authorName }} ({{ formatDateTime(msg.createdAt) }})</span>
+            </div>
+          </div>
         </div>
 
         <div v-else-if="lookupError" class="q-mt-md q-pa-sm bg-red-1 text-negative text-caption rounded-borders row items-center">
@@ -256,7 +300,7 @@
             flat
             bordered
             class="channel-card full-height cursor-pointer"
-            @click="$router.push('/paciente/processos/novo?type=1')"
+            @click="$router.push('/processos/novo?type=1')"
           >
             <div class="row items-center no-wrap q-pa-md full-height">
               <div class="channel-icon-box channel-icon-reclamacoes q-mr-md flex-shrink-0">
@@ -281,7 +325,7 @@
             flat
             bordered
             class="channel-card full-height cursor-pointer"
-            @click="$router.push('/paciente/processos/novo?type=3')"
+            @click="$router.push('/processos/novo?type=3')"
           >
             <div class="row items-center no-wrap q-pa-md full-height">
               <div class="channel-icon-box channel-icon-sugestoes q-mr-md flex-shrink-0">
@@ -306,7 +350,7 @@
             flat
             bordered
             class="channel-card full-height cursor-pointer"
-            @click="$router.push('/paciente/processos/novo?type=2')"
+            @click="$router.push('/processos/novo?type=2')"
           >
             <div class="row items-center no-wrap q-pa-md full-height">
               <div class="channel-icon-box channel-icon-solicitacoes q-mr-md flex-shrink-0">
@@ -513,8 +557,9 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
+import { useRoute } from 'vue-router';
 import { processService } from '../../services';
-import type { Process } from '../../types';
+import type { Process, ProcessMessage, ProcessStatusHistory } from '../../types';
 import { formatDateTime } from '../../utils/formatters';
 import ProcessStatusBadge from '../../components/common/ProcessStatusBadge.vue';
 
@@ -593,17 +638,24 @@ function togglePlayPause() {
   isPlaying.value = !isPlaying.value;
 }
 
-// Modal e Consulta rápida de processo
+// Modal e Consulta confidencial de processo por Código e PIN
+const route = useRoute();
 const showLookupModal = ref(false);
 const referenceInput = ref('');
+const pinInput = ref('');
+const showPin = ref(false);
 const lookingUp = ref(false);
 const foundProcess = ref<Process | null>(null);
+const processMessages = ref<ProcessMessage[]>([]);
+const processHistory = ref<ProcessStatusHistory[]>([]);
 const lookupError = ref<string | null>(null);
 const lookupInputRef = ref<{ focus?: () => void } | null>(null);
 
 function openLookupModal() {
   showLookupModal.value = true;
   foundProcess.value = null;
+  processMessages.value = [];
+  processHistory.value = [];
   lookupError.value = null;
   setTimeout(() => {
     lookupInputRef.value?.focus?.();
@@ -611,20 +663,35 @@ function openLookupModal() {
 }
 
 async function lookupProcess() {
-  if (!referenceInput.value) return;
+  const refCode = referenceInput.value.trim();
+  const pin = pinInput.value.trim();
+
+  if (!refCode) {
+    lookupError.value = 'Indique o código de referência do processo.';
+    return;
+  }
+  if (!pin) {
+    lookupError.value = 'Indique o PIN de 4 dígitos gerado na submissão.';
+    return;
+  }
+
   lookingUp.value = true;
   foundProcess.value = null;
+  processMessages.value = [];
+  processHistory.value = [];
   lookupError.value = null;
 
   try {
-    const res = await processService.getProcessByReference(referenceInput.value.trim());
-    if (res) {
-      foundProcess.value = res;
+    const res = await processService.lookupWithPin(refCode, pin);
+    if (res && res.process) {
+      foundProcess.value = res.process;
+      processMessages.value = res.messages || [];
+      processHistory.value = res.history || [];
     } else {
-      lookupError.value = 'Nenhum processo localizado com esta referência.';
+      lookupError.value = 'Nenhum processo localizado. Confirme o Código e o PIN digitados.';
     }
-  } catch {
-    lookupError.value = 'Erro ao verificar processo. Verifique o código e tente novamente.';
+  } catch (err: unknown) {
+    lookupError.value = err instanceof Error ? err.message : 'Código ou PIN incorretos. Por favor confirme os dados.';
   } finally {
     lookingUp.value = false;
   }
@@ -636,6 +703,18 @@ onMounted(() => {
     isPlaying.value = false;
   } else {
     startSlideRotation();
+  }
+
+  // Se a rota contiver parâmetros de consulta (ex: redirecionado após submissão)
+  if (route.query.lookup) {
+    referenceInput.value = String(route.query.lookup);
+    if (route.query.pin) {
+      pinInput.value = String(route.query.pin);
+    }
+    openLookupModal();
+    if (pinInput.value) {
+      void lookupProcess();
+    }
   }
 });
 

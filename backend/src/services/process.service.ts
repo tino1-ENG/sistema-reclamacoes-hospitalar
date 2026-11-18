@@ -95,7 +95,8 @@ export class ProcessService {
 
     return {
       process: processDoc,
-      trackingPin: randomPin // Retornado apenas uma vez na criação para guarda pelo utente
+      trackingPin: randomPin,
+      pin: randomPin // Retornado apenas uma vez na criação para guarda pelo utente
     };
   }
 
@@ -108,12 +109,16 @@ export class ProcessService {
       .populate('categoryId', 'name code');
 
     if (!processDoc) {
-      throw new Error('Processo não encontrado com a referência indicada.');
+      const err = new Error('Processo não encontrado com a referência indicada.');
+      (err as any).statusCode = 404;
+      throw err;
     }
 
     const isMatch = await bcrypt.compare(pin, processDoc.trackingPinHash);
     if (!isMatch) {
-      throw new Error('PIN de acompanhamento incorreto.');
+      const err = new Error('PIN de acompanhamento incorreto.');
+      (err as any).statusCode = 401;
+      throw err;
     }
 
     // Obter mensagens públicas (estritamente sem notas internas)

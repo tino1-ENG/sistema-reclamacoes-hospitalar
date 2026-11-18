@@ -174,10 +174,12 @@ export interface ProcessAssignment {
 export interface Process {
   id: string;
   referenceCode: string;
+  trackingPin?: string | undefined;
   hospitalId: string;
   patientId: string;
   patientName?: string | undefined;
   patientPhone?: string | undefined;
+  isAnonymous?: boolean | undefined;
   processTypeId: number;
   processType: ProcessType;
   categoryId: string;
