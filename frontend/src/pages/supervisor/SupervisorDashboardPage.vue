@@ -33,6 +33,83 @@
       </div>
     </div>
 
+    <!-- Controlo do Modo de IA por Departamento (Chefe de Departamento / Supervisor) -->
+    <q-card class="hc-card q-mb-lg border-primary bg-indigo-50">
+      <q-card-section>
+        <div class="row items-center justify-between">
+          <div class="row items-center q-gutter-sm">
+            <q-avatar color="indigo-8" text-color="white" icon="psychology" size="42px" class="shadow-2" />
+            <div>
+              <div class="text-subtitle1 text-weight-bold text-slate-800 row items-center">
+                <span>Modo de IA e Acolhimento Automático por Departamento</span>
+                <q-badge
+                  :color="isAiActive ? 'positive' : 'grey-6'"
+                  text-color="white"
+                  :label="isAiActive ? 'Modo IA Ativo' : 'Modo Manual'"
+                  class="q-ml-sm"
+                />
+              </div>
+              <div class="text-caption text-slate-600">
+                Permita que a IA assuma o esclarecimento e a geração de respostas aos casos do departamento.
+              </div>
+            </div>
+          </div>
+          <div class="q-mt-sm">
+            <q-toggle
+              v-model="isAiActive"
+              color="positive"
+              label="Ativar Modo IA"
+              left-label
+              class="text-weight-bold"
+              @update:model-value="toggleDepartmentAiMode"
+            />
+          </div>
+        </div>
+
+        <q-separator class="q-my-md" />
+
+        <div class="row q-col-gutter-md items-center">
+          <div class="col-12 col-md-4">
+            <label class="text-caption text-weight-bold block q-mb-xs">Departamento Sob Supervisão</label>
+            <q-select
+              v-model="selectedDeptId"
+              :options="deptOptions"
+              emit-value
+              map-options
+              outlined
+              dense
+              bg-color="white"
+              @update:model-value="onDeptSelected"
+            />
+          </div>
+
+          <div class="col-12 col-md-5">
+            <label class="text-caption text-weight-bold block q-mb-xs">Diretriz Departamental da IA</label>
+            <q-input
+              v-model="aiGuidelines"
+              outlined
+              dense
+              bg-color="white"
+              placeholder="Ex: Priorizar triagem de Manchester e tempo de espera inferior a 15 min."
+            />
+          </div>
+
+          <div class="col-12 col-md-3 text-right">
+            <q-btn
+              unelevated
+              color="indigo-8"
+              icon="save"
+              label="Guardar Configuração"
+              no-caps
+              :loading="savingAi"
+              @click="saveAiGuidelines"
+              class="full-width"
+            />
+          </div>
+        </div>
+      </q-card-section>
+    </q-card>
+
     <!-- Indicadores Principais -->
     <div class="row q-col-gutter-md q-mb-lg">
       <div class="col-12 col-sm-6 col-md-3">
@@ -137,12 +214,127 @@ import { ref, onMounted } from 'vue';
 import { dashboardService } from '../../services';
 import type { DashboardMetrics } from '../../types';
 import StatCard from '../../components/common/StatCard.vue';
+import { useQuasar } from 'quasar';
 
+const $q = useQuasar();
 const metrics = ref<DashboardMetrics | null>(null);
+
+// Gestão do Modo IA do Departamento
+interface DeptItem {
+  id: string;
+  name: string;
+  code: string;
+  isAiModeActive?: boolean;
+  aiAutoResponseEnabled?: boolean;
+  aiSpecialtyGuidelines?: string;
+}
+
+const deptOptions = ref<{ label: string; value: string }[]>([]);
+const departmentsList = ref<DeptItem[]>([]);
+const selectedDeptId = ref<string>('');
+const isAiActive = ref(false);
+const aiGuidelines = ref('');
+const savingAi = ref(false);
 
 onMounted(async () => {
   metrics.value = await dashboardService.getMetrics('SUPERVISOR');
+
+  try {
+    const { apiClient } = await import('../../services/api/api-client');
+    const res = await apiClient.get('/departments');
+    if (res.data?.success && Array.isArray(res.data.data)) {
+      departmentsList.value = res.data.data.map((d: any) => ({
+        id: d._id || d.id,
+        name: d.name,
+        code: d.code,
+        isAiModeActive: d.isAiModeActive || false,
+        aiAutoResponseEnabled: d.aiAutoResponseEnabled || false,
+        aiSpecialtyGuidelines: d.aiSpecialtyGuidelines || ''
+      }));
+
+      deptOptions.value = departmentsList.value.map((d) => ({
+        label: `${d.name} (${d.code})`,
+        value: d.id
+      }));
+
+      if (departmentsList.value.length > 0) {
+        selectedDeptId.value = departmentsList.value[0]?.id || '';
+        onDeptSelected(selectedDeptId.value);
+      }
+    }
+  } catch (err) {
+    console.warn('Erro ao carregar departamentos para modo IA:', err);
+  }
 });
+
+function onDeptSelected(id: string) {
+  const dept = departmentsList.value.find((d) => d.id === id);
+  if (dept) {
+    isAiActive.value = !!dept.isAiModeActive;
+    aiGuidelines.value = dept.aiSpecialtyGuidelines || '';
+  }
+}
+
+async function toggleDepartmentAiMode(val: boolean) {
+  if (!selectedDeptId.value) return;
+  savingAi.value = true;
+  try {
+    const { apiClient } = await import('../../services/api/api-client');
+    await apiClient.patch(`/departments/${selectedDeptId.value}/ai-mode`, {
+      isAiModeActive: val,
+      aiAutoResponseEnabled: val
+    });
+
+    const dept = departmentsList.value.find((d) => d.id === selectedDeptId.value);
+    if (dept) {
+      dept.isAiModeActive = val;
+      dept.aiAutoResponseEnabled = val;
+    }
+
+    $q.notify({
+      type: val ? 'positive' : 'info',
+      message: val
+        ? 'Modo de IA Ativado! A IA responderá aos casos deste departamento.'
+        : 'Modo de IA Desativado. Atendimento manual ativo.',
+      position: 'top'
+    });
+  } catch (err) {
+    $q.notify({
+      type: 'negative',
+      message: 'Falha ao atualizar Modo de IA do departamento.',
+      position: 'top'
+    });
+  } finally {
+    savingAi.value = false;
+  }
+}
+
+async function saveAiGuidelines() {
+  if (!selectedDeptId.value) return;
+  savingAi.value = true;
+  try {
+    const { apiClient } = await import('../../services/api/api-client');
+    await apiClient.patch(`/departments/${selectedDeptId.value}/ai-mode`, {
+      isAiModeActive: isAiActive.value,
+      aiAutoResponseEnabled: isAiActive.value,
+      aiSpecialtyGuidelines: aiGuidelines.value
+    });
+
+    $q.notify({
+      type: 'positive',
+      message: 'Diretrizes de IA do departamento gravadas com sucesso!',
+      position: 'top'
+    });
+  } catch (err) {
+    $q.notify({
+      type: 'negative',
+      message: 'Falha ao gravar diretrizes de IA.',
+      position: 'top'
+    });
+  } finally {
+    savingAi.value = false;
+  }
+}
 </script>
 
 <style scoped>

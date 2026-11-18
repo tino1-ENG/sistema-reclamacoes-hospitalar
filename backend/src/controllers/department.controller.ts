@@ -46,6 +46,21 @@ export class DepartmentController {
     }
   }
 
+  async toggleAiMode(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const id = String(req.params.id);
+      const { isAiModeActive, aiAutoResponseEnabled, aiSpecialtyGuidelines } = req.body;
+      const department = await departmentService.updateDepartment(id, {
+        isAiModeActive,
+        aiAutoResponseEnabled,
+        aiSpecialtyGuidelines
+      });
+      res.json({ success: true, data: department });
+    } catch (err) {
+      next(err);
+    }
+  }
+
   // Categorias
   async listCategories(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {

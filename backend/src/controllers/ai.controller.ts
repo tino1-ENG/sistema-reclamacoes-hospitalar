@@ -131,6 +131,79 @@ export class AIController {
       next(err);
     }
   }
+
+  async clarifyCase(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { processId, referenceNumber, question } = req.body;
+      const user = req.user;
+
+      const query: Record<string, unknown> = {};
+      if (processId) {
+        query._id = processId;
+      } else if (referenceNumber) {
+        const rawRef = String(referenceNumber).trim();
+        const cleanRef = rawRef.replace(/^#/, '');
+        query.$or = [
+          { referenceNumber: rawRef },
+          { referenceNumber: `#${cleanRef}` },
+          { referenceNumber: cleanRef }
+        ];
+      } else {
+        res.status(400).json({ success: false, message: 'Identificador do processo (processId ou referenceNumber) obrigatório.' });
+        return;
+      }
+
+      const proc = await Process.findOne(query)
+        .populate('departmentId', 'name code')
+        .populate('categoryId', 'name code');
+
+      if (!proc) {
+        res.status(404).json({ success: false, message: 'Processo não encontrado.' });
+        return;
+      }
+
+      // Se utilizador for paciente, garantir que só consulta o seu próprio processo
+      if (user && user.roles.includes('PATIENT')) {
+        if (proc.patientId && proc.patientId.toString() !== user.id) {
+          res.status(403).json({ success: false, message: 'Não autorizado a consultar este processo.' });
+          return;
+        }
+      }
+
+      const dept = proc.departmentId as unknown as { name?: string; code?: string } | undefined;
+      const cat = proc.categoryId as unknown as { name?: string } | undefined;
+
+      const result = await aiService.clarifyProcessCase({
+        referenceNumber: proc.referenceNumber,
+        title: proc.title,
+        description: proc.description,
+        status: proc.status,
+        departmentName: dept?.name || 'Geral',
+        departmentCode: dept?.code,
+        categoryName: cat?.name,
+        type: proc.type,
+        slaDueAt: proc.slaDueAt,
+        userQuestion: question
+      });
+
+      res.json({
+        success: true,
+        data: {
+          process: {
+            referenceNumber: proc.referenceNumber,
+            title: proc.title,
+            status: proc.status,
+            type: proc.type,
+            departmentName: dept?.name,
+            slaDueAt: proc.slaDueAt
+          },
+          ...result
+        }
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
 }
 
 export const aiController = new AIController();

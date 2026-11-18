@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
 import mongoose from 'mongoose';
+import { aiService } from './ai.service.js';
 import {
   Process,
   ProcessMessage,
@@ -92,6 +93,44 @@ export class ProcessService {
       entityId: processDoc._id.toString(),
       details: { referenceNumber, type: data.type }
     });
+
+    // Se o departamento tiver o Modo IA Ativo com auto-resposta ativada pelo Chefe
+    if (department.isAiModeActive && department.aiAutoResponseEnabled) {
+      try {
+        const autoReply = await aiService.suggestInstitutionalReply({
+          referenceNumber,
+          title: processDoc.title,
+          description: processDoc.description,
+          patientName: processDoc.patientName,
+          departmentName: department.name,
+          type: processDoc.type,
+          staffNotes: department.aiSpecialtyGuidelines || 'Atendimento preliminar e orientação ao utente com base no protocolo departamental.'
+        });
+
+        await ProcessMessage.create({
+          processId: processDoc._id,
+          senderName: `Copiloto IA — ${department.name}`,
+          senderRole: 'STAFF',
+          messageType: 'PUBLIC_REPLY',
+          body: autoReply,
+          isInternal: false
+        });
+
+        processDoc.status = 'IN_REVIEW';
+        processDoc.firstResponseAt = new Date();
+        await processDoc.save();
+
+        await ProcessStatusHistory.create({
+          processId: processDoc._id,
+          changedByName: `Copiloto IA (${department.name})`,
+          fromStatus: 'SUBMITTED',
+          toStatus: 'IN_REVIEW',
+          reason: 'Atendimento preliminar automático acionado pelo Modo IA do Departamento.'
+        });
+      } catch (err) {
+        console.warn('Erro ao acionar resposta automática do Modo IA Departamental:', err);
+      }
+    }
 
     return {
       process: processDoc,

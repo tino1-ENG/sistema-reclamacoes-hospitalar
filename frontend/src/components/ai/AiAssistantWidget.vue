@@ -38,6 +38,15 @@
         </div>
       </q-card-section>
 
+      <!-- Banner de PWA Offline se desconectado -->
+      <div v-if="isOffline" class="bg-amber-1 text-amber-9 q-px-sm q-py-xs row items-center justify-between text-caption border-b">
+        <div class="row items-center">
+          <q-icon name="wifi_off" size="14px" class="q-mr-xs" />
+          <span><strong>Modo Offline PWA</strong> • Base de Conhecimento Local HCM</span>
+        </div>
+        <q-badge color="amber-8" text-color="white" label="Offline" />
+      </div>
+
       <!-- Área de Mensagens -->
       <q-card-section class="ai-chat-messages q-pa-sm" ref="messagesContainer">
         <!-- Boas-vindas -->
@@ -123,7 +132,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick } from 'vue';
+import { ref, nextTick, onMounted, onUnmounted } from 'vue';
 import { aiService } from '../../services/api/rest-ai.service';
 
 interface ChatMessage {
@@ -135,17 +144,39 @@ interface ChatMessage {
 const isOpen = ref(false);
 const loading = ref(false);
 const inputMessage = ref('');
+const isOffline = ref(typeof navigator !== 'undefined' ? !navigator.onLine : false);
 const sessionId = ref<string>(`session-${Date.now()}-${Math.random().toString(36).substring(7)}`);
 const messagesContainer = ref<HTMLElement | null>(null);
 
 const messages = ref<ChatMessage[]>([]);
 
 const quickPrompts = [
-  'Como consultar o meu processo?',
-  'Problemas na Farmácia Central',
-  'Quero fazer um elogio à equipa',
-  'Onde fica a Urgência Geral?'
+  'Como consultar com Código e PIN?',
+  'Triagem de Manchester HCM',
+  'Falta de remédio na Farmácia',
+  'Maternidade e Parto Humanizado',
+  'Consultas Externas e Agendamento'
 ];
+
+function updateOnlineStatus() {
+  if (typeof navigator !== 'undefined') {
+    isOffline.value = !navigator.onLine;
+  }
+}
+
+onMounted(() => {
+  if (typeof window !== 'undefined') {
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+  }
+});
+
+onUnmounted(() => {
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('online', updateOnlineStatus);
+    window.removeEventListener('offline', updateOnlineStatus);
+  }
+});
 
 function toggleChat() {
   isOpen.value = !isOpen.value;
@@ -242,7 +273,37 @@ function generateHospitalCareKnowledgeResponse(userText: string): string {
 
   // 4. Urgência Geral / Banco de Socorros / Emergência / Localização / Horários
   if (lower.includes('urgencia') || lower.includes('emergencia') || lower.includes('banco de socorros') || lower.includes('onde fica') || lower.includes('localizacao') || lower.includes('horario') || lower.includes('contacto')) {
-    return 'A **Urgência Geral (Banco de Socorros)** do Hospital Central de Maputo funciona **24 horas por dia, 7 dias por semana**:\n\n- **Localização:** Acesso principal pela Avenida Eduardo Mondlane, Maputo.\n- **Protocolo de Triagem:** O atendimento segue o sistema de Triagem de Manchester (prioridade vermelha/laranja para risco de vida imediato).\n- **Linha de Apoio HCM:** Em situação de emergência, ligue 117 ou (+258) 21 350 400.\n- Para relatar ocorrências na Urgência, utilize o formulário do HospitalCare.';
+    return 'A **Urgência Geral (Banco de Socorros)** do Hospital Central de Maputo funciona **24 horas por dia, 7 dias por semana**:\n\n- **Localização:** Acesso principal pela Avenida Eduardo Mondlane, Maputo.\n- **Protocolo de Triagem:** O atendimento segue a Triagem de Manchester (prioridade clínica imediata para risco de vida).\n- **Linha de Apoio HCM:** Em situação de emergência, ligue 117 ou (+258) 21 350 400.\n- Para relatar ocorrências na Urgência, utilize o formulário do HospitalCare.';
+  }
+
+  // 4.1. Triagem de Manchester HCM
+  if (lower.includes('manchester') || lower.includes('triagem') || lower.includes('cores') || lower.includes('amarelo') || lower.includes('laranja') || lower.includes('vermelho')) {
+    return 'O **Sistema de Triagem de Manchester do HCM** classifica a gravidade clínica por cores:\n\n- 🔴 **Vermelho (Emergência):** Atendimento imediato (0 min - risco iminente de morte).\n- 🟠 **Laranja (Muito Urgente):** Atendimento até 10 minutos.\n- 🟡 **Amarelo (Urgente):** Atendimento até 60 minutos.\n- 🟢 **Verde (Pouco Urgente):** Atendimento até 120 minutos.\n- 🔵 **Azul (Não Urgente):** Encaminhamento para centro de saúde ou consulta externa (até 240 min).\n\n*A gravidade clínica tem sempre prioridade sobre a ordem de chegada.*';
+  }
+
+  // 4.2. Pediatria e Atendimento Infantil
+  if (lower.includes('pediatria') || lower.includes('crianca') || lower.includes('bebe') || lower.includes('filho') || lower.includes('lactente')) {
+    return 'O **Serviço de Pediatria e Banco de Socorros Pediátrico do HCM** opera 24h:\n\n- Prioridade para desidratação severa, convulsões, malária grave e febre alta.\n- O internamento infantil assegura o direito legal a **acompanhante materno em permanência integral**.\n- Em caso de queixas sobre tratamento pediátrico, a manifestação tem acompanhamento prioritário da Comissão de Humanização.';
+  }
+
+  // 4.3. Maternidade e Obstetrícia
+  if (lower.includes('maternidade') || lower.includes('parto') || lower.includes('obstetr') || lower.includes('gravida') || lower.includes('cesariana')) {
+    return 'A **Maternidade e Bloco Obstétrico do HCM** prestam cuidados 24 horas:\n\n- O **Parto Humanizado** é um direito consagrado, sendo permitida a presença de acompanhante.\n- **Tolerância Zero:** Cobranças ilícitas para realização de cesarianas ou negligência no parto são crimes e devem ser denunciadas no portal, inclusive de forma 100% anónima.\n- As denúncias de maternidade são remetidas de urgência à Inspecção Geral de Saúde.';
+  }
+
+  // 4.4. Consultas Externas e Agendamento
+  if (lower.includes('consulta') || lower.includes('especialidade') || lower.includes('marcar') || lower.includes('guia') || lower.includes('medico')) {
+    return 'As **Consultas Externas de Especialidades do HCM** funcionam de Segunda a Sexta, das 07h30 às 15h30:\n\n- O primeiro agendamento exige **Guia de Referência** do centro de saúde ou hospital geral (Mavalane, Chamanculo, etc.).\n- Se o médico faltou ou a sua consulta foi cancelada sem aviso, submeta uma manifestação no HospitalCare para que o Gabinete de Gestão de Vagas proceda ao reagendamento prioritário.';
+  }
+
+  // 4.5. Cirurgia Geral e Bloco Operatório
+  if (lower.includes('cirurgia') || lower.includes('bloco') || lower.includes('operacao') || lower.includes('anestesia')) {
+    return 'O **Serviço de Cirurgia e Bloco Operatório do HCM** opera cirurgias programadas e de urgência:\n\n- O termo de Consentimento Informado deve ser assinado e esclarecido antes de qualquer intervenção.\n- Informações sobre doentes operados podem ser obtidas no Balcão de Informação Cirúrgica das 10h às 12h e das 15h às 17h.';
+  }
+
+  // 4.6. Imagiologia, Raio-X e Exames
+  if (lower.includes('raio-x') || lower.includes('tac') || lower.includes('ecografia') || lower.includes('imagiologia') || lower.includes('exame') || lower.includes('ressonancia')) {
+    return 'O **Serviço de Imagiologia do HCM** realiza exames de Raio-X, Ecografia e TAC:\n\n- Exames urgentes do Banco de Socorros têm laudo prioritário imediato.\n- Exames eletivos requerem requisição médica carimbada e marcação prévia.\n- Queixas sobre atrasos na entrega de laudos ou aparelhos avariados podem ser registadas no portal.';
   }
 
   // 5. Queixa / Reclamação / Denúncia Anónima / Submissão

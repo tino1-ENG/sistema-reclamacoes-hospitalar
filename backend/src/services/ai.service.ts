@@ -226,7 +226,17 @@ Seu papel:
     } else if (lower.includes('farmacia') || lower.includes('medicamento') || lower.includes('receita') || lower.includes('falta')) {
       reply = 'Relativamente à **Farmácia Central e Depósito de Medicamentos do HCM**:\n\nO levantamento de medicamentos é realizado mediante receita médica válida. Caso tenha enfrentado **falta de medicamentos**, atrasos ou dificuldades no atendimento, submeta uma manifestação seleccionando a unidade **"Farmácia Central"** para intervenção da Comissão Técnica.';
     } else if (lower.includes('urgencia') || lower.includes('emergencia') || lower.includes('banco de socorros') || lower.includes('onde fica') || lower.includes('horario')) {
-      reply = 'A **Urgência Geral (Banco de Socorros)** do Hospital Central de Maputo funciona **24 horas por dia, 7 dias por semana**, com entrada principal pela Avenida Eduardo Mondlane. O atendimento obedece à Triagem de Manchester por grau de gravidade.';
+      reply = 'A **Urgência Geral (Banco de Socorros)** do Hospital Central de Maputo funciona **24 horas por dia, 7 dias por semana**, com entrada principal pela Avenida Eduardo Mondlane. O atendimento obedece à Triagem de Manchester por grau de gravidade clínica.';
+    } else if (lower.includes('pediatria') || lower.includes('crianca') || lower.includes('bebe') || lower.includes('filho')) {
+      reply = 'O **Serviço de Pediatria e Banco de Socorros Pediátrico do HCM** funciona 24 horas, com acolhimento médico especializado e prioridade absoluta para crianças com febre alta, desidratação ou dificuldade respiratória. O internamento garante acompanhamento materno em tempo integral.';
+    } else if (lower.includes('maternidade') || lower.includes('parto') || lower.includes('obstetr') || lower.includes('gravida')) {
+      reply = 'A **Maternidade e Bloco Obstétrico do HCM** oferecem assistência obstétrica 24 horas. O parto humanizado é assegurado por lei. Casos de cobranças ilícitas, negligência ou violência obstétrica são tratados com tolerância zero e prioridade máxima pela Direção.';
+    } else if (lower.includes('consulta') || lower.includes('especialidade') || lower.includes('marcar') || lower.includes('guia')) {
+      reply = 'As **Consultas Externas e de Especialidades Médicas** do HCM funcionam de Segunda a Sexta-feira, das 07h30 às 15h30. O acesso faz-se mediante Guia de Referência emitida pelo centro de saúde periférico. Para remarcação ou esclarecimento sobre faltas, contacte o secretariado do pavilhão.';
+    } else if (lower.includes('cirurgia') || lower.includes('bloco') || lower.includes('operacao')) {
+      reply = 'O **Serviço de Cirurgia Geral e Bloco Operatório** programa intervenções eletivas conforme fila clínica e atende emergências 24h. O consentimento informado é obrigatório e as visitas a doentes operados seguem o horário regulamentar das enfermarias.';
+    } else if (lower.includes('raio-x') || lower.includes('tac') || lower.includes('ecografia') || lower.includes('imagiologia') || lower.includes('analise')) {
+      reply = 'O **Serviço de Imagiologia e Meios Auxiliares de Diagnóstico** realiza Raio-X, Ecografias e Tomografias (TAC). Exames urgentes têm laudo prioritário no Banco de Socorros. Para exames eletivos, o agendamento prévio é obrigatório com apresentação da requisição médica.';
     } else if (lower.includes('elogio') || lower.includes('agradec') || lower.includes('parabens')) {
       reply = 'Ficamos muito gratos pelo seu reconhecimento! O louvor aos nossos médicos, enfermeiros e pessoal de apoio motiva toda a equipa do HCM. Pode registar o seu Elogio formal no formulário de processos.';
     } else {
@@ -434,6 +444,80 @@ Analise o título e a descrição e classifique o processo retornando JSON estri
       suggestedPriority: priority,
       confidenceScore: 0.75,
       rationale: 'Classificação heurística baseada nos termos da ocorrência e regulamento de triagem do HCM.'
+    };
+  }
+
+  /**
+   * Esclarecimento Inteligente de Casos e Processos por Departamento
+   * Responde dúvidas do utente sobre o seu processo específico e o funcionamento do departamento incumbido
+   */
+  async clarifyProcessCase(processData: {
+    referenceNumber: string;
+    title: string;
+    description: string;
+    status: string;
+    departmentName: string;
+    departmentCode?: string;
+    categoryName?: string;
+    type: string;
+    slaDueAt?: Date;
+    userQuestion?: string;
+  }): Promise<{ clarification: string; departmentContext: string; nextSteps: string[] }> {
+    const scrubbed = scrubProcessPayload(processData);
+
+    const systemPrompt = `Você é o Consultor Especialista de Acolhimento e Tramitação do Hospital Central de Maputo (HCM).
+Sua missão é esclarecer ao utente com total transparência, empatia e precisão técnica sobre o estado do seu processo e o funcionamento do departamento responsável.
+Diretrizes:
+- Explique de forma simples o que significa o estado atual (${processData.status}).
+- Explique como funciona o departamento de ${processData.departmentName} no HCM.
+- Responda objetivamente à dúvida do utente: "${processData.userQuestion || 'Qual o andamento do meu caso e próximos passos?'}".
+- Dê orientações práticas e próximos passos.`;
+
+    const userPrompt = `Processo ${processData.referenceNumber}:
+Tipo: ${processData.type}
+Estado: ${processData.status}
+Departamento: ${processData.departmentName}
+Categoria: ${processData.categoryName || 'Geral'}
+Assunto: ${scrubbed.title}
+Descrição: ${scrubbed.description}
+Pergunta do Utente: ${processData.userQuestion || 'Como está a resolução do meu processo?'}`;
+
+    let deptContext = '';
+    let nextSteps: string[] = [];
+
+    switch (processData.departmentCode) {
+      case 'URG':
+        deptContext = 'O Serviço de Urgência Geral opera 24h com Triagem de Manchester. Processos neste setor são avaliados pela Chefia de Banco e Direção de Urgências.';
+        nextSteps = ['Auditoria clínica da ficha de triagem', 'Validação dos tempos de espera', 'Parecer da chefia médica de banco'];
+        break;
+      case 'FAR':
+        deptContext = 'A Farmácia Central faz a gestão do Formulário Nacional de Medicamentos. Casos de rotura ou dispensa são verificados com o Depósito Geral.';
+        nextSteps = ['Conferência de stock no sistema informático', 'Contacto com a Central de Medicamentos', 'Aviso ao utente para levantamento'];
+        break;
+      case 'PED':
+        deptContext = 'A Pediatria atende emergências infantis e internamento. Casos de atendimento contam com acompanhamento prioritário da Comissão de Humanização.';
+        nextSteps = ['Revisão do boletim de saúde infantil', 'Averiguação com a equipa de enfermagem', 'Contacto com a família'];
+        break;
+      case 'MAT':
+        deptContext = 'A Maternidade e Bloco Obstétrico prestam assistência materno-infantil. Qualquer ocorrência é tratada com tolerância zero e prioridade máxima.';
+        nextSteps = ['Inquérito interno de qualidade obstétrica', 'Entrevista com a equipa de plantão', 'Medidas corretivas imediatas'];
+        break;
+      case 'CE':
+        deptContext = 'As Consultas Externas atendem por agendamento referenciado. Dificuldades de marcação são analisadas pelo Gabinete de Gestão de Vagas.';
+        nextSteps = ['Verificação da agenda médica de especialidade', 'Encaixe de vaga prioritária se justificado', 'Comunicação da data ao utente'];
+        break;
+      default:
+        deptContext = `O departamento de ${processData.departmentName} analisa a ocorrência com base nas normas clínicas e deontológicas do HCM.`;
+        nextSteps = ['Análise do relato pela equipa responsável', 'Instrução do processo técnico', 'Emissão de resposta formal homologada'];
+    }
+
+    const generated = await this.generateCompletion(systemPrompt, userPrompt);
+    const clarification = generated || `O seu processo **${processData.referenceNumber}** encontra-se atualmente no estado **${processData.status}** sob responsabilidade do departamento de **${processData.departmentName}**.\n\n${deptContext}\n\nA equipa hospitalar está a proceder às averiguações necessárias no âmbito do protocolo de garantia de qualidade do Hospital Central de Maputo.`;
+
+    return {
+      clarification,
+      departmentContext: deptContext,
+      nextSteps
     };
   }
 }

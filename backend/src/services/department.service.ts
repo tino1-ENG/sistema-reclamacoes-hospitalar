@@ -46,6 +46,9 @@ export class DepartmentService {
     if (data.phone !== undefined) dept.phone = data.phone?.trim();
     if (data.email !== undefined) dept.email = data.email?.trim();
     if (data.isActive !== undefined) dept.isActive = data.isActive;
+    if (data.isAiModeActive !== undefined) dept.isAiModeActive = data.isAiModeActive;
+    if (data.aiAutoResponseEnabled !== undefined) dept.aiAutoResponseEnabled = data.aiAutoResponseEnabled;
+    if (data.aiSpecialtyGuidelines !== undefined) dept.aiSpecialtyGuidelines = data.aiSpecialtyGuidelines?.trim();
 
     return await dept.save();
   }

@@ -9,6 +9,7 @@ const router = Router();
 router.get('/departments', departmentController.listDepartments);
 router.post('/departments', authenticate, authorize(['ADMIN']), departmentController.createDepartment);
 router.put('/departments/:id', authenticate, authorize(['ADMIN']), departmentController.updateDepartment);
+router.patch('/departments/:id/ai-mode', authenticate, authorize(['SUPERVISOR', 'ADMIN']), departmentController.toggleAiMode);
 router.delete('/departments/:id', authenticate, authorize(['ADMIN']), departmentController.deleteDepartment);
 
 // --- Categorias ---

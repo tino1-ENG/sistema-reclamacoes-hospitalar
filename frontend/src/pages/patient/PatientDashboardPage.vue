@@ -67,6 +67,151 @@
       </div>
     </div>
 
+    <!-- Secção Especial de Esclarecimento de Casos com IA -->
+    <q-card class="hc-card q-mb-lg border-primary bg-blue-50">
+      <q-card-section>
+        <div class="row items-center justify-between">
+          <div class="row items-center q-gutter-sm">
+            <q-avatar color="primary" text-color="white" icon="psychology" size="42px" class="shadow-2" />
+            <div>
+              <div class="text-subtitle1 text-weight-bold text-slate-800 row items-center">
+                <span>Esclarecimento Inteligente de Ocorrências e Casos (IA)</span>
+                <q-badge color="accent" text-color="white" label="Copiloto HCM" class="q-ml-sm" />
+              </div>
+              <div class="text-caption text-slate-600">
+                Tem dúvidas sobre o andamento do seu processo ou funcionamento do departamento? Peça um esclarecimento instantâneo à IA.
+              </div>
+            </div>
+          </div>
+          <div class="q-mt-sm">
+            <q-btn
+              unelevated
+              color="primary"
+              icon="chat"
+              label="Pedir Esclarecimento com IA"
+              no-caps
+              class="text-weight-bold"
+              @click="openClarifyDialog"
+            />
+          </div>
+        </div>
+
+        <!-- Sugestões Rápidas de Esclarecimento -->
+        <div class="row q-gutter-xs q-mt-md">
+          <q-btn
+            dense
+            outline
+            color="primary"
+            icon="schedule"
+            label="Como funciona o SLA do meu caso?"
+            size="sm"
+            no-caps
+            class="bg-white"
+            @click="quickClarify('Qual é a previsão regulamentar para conclusão do meu processo?')"
+          />
+          <q-btn
+            dense
+            outline
+            color="secondary"
+            icon="local_hospital"
+            label="Como funciona a triagem do departamento?"
+            size="sm"
+            no-caps
+            class="bg-white"
+            @click="quickClarify('Como funciona a triagem clínica no departamento responsável pelo meu caso?')"
+          />
+          <q-btn
+            dense
+            outline
+            color="teal"
+            icon="info"
+            label="O que significa o estado atual?"
+            size="sm"
+            no-caps
+            class="bg-white"
+            @click="quickClarify('O que significa o estado atual do meu processo e quais são os próximos passos?')"
+          />
+        </div>
+      </q-card-section>
+
+      <!-- Resultado da Consulta IA se disponível -->
+      <q-card-section v-if="clarifyResult" class="bg-white rounded-borders q-ma-md q-pa-md shadow-1">
+        <div class="row items-center justify-between q-mb-sm">
+          <div class="text-subtitle2 text-weight-bold text-primary row items-center">
+            <q-icon name="smart_toy" size="20px" class="q-mr-xs text-primary" />
+            <span>Parecer do Copiloto Inteligente HCM: {{ clarifyResult.process?.referenceNumber }}</span>
+          </div>
+          <q-btn flat round dense icon="close" size="sm" @click="clarifyResult = null" />
+        </div>
+        <div class="text-body2 text-slate-700 whitespace-pre-line q-mb-md">
+          {{ clarifyResult.clarification }}
+        </div>
+        <div v-if="clarifyResult.nextSteps && clarifyResult.nextSteps.length" class="bg-blue-50 q-pa-sm rounded-borders">
+          <div class="text-caption text-weight-bold text-primary q-mb-xs">Próximos Passos Hospitalares:</div>
+          <ul class="q-pl-md q-my-none text-caption text-slate-700">
+            <li v-for="(step, idx) in clarifyResult.nextSteps" :key="idx">{{ step }}</li>
+          </ul>
+        </div>
+      </q-card-section>
+    </q-card>
+
+    <!-- Modal de Pedido de Esclarecimento com IA -->
+    <q-dialog v-model="showClarifyModal">
+      <q-card style="min-width: 420px; max-width: 600px; width: 100%" class="q-pa-md">
+        <q-card-section class="row items-center q-pb-none">
+          <q-avatar icon="smart_toy" color="primary" text-color="white" size="36px" class="q-mr-sm" />
+          <div class="text-h6 text-weight-bold text-slate-800">Pedir Esclarecimento com IA</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+
+        <q-card-section class="q-pt-sm">
+          <div class="text-caption text-slate-600 q-mb-md">
+            Seleccione um processo seu para o Assistente Inteligente analisar o departamento e o estado da ocorrência.
+          </div>
+
+          <div class="q-mb-md">
+            <label class="text-caption text-weight-bold block q-mb-xs">Processo a Esclarecer *</label>
+            <q-select
+              v-model="selectedProcessId"
+              :options="processOptions"
+              emit-value
+              map-options
+              outlined
+              dense
+              placeholder="Seleccione o processo..."
+            />
+          </div>
+
+          <div class="q-mb-sm">
+            <label class="text-caption text-weight-bold block q-mb-xs">Dúvida ou Questão Específica</label>
+            <q-input
+              v-model="clarifyQuestion"
+              type="textarea"
+              outlined
+              dense
+              rows="3"
+              placeholder="Ex: Como funciona a triagem da Urgência? Porque o processo ainda não foi fechado?"
+            />
+          </div>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="Cancelar" color="grey-7" v-close-popup no-caps />
+          <q-btn
+            unelevated
+            color="primary"
+            label="Obter Esclarecimento"
+            icon="auto_awesome"
+            :loading="clarifyLoading"
+            :disable="!selectedProcessId"
+            @click="submitClarificationRequest"
+            no-caps
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
     <!-- Lista de Processos Recentes -->
     <q-card class="hc-card">
       <q-card-section class="row items-center justify-between q-pb-none">
@@ -159,6 +304,74 @@ import ProcessStatusBadge from '../../components/common/ProcessStatusBadge.vue';
 const authStore = useAuthStore();
 const processes = ref<Process[]>([]);
 const loading = ref(true);
+
+// Estados do Esclarecimento IA
+const showClarifyModal = ref(false);
+const selectedProcessId = ref<string>('');
+const clarifyQuestion = ref('');
+const clarifyLoading = ref(false);
+interface ClarifyResult {
+  process?: { referenceNumber?: string; title?: string; status?: string };
+  clarification?: string;
+  departmentContext?: string;
+  nextSteps?: string[];
+}
+const clarifyResult = ref<ClarifyResult | null>(null);
+
+const processOptions = computed(() => {
+  return processes.value.map((p) => ({
+    label: `${p.referenceCode} - ${p.subject} (${p.status.name})`,
+    value: p.id
+  }));
+});
+
+function openClarifyDialog() {
+  if (processes.value.length > 0 && !selectedProcessId.value) {
+    selectedProcessId.value = processes.value[0]?.id || '';
+  }
+  showClarifyModal.value = true;
+}
+
+async function quickClarify(preQuestion: string) {
+  if (processes.value.length === 0) {
+    openClarifyDialog();
+    return;
+  }
+  selectedProcessId.value = processes.value[0]?.id || '';
+  clarifyQuestion.value = preQuestion;
+  await submitClarificationRequest();
+}
+
+async function submitClarificationRequest() {
+  if (!selectedProcessId.value) return;
+  clarifyLoading.value = true;
+  try {
+    const { apiClient } = await import('../../services/api/api-client');
+    const res = await apiClient.post('/ai/clarify-case', {
+      processId: selectedProcessId.value,
+      question: clarifyQuestion.value
+    });
+    if (res.data?.success) {
+      clarifyResult.value = res.data.data;
+      showClarifyModal.value = false;
+    }
+  } catch (err) {
+    console.warn('Falha no esclarecimento online, a usar contingência:', err);
+    const proc = processes.value.find((p) => p.id === selectedProcessId.value);
+    clarifyResult.value = {
+      process: { referenceNumber: proc?.referenceCode || '#HC-2026', title: proc?.subject },
+      clarification: `O seu processo **${proc?.referenceCode}** encontra-se em tramitação regular sob acompanhamento da equipa técnica do Hospital Central de Maputo.\n\nA triagem segue os protocolos de prioridade clínica e o cumprimento dos prazos regulamentares de SLA hospitalar.`,
+      nextSteps: [
+        'Acompanhamento contínuo da ocorrência',
+        'Avaliação clínica/administrativa pelo departamento',
+        'Notificação ao utente após parecer final'
+      ]
+    };
+    showClarifyModal.value = false;
+  } finally {
+    clarifyLoading.value = false;
+  }
+}
 
 const activeProcessesCount = computed(
   () => processes.value.filter((p) => [1, 2, 3, 4, 5, 6].includes(p.statusId)).length

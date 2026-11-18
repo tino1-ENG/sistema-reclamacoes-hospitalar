@@ -11,6 +11,9 @@ router.get('/status', aiController.getStatus);
 // Chatbot Acolhe HospitalCare (acessível a utentes anónimos ou autenticados)
 router.post('/chat', optionalAuthenticate, aiController.chat);
 
+// Esclarecimento inteligente de processos e departamentos (para utentes e profissionais)
+router.post('/clarify-case', optionalAuthenticate, aiController.clarifyCase);
+
 // Triagem preliminar de manifestações
 router.post('/triage', optionalAuthenticate, aiController.triage);
 

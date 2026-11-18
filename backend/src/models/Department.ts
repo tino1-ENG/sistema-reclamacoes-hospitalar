@@ -8,6 +8,9 @@ export interface IDepartment extends Document {
   phone?: string;
   email?: string;
   isActive: boolean;
+  isAiModeActive: boolean; // Modo IA ativo pelo Chefe do Departamento
+  aiAutoResponseEnabled: boolean; // Resposta preliminar automática aos processos
+  aiSpecialtyGuidelines?: string; // Diretrizes específicas do departamento para a IA
   createdAt: Date;
   updatedAt: Date;
 }
@@ -20,7 +23,10 @@ const DepartmentSchema = new Schema<IDepartment>(
     description: { type: String },
     phone: { type: String },
     email: { type: String },
-    isActive: { type: Boolean, default: true }
+    isActive: { type: Boolean, default: true },
+    isAiModeActive: { type: Boolean, default: false },
+    aiAutoResponseEnabled: { type: Boolean, default: false },
+    aiSpecialtyGuidelines: { type: String }
   },
   { timestamps: true }
 );
